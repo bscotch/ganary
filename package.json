@@ -1,0 +1,20 @@
+{
+  "name": "ganary",
+  "version": "1.0.2",
+  "description": "A project to test GMS functions across runtime on all platforms",
+  "main": "index.js",
+  "scripts": {
+    "preversion": "git fetch --tags",
+    "postversion": "git push --follow-tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org:bscotchRepos/gms_runtime_checker.git"
+  },
+  "keywords": [
+    "gml"
+  ],
+  "author": "Shi Chen",
+  "license": "MIT",
+  "dependencies": {}
+}
