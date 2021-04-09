@@ -6,9 +6,6 @@ When a new runtime is released, it should pass all existing tests to confirm tha
 
 If new issues are discovered, they can be added as Olympus tests to ensure that they are covered going forward.
 
-
-Check out our other project [Ganary](https://github.com/bscotch/ganary), which uses Olympus to run regression tests for GameMaker Runtime.
-
 ## How to use
 
 ### Default config
