@@ -1,3 +1,5 @@
 node_modules
 .rumpusCredentials
 COMMIT_EDITMSG
+package-lock.json
+*.olympus.json

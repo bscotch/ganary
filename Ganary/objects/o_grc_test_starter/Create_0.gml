@@ -1,3 +1,4 @@
+url_to_send_output_to = "http://192.168.1.98:4000"
 _should_resume_record = true;
 
 _function_to_add_tests_and_hooks = function() {
@@ -17,7 +18,11 @@ _function_to_add_tests_and_hooks = function() {
 				res_color = c_orange;
 				test_message = "Some tests were skipped";
 			}
-		}	
+		}
+		var map = ds_map_create();	
+		ds_map_add(map, "Content-Type", "application/json");
+		http_request(url_to_send_output_to, "POST", map,  json_stringify(summary));
+		ds_map_destroy(map);
 	});
 }
 
