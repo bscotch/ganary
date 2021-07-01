@@ -678,7 +678,7 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 			optimized : code_is_compiled()
 		},
 		os: {
-			id: os_type
+			identifier: os_type
 		},
 		project:{
 			name: game_project_name,
@@ -775,7 +775,7 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 	///@description Check whether the summary data is outdated from the current setting
 	_summary_data_is_outdated = function(summary){
 		return summary.config.project.config  != os_get_config()
-		||summary.config.os.id != os_type
+		||summary.config.os.identifier != os_type
 		||summary.config.project.name != game_project_name
 		|| summary.config.project.version != GM_version
 		|| summary.config.project.debug != debug_mode

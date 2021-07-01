@@ -434,6 +434,7 @@
     {"CopyToMask":-1,"filePath":"datafiles/OutPutReceiver/node_modules","resourceVersion":"1.0","name":".package-lock.json","resourceType":"GMIncludedFile",},
     {"CopyToMask":-1,"filePath":"datafiles/OutPutReceiver","resourceVersion":"1.0","name":"index.js","resourceType":"GMIncludedFile",},
     {"CopyToMask":-1,"filePath":"datafiles/OutPutReceiver","resourceVersion":"1.0","name":"grc_test.olympus.json","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"Olympus_README.md","filePath":"datafiles/Olympus",},
   ],
   "MetaData": {
     "IDEVersion": "23.1.1.312",

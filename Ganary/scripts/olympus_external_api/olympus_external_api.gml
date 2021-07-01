@@ -184,6 +184,13 @@ function olympus_get_current_suite_summary(){
 	return global._olympus_summary_manager.get_summary();
 }
 
+/**
+@desc Return a boolean of whether the current suite contains failed or crashed tests
+*/
+function olympus_current_suite_summary_has_failure_or_crash(){
+	return global._olympus_summary_manager.has_failure_or_crash();
+}
+
 /** 
 @desc Return a copy of the array that contains all the up-to-date test summaries. 
 */
