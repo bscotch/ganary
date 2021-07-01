@@ -33,6 +33,10 @@
     {"id":{"name":"grc_register_async_user_feedback_tests","path":"scripts/grc_register_async_user_feedback_tests/grc_register_async_user_feedback_tests.yy",},"order":3,},
     {"id":{"name":"_olympus_internal","path":"scripts/_olympus_internal/_olympus_internal.yy",},"order":1,},
     {"id":{"name":"rm_grc","path":"rooms/rm_grc/rm_grc.yy",},"order":2,},
+    {"id":{"name":"grc_snd_silence_for_dynamic_asset2","path":"sounds/grc_snd_silence_for_dynamic_asset2/grc_snd_silence_for_dynamic_asset2.yy",},"order":8,},
+    {"id":{"name":"grc_o_dynamic_asset_ogg_track_test","path":"objects/grc_o_dynamic_asset_ogg_track_test/grc_o_dynamic_asset_ogg_track_test.yy",},"order":10,},
+    {"id":{"name":"grc_snd_silence_for_dynamic_asset","path":"sounds/grc_snd_silence_for_dynamic_asset/grc_snd_silence_for_dynamic_asset.yy",},"order":7,},
+    {"id":{"name":"grc_o_camera_test","path":"objects/grc_o_camera_test/grc_o_camera_test.yy",},"order":11,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
@@ -76,6 +80,7 @@
     {"folderPath":"folders/Ganary/Objects/sync_tests.yy","order":4,"resourceVersion":"1.0","name":"sync_tests","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Modules.yy","order":1,"resourceVersion":"1.0","name":"Modules","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Modules/Olympus.yy","order":1,"resourceVersion":"1.0","name":"Olympus","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/NEW.yy","order":1,"resourceVersion":"1.0","name":"NEW","tags":[],"resourceType":"GMFolder",},
   ],
   "AudioGroups": [
     {"targets":-1,"resourceVersion":"1.3","name":"audiogroup_default","resourceType":"GMAudioGroup",},
@@ -98,7 +103,7 @@
     {"ConfigValues":{"steam":{"CopyToMask":"153157610357391598",},"dev":{"CopyToMask":"0",},},"CopyToMask":0,"filePath":"datafiles/Ganary","resourceVersion":"1.0","name":"grc_config_specific_file.md","resourceType":"GMIncludedFile",},
   ],
   "MetaData": {
-    "IDEVersion": "23.1.1.268",
+    "IDEVersion": "23.1.1.312",
   },
   "resourceVersion": "1.4",
   "name": "Ganary",

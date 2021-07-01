@@ -14,7 +14,7 @@
     "path": "audiogroups/a_group_test",
   },
   "soundFile": "grc_snd_coinpickup",
-  "duration": 0.441395,
+  "duration": 0.436395,
   "parent": {
     "name": "misc_resources",
     "path": "folders/Ganary/misc_resources.yy",

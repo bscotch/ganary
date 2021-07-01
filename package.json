@@ -14,6 +14,22 @@
   "keywords": [
     "gml"
   ],
+  "GamePipe": {
+    "title": "Ganary",
+    "slug": "ganary",
+    "yyp": "Ganary/Ganary.yyp",
+    "localAppDataDirectory": "Ganary",
+    "modules": [
+      {
+        "repo": "git@bitbucket.org:bscotchRepos/bscotch-pack.git",
+        "names": [
+          "Ganary"
+        ],
+        "branch": "develop",
+        "revision": "283e72c9e5cd843f46d4402d03293290697fe1bd"
+      }
+    ]
+  },
   "author": "Shi Chen",
   "license": "MIT",
   "dependencies": {}

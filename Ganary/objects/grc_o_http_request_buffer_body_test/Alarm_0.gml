@@ -19,7 +19,8 @@ for (var j = 0; j < array_length(test_endpoints); j++){
 			for ( var h = 200; h <= 204; h++){	array_push(http_statuses, h);	}
 			for ( var h = 206; h <= 208; h++){	array_push(http_statuses, h);	}
 			for ( var h = 300; h <= 308; h++){	array_push(http_statuses, h);	}
-			for ( var h = 400; h <= 431; h++){	array_push(http_statuses, h);	}
+			for ( var h = 400; h <= 406; h++){	array_push(http_statuses, h);	}
+			for ( var h = 408; h <= 431; h++){	array_push(http_statuses, h);	}
 			for ( var h = 500; h <= 531; h++){	array_push(http_statuses, h);	}
 			for (var h = 0; h < array_length(http_statuses); h++){
 				http_statuses[h] = "/" + string(http_statuses[h]);

@@ -1,4 +1,80 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("json_parsed_struct_accessor_test", function(){
+		var struc = {
+			config: {
+				os: {
+					id: 0,
+					status: 1
+				}
+			}
+		}
+		grc_expect_eq(struc.config.os.id, 0);
+		grc_expect_eq(struc.config.os.status, 1);
+		var parsed_struc = json_parse(json_stringify(struc));
+		grc_expect_eq(parsed_struc.config.os.id, 0);
+		grc_expect_eq(parsed_struc.config.os.status, 1);
+	})
+	
+	olympus_add_test("alarm_set", function() {
+		alarm[0] = 1;
+	})
+	
+	olympus_add_test("viewport_set", function() {
+		var cur_port =  view_wport[0];
+		view_wport[0] = 100;
+		view_wport[0] = cur_port;
+	})
+	
+	olympus_add_test("struct_array_accessors_dot_notation", function() {
+		var frame = {
+			position	: [50, 50],
+			half_size	: [25, 100],
+			bounds		: [ [0, 0], [0, 0], [0, 0] ]
+		}
+	
+		for ( var d = 0; d <= 1; d++) {
+			frame.bounds[0][d]	= frame.position[d]-frame.half_size[d];
+			frame.bounds[1][d]	= frame.bounds[0][d]+frame.half_size[d];
+			frame.bounds[2][d]	= frame.bounds[1][d]+frame.half_size[d];
+		}
+	})
+	
+	olympus_add_test("struct_array_accessors_with", function() {
+		var frame = {
+			position	: [50, 50],
+			half_size	: [25, 100],
+			bounds		: [ [0, 0], [0, 0], [0, 0] ]
+		}
+		
+		with frame {
+			for ( var d = 0; d <= 1; d++) {
+				bounds[0][d]	= position[d]-half_size[d];
+				bounds[1][d]	= bounds[0][d]+half_size[d];
+				bounds[2][d]	= bounds[1][d]+half_size[d];
+			}
+		}
+	})
+	
+	olympus_add_test("struct_array_accessors_comparison", function() {
+		var frame = { values : [100, 200] };
+		
+		grc_expect_true((frame.values[0] == 100), "Individual read check failed.");
+		grc_expect_true((frame.values[1] == 200), "Individual read check failed.");
+		
+		grc_expect_true((frame.values[0] != frame.values[1]), "Equality check failed.");
+		grc_expect_true((frame.values[1] != frame.values[0]), "Equality check failed.");
+		
+		grc_expect_true((frame.values[0] + frame.values[1]) == 300,	"Addition check failed.");
+		grc_expect_true((frame.values[1] + frame.values[0]) == 300,	"Addition check failed.");
+		grc_expect_true((frame.values[0] - frame.values[1]) == -100, "Subtraction check failed.");
+		grc_expect_true((frame.values[1] - frame.values[0]) == 100,	"Subtraction check failed.");
+		
+		var struct_test_passthrough_function = function(arg0, arg1) {
+			grc_expect_true(arg0 != arg1, "Passed through arguments should be different. Instead, they are", arg0, ",", arg1);
+		}
+		
+		struct_test_passthrough_function(frame.values[0], frame.values[1]);
+	})
 	
 	olympus_add_test("buffer_base64_decode_test", function(){
 		grc_console_log("Testing buffer_base64_decode with short strings");
@@ -8,6 +84,28 @@ function grc_register_sync_function_tests(){
 		buffer_base64_decode_ext(temp_buff, "IHM=", 0);
 		buffer_delete(temp_buff);
 		grc_console_log("buffer_base64_decode did not crash the runner");	
+	})
+	
+	olympus_add_test("json_parse_null_to_ptr_test", function(){
+		var struc  = {crates: undefined};
+		var str = json_stringify(struc);
+		show_debug_message(str);
+		var decode_struc = json_parse(str);
+		var type = typeof(decode_struc.crates);	
+		grc_expect_eq("ptr", type, "The type should be a pointer after the json_parse.");
+	})
+	
+	olympus_add_test("destroyed_ds_list_reference", function(){
+		var destroyed_list = ds_list_create();
+		ds_list_destroy(destroyed_list);
+		var new_list = ds_list_create();
+		grc_expect_true(ds_exists(destroyed_list, ds_type_list), "creating a new list should revive the old list");
+		var expected_element = "hello"
+		ds_list_add(new_list, expected_element);
+		var element_from_destroyed_list = destroyed_list[|0];
+		grc_expect_eq(expected_element, element_from_destroyed_list, "revived list should have the same element as the new list");
+		grc_expect_eq(ds_list_size(new_list),  ds_list_size(destroyed_list), "revived list should have the same size as the new list");	
+		ds_list_destroy(new_list);
 	})
 	
 	olympus_add_test("cjk_text_function_test", function(){
@@ -53,7 +151,10 @@ function grc_register_sync_function_tests(){
 	})
 	
 	if os_get_config() == "steam"{
-		grc_expect_eq(steam_initialised(),true);
+		olympus_add_test("steam_function_tests", function(){
+			grc_expect_eq(steam_initialised(),true);
+			grc_expect_eq(steam_get_app_id(), 1156180);			
+		})
 	}
 	
 	olympus_add_test("ds_list_function_test", function(){
@@ -169,7 +270,6 @@ function grc_register_sync_function_tests(){
 
 	olympus_add_test("variable_function_test", function(){
 		var test_instance = grc_instance_create(grc_o_helper_blank);
-		grc_expect_eq(variable_instance_exists(test_instance, "instance_variable_to_test"), false);
 		test_instance.instance_variable_to_test = -1;
 		grc_expect_eq(variable_instance_exists(test_instance, "instance_variable_to_test"), true);
 		grc_expect_eq(variable_instance_get(test_instance, "instance_variable_to_test"), -1);
@@ -178,7 +278,6 @@ function grc_register_sync_function_tests(){
 		grc_expect_eq(variable_instance_get(test_instance, "instance_variable_to_test"), "string");
 		instance_destroy(test_instance);
 
-		grc_expect_eq(real(variable_global_exists("global_variable_to_test")), false);
 		global.global_variable_to_test = -1;
 		grc_expect_eq(real(variable_global_exists("global_variable_to_test")), true);
 		grc_expect_eq(variable_global_get("global_variable_to_test"), -1);
@@ -358,51 +457,53 @@ function grc_register_sync_function_tests(){
 		grc_expect_eq(sprite_exists(png), false);
 	})
 	
-	olympus_add_test("encoding_functions_test", function(){
-		grc_console_log("Testing base64_decode and encode with short strings");
-		var test_string = "h"
-		grc_expect_eq(base64_decode(base64_encode(test_string)),test_string);
+	if (os_get_config() == "gamepipe_test"){
+		olympus_add_test("encoding_functions_test", function(){
+			grc_console_log("Testing base64_decode and encode with short strings");
+			var test_string = "h"
+			grc_expect_eq(base64_decode(base64_encode(test_string)),test_string);
 
-		var s_lenght = max(grc_encode_string_length,grc_encode_string_length_max)
-		grc_console_log("Testing base64_decode and encode with long strings", s_lenght)
-		var test_string = "";
-		repeat s_lenght {
-			test_string += string(irandom(9));
-		}
-		grc_expect_eq(base64_decode(base64_encode(test_string)),test_string);
-
-		var test_map = ds_map_create();
-		test_map[?"test_string"] = test_string;
-		var test_json_string = json_encode(test_map);
-		ds_map_destroy(test_map);
-		var converted_map = json_decode(test_json_string);
-		grc_expect_eq(converted_map[?"test_string"], test_string);
-		ds_map_destroy(converted_map);
-
-		grc_expect_eq(md5_string_utf8(test_string),md5_string_utf8(test_string));
-		grc_expect_eq(md5_string_unicode(test_string),md5_string_unicode(test_string));
-
-		grc_expect_eq(sha1_string_utf8(test_string),sha1_string_utf8(test_string));
-		grc_expect_eq(sha1_string_unicode(test_string),sha1_string_unicode(test_string));
-
-		var very_long_string = "";
-
-		// Create a long string
-		// Setting the value below to 25800 (which is 774,000 string length) DOES NOT cause a stack-overflow
-		// Setting the value below to 25834 (which is 775,020 string length) DOES cause a stack-overflow
-
-		for (var i = 0; i < 25834; i += 1)
-			{
-					very_long_string += grc_utf8_chars;
+			var s_lenght = max(grc_encode_string_length,grc_encode_string_length_max)
+			grc_console_log("Testing base64_decode and encode with long strings", s_lenght)
+			var test_string = "";
+			repeat s_lenght {
+				test_string += string(irandom(9));
 			}
+			grc_expect_eq(base64_decode(base64_encode(test_string)),test_string);
+
+			var test_map = ds_map_create();
+			test_map[?"test_string"] = test_string;
+			var test_json_string = json_encode(test_map);
+			ds_map_destroy(test_map);
+			var converted_map = json_decode(test_json_string);
+			grc_expect_eq(converted_map[?"test_string"], test_string);
+			ds_map_destroy(converted_map);
+
+			grc_expect_eq(md5_string_utf8(test_string),md5_string_utf8(test_string));
+			grc_expect_eq(md5_string_unicode(test_string),md5_string_unicode(test_string));
+
+			grc_expect_eq(sha1_string_utf8(test_string),sha1_string_utf8(test_string));
+			grc_expect_eq(sha1_string_unicode(test_string),sha1_string_unicode(test_string));
+
+			var very_long_string = "";
+
+			// Create a long string
+			// Setting the value below to 25800 (which is 774,000 string length) DOES NOT cause a stack-overflow
+			// Setting the value below to 25834 (which is 775,020 string length) DOES cause a stack-overflow
+
+			for (var i = 0; i < 25834; i += 1)
+				{
+						very_long_string += grc_utf8_chars;
+				}
 	
-		show_debug_message("Created string of length: " + string(string_length(very_long_string)));
-		show_debug_message("Start md5 utf8");
-		md5_string_utf8(very_long_string);
-		show_debug_message("md5 utf8 successful");
-	}, {
-		olympus_test_options_timeout_millis: 60000*5
-	})
+			show_debug_message("Created string of length: " + string(string_length(very_long_string)));
+			show_debug_message("Start md5 utf8");
+			md5_string_utf8(very_long_string);
+			show_debug_message("md5 utf8 successful");
+		}, {
+			olympus_test_options_timeout_millis: 60000*5
+		})
+	}
 	
 	olympus_add_test("buffer_base64_encode_test", function(){
 		var fn = "Ganary/grc_buffer_encode_test_file"
@@ -421,7 +522,7 @@ function grc_register_sync_function_tests(){
 		var _buff = buffer_base64_decode(_string);
 		show_debug_message("Does not crash when the string is too short!");
 		buffer_delete(_buff);	
-	})	
+	})
 	
 	if os_get_config() == "dev"{
 		olympus_add_test("show_debug_message_test", function(){
