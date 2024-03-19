@@ -1,26 +1,30 @@
 {
-  "ConfigValues": {
-    "dev": {"audioGroupId":"{\"name\":\"a_group_test\",\"path\":\"audiogroups/a_group_test\"}",},
+  "$GMSound":"",
+  "%Name":"grc_snd_silence_for_dynamic_asset2",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
   },
-  "compression": 3,
-  "volume": 1.0,
-  "preload": false,
-  "bitRate": 128,
-  "sampleRate": 44100,
-  "type": 0,
-  "bitDepth": 1,
-  "audioGroupId": {
-    "name": "audiogroup_default",
-    "path": "audiogroups/audiogroup_default",
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":3,
+  "ConfigValues":{
+    "dev":{
+      "audioGroupId":"{\"name\":\"a_group_test\",\"path\":\"audiogroups/a_group_test\"}",
+    },
   },
-  "soundFile": "grc_snd_silence_for_dynamic_asset2",
-  "duration": 1.614125,
-  "parent": {
-    "name": "misc_resources",
-    "path": "folders/Ganary/misc_resources.yy",
+  "conversionMode":0,
+  "duration":1.614125,
+  "name":"grc_snd_silence_for_dynamic_asset2",
+  "parent":{
+    "name":"misc_resources",
+    "path":"folders/Ganary/misc_resources.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "grc_snd_silence_for_dynamic_asset2",
-  "tags": [],
-  "resourceType": "GMSound",
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"grc_snd_silence_for_dynamic_asset2",
+  "type":0,
+  "volume":1.0,
 }

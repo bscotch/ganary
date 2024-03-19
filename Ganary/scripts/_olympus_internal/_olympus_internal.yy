@@ -1,12 +1,13 @@
 {
-  "isDnD": false,
-  "isCompatibility": false,
-  "parent": {
-    "name": "Olympus",
-    "path": "folders/Modules/Olympus.yy",
+  "$GMScript":"",
+  "%Name":"_olympus_internal",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"_olympus_internal",
+  "parent":{
+    "name":"Olympus",
+    "path":"folders/Modules/Olympus.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "_olympus_internal",
-  "tags": [],
-  "resourceType": "GMScript",
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

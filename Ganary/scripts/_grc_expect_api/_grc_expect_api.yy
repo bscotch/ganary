@@ -1,12 +1,13 @@
 {
-  "isDnD": false,
-  "isCompatibility": false,
-  "parent": {
-    "name": "_Scripts",
-    "path": "folders/Ganary/_Internal/_Scripts.yy",
+  "$GMScript":"",
+  "%Name":"_grc_expect_api",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"_grc_expect_api",
+  "parent":{
+    "name":"_Scripts",
+    "path":"folders/Ganary/_Internal/_Scripts.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "_grc_expect_api",
-  "tags": [],
-  "resourceType": "GMScript",
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

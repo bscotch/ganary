@@ -1,12 +1,13 @@
 {
-  "isDnD": false,
-  "isCompatibility": false,
-  "parent": {
-    "name": "_Scripts",
-    "path": "folders/Ganary/_Internal/_Scripts.yy",
+  "$GMScript":"",
+  "%Name":"_grc_macros_setup",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"_grc_macros_setup",
+  "parent":{
+    "name":"_Scripts",
+    "path":"folders/Ganary/_Internal/_Scripts.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "_grc_macros_setup",
-  "tags": [],
-  "resourceType": "GMScript",
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

@@ -1,11 +1,12 @@
 {
-  "type": 1,
-  "parent": {
-    "name": "misc_resources",
-    "path": "folders/Ganary/misc_resources.yy",
+  "$GMShader":"",
+  "%Name":"grc_shad_flash",
+  "name":"grc_shad_flash",
+  "parent":{
+    "name":"misc_resources",
+    "path":"folders/Ganary/misc_resources.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "grc_shad_flash",
-  "tags": [],
-  "resourceType": "GMShader",
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
 }
