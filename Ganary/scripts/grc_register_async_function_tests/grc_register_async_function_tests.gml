@@ -53,14 +53,14 @@ function grc_register_async_function_tests(){
 		return grc_instance_create(grc_o_room_functions_test);
 	})
 
-	olympus_add_async_test("go_to_instance_exists_over_room_restart_test", function(){		
-		room_goto(rm_grc_o_instance_exists_over_room_restart_test);
-		return olympus_spawn_object_creation_awaiter(grc_o_instance_exists_over_room_restart_test);
-	})
+	//olympus_add_async_test("go_to_instance_exists_over_room_restart_test", function(){		
+	//	room_goto(rm_grc_o_instance_exists_over_room_restart_test);
+	//	return olympus_spawn_object_creation_awaiter(grc_o_instance_exists_over_room_restart_test);
+	//})
 	
-	olympus_add_async_test("instance_exists_over_room_restart_test", function(){		
-		return instance_find(grc_o_instance_exists_over_room_restart_test, 0);
-	})
+	//olympus_add_async_test("instance_exists_over_room_restart_test", function(){		
+	//	return instance_find(grc_o_instance_exists_over_room_restart_test, 0);
+	//})
 	
 	olympus_add_async_test("keyboard_function_test", function(){
 		return grc_instance_create(grc_o_keyboard_functions_test);
@@ -71,7 +71,7 @@ function grc_register_async_function_tests(){
 	})
 	
 	olympus_add_async_test("video_function_test_headless", function(){
-		video_open("cutscenes/grc.mp4");
+		video_open("Ganary/cutscenes/grc.mp4");
 		grc_expect_eq(video_get_duration(), 1000, "The included video should be 1000 ms long.");
 		grc_expect_eq(video_get_format(), video_format_rgba, "The format should be rgba");
 		grc_expect_eq(video_is_looping(), false, "the video should not be looping.");		

@@ -93,4 +93,5 @@ builtinNames = [
 
 call_later(5, time_source_units_seconds, function(){
 	olympus_test_resolve();
+	instance_destroy();
 })

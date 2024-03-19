@@ -32,6 +32,7 @@
   ],
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"a773860.txt","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"a773860.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"grc.mp4","CopyToMask":-1,"filePath":"datafiles/Ganary/cutscenes","name":"grc.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_buffer_encode_test_file","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_buffer_encode_test_file","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_config_specific_file.md","ConfigValues":{
         "dev":{
@@ -56,7 +57,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.200.0.499",
+    "IDEVersion":"2024.400.0.516",
   },
   "name":"Ganary",
   "resources":[

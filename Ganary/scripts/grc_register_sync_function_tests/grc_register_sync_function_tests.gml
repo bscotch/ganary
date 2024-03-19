@@ -159,7 +159,7 @@ function grc_register_sync_function_tests(){
 		var snd_index = 0;
 		while true {
 			if (audio_exists(snd_index)) {
-				echo("Adding sound", snd_index, "to the lookup.");
+				grc_console_log("Adding sound", snd_index, "to the lookup.");
 				snd_index++;
 			}
 			else{

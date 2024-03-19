@@ -8,4 +8,5 @@ with _struct {
 
 if active {
 	olympus_test_resolve();
+	instance_destroy();
 }
