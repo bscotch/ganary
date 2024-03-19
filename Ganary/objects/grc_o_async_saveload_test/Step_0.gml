@@ -21,7 +21,10 @@ if active{
 			show_debug_message("saving...");
 			value = irandom_range(0, 255);
 			expected_value = value;
-		    buffer_async_group_begin("asyncsavegroup");
+			if os_get_config() == "GDK"
+				gdk_save_group_begin()
+			else
+				buffer_async_group_begin("asyncsavegroup");
 		    buffer_async_group_option("showdialog", 0);
 		    buffer_async_group_option("savepadindex", 0);
 		    buffer_async_group_option("saveslotsize", 1);   
@@ -42,8 +45,11 @@ if active{
 		    var inistring = ini_close();
     
 		    buffer_write(savebuff, buffer_string, inistring);
-		    buffer_save_async(savebuff, save_fn, 0, buffer_get_size(savebuff));
-		    saveid = buffer_async_group_end();    
+			if os_get_config() == "GDK"
+				gdk_save_buffer(savebuff, save_fn, 0, buffer_get_size(savebuff));
+			else
+				buffer_save_async(savebuff, save_fn, 0, buffer_get_size(savebuff));
+		    saveid = os_get_config() == "GDK" ? gdk_save_group_end() : buffer_async_group_end();    
 			grc_console_log("saveid:", saveid);
 			grc_console_log(save_fn);
 		    saving = true;
@@ -52,12 +58,21 @@ if active{
 		else if next_action == asycn_saveload_next_action.load{
 			show_debug_message("loading...");    
 		    loadbuff = buffer_create(1,buffer_grow,1);    
-		    buffer_async_group_begin("asyncsavegroup");    // save folder 
+		    if os_get_config() == "GDK"
+				gdk_save_group_begin("asyncsavegroup")
+			else
+				buffer_async_group_begin("asyncsavegroup");    // save folder 
 		    buffer_async_group_option("showdialog",0);
 		    buffer_async_group_option("savepadindex", 0);
 		    buffer_async_group_option("slottitle","savefordemo");    // don't show any dialogues, load from slot 0     
-		    buffer_load_async(loadbuff,save_fn,0,-1);   // Say what we want to load and into which buffer   
-		    loadid = buffer_async_group_end();   // Actually start loading now please   
+			if os_get_config() == "GDK"{
+				gdk_load_buffer(loadbuff,save_fn,0,-1);
+			}
+			else{
+				buffer_load_async(loadbuff,save_fn,0,-1);   // Say what we want to load and into which buffer  
+			}
+ 
+		    loadid = os_get_config() == "GDK" ? gdk_save_group_end() : buffer_async_group_end();    // Actually start loading now please   
 		    loading = true;
 			grc_console_log("loadid:", loadid);
 			grc_console_log(save_fn);

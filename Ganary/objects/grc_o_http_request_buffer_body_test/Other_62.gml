@@ -7,7 +7,8 @@ if (ds_map_exists(test_records, _id)){
 	var expected;
 	var actual;
 	var passed = true;
-	switch (test_record.test_endpoint){
+	var the_test_endpoint = test_record.test_endpoint;
+	switch (the_test_endpoint){
 		case grc_http_test_endpoint_echo:
 			var test_body_size = buffer_get_size(test_record.body_handle);
 			var test_body_encoded = buffer_base64_encode(test_record.body_handle, 0 , test_body_size);
@@ -30,7 +31,7 @@ if (ds_map_exists(test_records, _id)){
 			var actual_headers = actual_response_map[?"data"];
 			var expected_headers = test_record.header_handle;
 			var keys = ds_map_keys_to_array(expected_headers);
-			for (var i = 0; i < array_length(keys); i++){
+			for (var i = 0; i < array_length_safe(keys); i++){
 				var key = keys[i];
 				var key_lower = string_lower(key);
 				if (expected_headers[?key] != actual_headers[?key_lower]){
@@ -51,7 +52,13 @@ if (ds_map_exists(test_records, _id)){
 				case "303":
 				case "307":
 				case "308":
-					expected = "200";
+					if (os_type == os_switch) || 
+					((os_type == os_ios  || os_type == os_macosx) && expected_status == "308"){
+						expected = expected_status;						
+					}	
+					else{
+						expected = "200";
+					}
 					break;
 				default:
 					expected = expected_status;

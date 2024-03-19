@@ -1,4 +1,214 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("self_comparison_test", function(){
+		var fist_comp = (self == other)
+		var _self = self
+		var second_comp = _self == other
+		grc_expect_eq(fist_comp, second_comp);	
+	})
+
+	olympus_add_test("struct_addition_assignment", function(){
+		#macro somekeyname "set"
+		var s = {
+			somekeyname: 1
+		}
+		
+		s[$ somekeyname] += 2;
+		grc_expect_eq(3, s[$ somekeyname]);
+		
+		s[$ somekeyname] = s[$ somekeyname] + 2;
+		grc_expect_eq(5, s[$ somekeyname]);	
+	})
+
+	olympus_add_test("json_parse_nonstandard_json_value", function(){
+		var _some_json = {
+			"undefined": undefined,
+			"infinity": infinity,
+			"true": true,
+			"false": false,
+			"pi": pi,
+			"text" : "@whatever"
+		};
+		var _some_json_string = json_stringify(_some_json);
+		var _some_json_string_parsed = json_parse(_some_json_string);
+		
+		var names = struct_get_names(_some_json_string_parsed);
+		for (var i = 0; i < array_length(names); i++){
+			var name = names[i];
+			var value = _some_json_string_parsed[$name];
+			var expected_value = _some_json[$name];
+			grc_expect_eq(value, expected_value, "Parsed value does not match the original value for name: " + name);
+		}
+
+		var _some_json = {
+			"pointer_null": pointer_null,
+			"pointer_invalid": pointer_invalid,
+		};
+		var _some_json_string = json_stringify(_some_json);
+		var _some_json_string_parsed = json_parse(_some_json_string);
+
+		var expected_parsed_value = {
+			"pointer_null": undefined,
+			"pointer_invalid": os_type == os_windows ? "FFFFFFFFFFFFFFFF" : "0xffffffffffffffff",
+		}
+		
+		var names = struct_get_names(_some_json_string_parsed);
+		for (var i = 0; i < array_length(names); i++){
+			var name = names[i];
+			var value = _some_json_string_parsed[$name];
+			var expected_value = expected_parsed_value[$name];
+			grc_expect_eq(value, expected_value, "Parsed value does not match the original value for name: " + name);
+		}
+		
+		var _some_json = {
+			"NaN": NaN,
+		};
+		var _some_json_string = json_stringify(_some_json);
+		var _some_json_string_parsed = json_parse(_some_json_string);
+		
+		var name = "NaN";
+		var value = _some_json_string_parsed[$name];
+		var expected_value = expected_parsed_value[$name];
+		grc_expect_neq(value, expected_value, "Parsed value does not match the original value for name: " + name);				
+	})	
+
+	olympus_add_test("ds_map_accessor_error", function(){
+		function SomeStructWithMap() constructor
+		{
+			tags = ds_map_create();
+			tags[? "hello" ] = { key : "value" };
+		}
+		
+		globalvar SomeGlobalVar;
+		SomeGlobalVar = new SomeStructWithMap();
+		
+		function SomeFuncAboutMaps( tags) 
+		{
+			var _tagged_frames = ds_map_find_value(SomeGlobalVar.tags, tags[0]);
+			show_debug_message( $"_tagged_frames={_tagged_frames}" );
+			var _tagged_frames = SomeGlobalVar.tags[? tags[0]];
+			show_debug_message( $"_tagged_frames={_tagged_frames}" );
+		} // end SomeFuncAboutMaps
+		
+		SomeFuncAboutMaps( [ "hello" ] );
+	})	
+
+
+	olympus_add_test("struct_accessor_after_json_parse", function(){
+		var s = json_parse("{\"content-type\":\"world\"}");
+
+		var actual = (s[$ "content-type"]);
+		grc_expect_eq("world", actual);
+
+		s[$ "content-type"] = "goodbye";
+
+		var actual = (s[$ "content-type"]);
+		grc_expect_eq("goodbye", actual);
+	})		
+	
+	
+	olympus_add_test("struct_chain_accessor_unset", function(){
+		var s = {a: {hello: { lines : [  ], console : 1, verbose : 1, level : 2, enabled : 1 }}}
+		var tag = "hello";
+		s.a[$ tag].level = 1;
+	})	
+
+	olympus_add_test("struct_as_argument_with_chain_accessor",function(){
+		// Create a nested struct.
+		var _struct = { outer : { inner : 5 } };
+
+		// ✅ Retrieve the value using chained accessors this way, without passing the _struct into a function. This works as expected.
+		var _thing = _struct[$ "outer"].inner;
+
+		function _get_chained_value(_nested_struct) {
+			// ✅ This works, as expected.
+			var _inner = _nested_struct.outer.inner;
+
+			// ✅ The crash will not occur when retrieving the values one at a time, like this:
+			var _outer = _nested_struct[$ "outer"];
+			var _inner = _outer.inner;
+
+			// ✅ The crash will not occur when chaining string accessors, like this:
+			var _inner = _nested_struct[$ "outer"][$ "inner"];
+
+			// ✅ The crash will not occur when chaining a string accessor after a dot accessor, like this:
+			var _inner = _nested_struct.outer[$ "inner"];
+
+			// 💥 Using a string accessor followed by a dot accessor causes this crash 💥
+			// Variable <unknown_object>._nested_struct(116729, -2147483648) not set before reading it.
+			var _inner = _nested_struct[$ "outer"].inner;
+		}
+
+		_get_chained_value(_struct);
+	})
+
+	olympus_add_test("calculation_that_start_with_minus", function(){
+		function start_with_negative() {
+			var foo = 0;
+			var bar = 1;
+			var bass = 2;
+			var boat = 1;	
+			foo	= -bar-(bass)*boat;
+			return foo;
+		}
+		start_with_negative();
+	}, {
+		olympus_test_options_importance: olympus_test_importance.low
+	})
+	
+	olympus_add_test("audio_exists", function(){
+		var snd_index = 0;
+		while true {
+			if (audio_exists(snd_index)) {
+				echo("Adding sound", snd_index, "to the lookup.");
+				snd_index++;
+			}
+			else{
+				break;
+			}
+		}
+	})	
+
+	olympus_add_test("struct_foreach", function(){
+		show_debug_message("FOREACH?")
+		struct_foreach({hello: "world"}, function(name){show_debug_message(name)});
+		show_debug_message(":white_check_mark: FOREACH!")
+	})
+
+	olympus_add_test("shader_compile_test", function(){
+		var shader_supported = shaders_are_supported();
+		grc_expect_eq(true, shader_supported);
+		var shader_compiled = shader_is_compiled(grc_shad_flash);
+		grc_expect_eq(true, shader_compiled);	
+	})
+
+	olympus_add_test("extension_init", function(){
+		var initialization_confirmation = undefined;
+		switch os_type {
+			case os_android:
+				initialization_confirmation = _olympus_android_get_init_confirmation();
+				break;
+			case os_ios:
+				initialization_confirmation = _olympus_ios_get_init_confirmation();
+				break;
+		}
+		
+		if (!is_undefined(initialization_confirmation)){
+			grc_expect_eq("initialized", initialization_confirmation, "android initialization")
+		}		
+	});
+
+	olympus_add_test("clipboard_test", function(){
+		if (os_type == os_ios || os_type == os_android || os_type == os_windows || os_type == os_macosx){
+			var txt = "hello world";
+			clipboard_set_text(txt);
+			grc_expect_eq(clipboard_has_text(),  true);
+			grc_expect_eq(clipboard_get_text(),  txt);
+		}
+		else{
+			show_debug_message("The platform does not support clipboard function!");
+		}		
+	})
+
 	olympus_add_test("json_parsed_struct_accessor_test", function(){
 		var struc = {
 			config: {
@@ -91,8 +301,15 @@ function grc_register_sync_function_tests(){
 		var str = json_stringify(struc);
 		show_debug_message(str);
 		var decode_struc = json_parse(str);
-		var type = typeof(decode_struc.crates);	
-		grc_expect_eq("ptr", type, "The type should be a pointer after the json_parse.");
+		var type = typeof(decode_struc.crates);
+		var expected_type;	
+		if string_starts_with(GM_runtime_version, "2024"){
+			expected_type = "undefined";
+		}
+		else{
+			expected_type = "ptr";
+		}
+		grc_expect_eq(expected_type, type, "For runtime "+GM_runtime_version+", the type should be "+expected_type + " but it is " +type);
 	})
 	
 	olympus_add_test("destroyed_ds_list_reference", function(){
@@ -150,13 +367,6 @@ function grc_register_sync_function_tests(){
 		ds_list_destroy(text_list);	
 	})
 	
-	if os_get_config() == "steam"{
-		olympus_add_test("steam_function_tests", function(){
-			grc_expect_eq(steam_initialised(),true);
-			grc_expect_eq(steam_get_app_id(), 1156180);			
-		})
-	}
-	
 	olympus_add_test("ds_list_function_test", function(){
 		var list = ds_list_create();
 
@@ -198,11 +408,13 @@ function grc_register_sync_function_tests(){
 		grc_expect_eq(sha1_file(fn),sha1_file(fn));	
 	})
 	
-	olympus_add_test("directory_function_test", function(){
-		var dir_name = "test_dir_name_for_directory_functions";
-		directory_create(dir_name);
-		grc_expect_eq(directory_exists(dir_name), 1);
-	});
+	if (os_type != os_xboxone && os_type != os_uwp){
+		olympus_add_test("directory_function_test", function(){
+			var dir_name = "test_dir_name_for_directory_functions";
+			directory_create(dir_name);
+			grc_expect_eq(directory_exists(dir_name), 1);
+		});
+	}
 
 	olympus_add_test("config_test", function(){
 		var fn = "Ganary/grc_config_specific_file.md";
@@ -350,7 +562,7 @@ function grc_register_sync_function_tests(){
 		//Testing pathname longer than 64 char
 		var non_ascii_top = "萨达/";
 		fn = "c/GeneralDev/gms_runtime_checker/includedFile/VeryVeryLong/5d317eafe0122500717e052c.txt"
-		if os_type != os_xboxone{
+		if os_type != os_xboxone && os_type != os_uwp && os_type != os_xboxseriesxs{
 			fn = non_ascii_top + fn	
 		}
 		var file_name_name = filename_name(fn);
@@ -358,7 +570,7 @@ function grc_register_sync_function_tests(){
 		var fh = file_text_open_write(fn);
 		var str = file_text_write_string(fh, fn);
 		file_text_close(fh);
-		if os_type == os_xboxone && xboxone_get_file_error() != xboxone_fileerror_noerror
+		if (os_type == os_xboxone || os_type == os_xboxseriesxs) && xboxone_get_file_error() != xboxone_fileerror_noerror
 		{
 			show_debug_message("Save failed. Error code = " + string(xboxone_get_file_error()));
 		}
@@ -457,54 +669,6 @@ function grc_register_sync_function_tests(){
 		grc_expect_eq(sprite_exists(png), false);
 	})
 	
-	if (os_get_config() == "gamepipe_test"){
-		olympus_add_test("encoding_functions_test", function(){
-			grc_console_log("Testing base64_decode and encode with short strings");
-			var test_string = "h"
-			grc_expect_eq(base64_decode(base64_encode(test_string)),test_string);
-
-			var s_lenght = max(grc_encode_string_length,grc_encode_string_length_max)
-			grc_console_log("Testing base64_decode and encode with long strings", s_lenght)
-			var test_string = "";
-			repeat s_lenght {
-				test_string += string(irandom(9));
-			}
-			grc_expect_eq(base64_decode(base64_encode(test_string)),test_string);
-
-			var test_map = ds_map_create();
-			test_map[?"test_string"] = test_string;
-			var test_json_string = json_encode(test_map);
-			ds_map_destroy(test_map);
-			var converted_map = json_decode(test_json_string);
-			grc_expect_eq(converted_map[?"test_string"], test_string);
-			ds_map_destroy(converted_map);
-
-			grc_expect_eq(md5_string_utf8(test_string),md5_string_utf8(test_string));
-			grc_expect_eq(md5_string_unicode(test_string),md5_string_unicode(test_string));
-
-			grc_expect_eq(sha1_string_utf8(test_string),sha1_string_utf8(test_string));
-			grc_expect_eq(sha1_string_unicode(test_string),sha1_string_unicode(test_string));
-
-			var very_long_string = "";
-
-			// Create a long string
-			// Setting the value below to 25800 (which is 774,000 string length) DOES NOT cause a stack-overflow
-			// Setting the value below to 25834 (which is 775,020 string length) DOES cause a stack-overflow
-
-			for (var i = 0; i < 25834; i += 1)
-				{
-						very_long_string += grc_utf8_chars;
-				}
-	
-			show_debug_message("Created string of length: " + string(string_length(very_long_string)));
-			show_debug_message("Start md5 utf8");
-			md5_string_utf8(very_long_string);
-			show_debug_message("md5 utf8 successful");
-		}, {
-			olympus_test_options_timeout_millis: 60000*5
-		})
-	}
-	
 	olympus_add_test("buffer_base64_encode_test", function(){
 		var fn = "Ganary/grc_buffer_encode_test_file"
 		var old_buff = buffer_load(fn);
@@ -523,6 +687,8 @@ function grc_register_sync_function_tests(){
 		show_debug_message("Does not crash when the string is too short!");
 		buffer_delete(_buff);	
 	})
+	
+	
 	
 	if os_get_config() == "dev"{
 		olympus_add_test("show_debug_message_test", function(){

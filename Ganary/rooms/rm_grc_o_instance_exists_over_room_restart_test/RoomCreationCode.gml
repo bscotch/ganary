@@ -1,0 +1,1 @@
+show_debug_message("rm_grc_o_instance_exists_over_room_restart_test started");

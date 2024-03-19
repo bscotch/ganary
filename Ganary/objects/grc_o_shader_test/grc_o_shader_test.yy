@@ -35,8 +35,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"grc_sp_juicebox",
-    "path":"sprites/grc_sp_juicebox/grc_sp_juicebox.yy",
+    "name":"grc_sp_a_spine_sprite",
+    "path":"sprites/grc_sp_a_spine_sprite/grc_sp_a_spine_sprite.yy",
   },
   "spriteMaskId":null,
   "visible":true,

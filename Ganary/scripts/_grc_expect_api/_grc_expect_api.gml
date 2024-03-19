@@ -66,6 +66,20 @@ function grc_expect_null(value) {
 	grc_throw_result("null", value, _grc_is_null(value), additional_message);
 }
 
+///@description Expects that the provided function to throw an error
+///@param {function} a function to execute a block of code
+///@param {String} [additional_message]
+function grc_expect_error(func) {
+	var additional_message = argument_count > 1 ? argument[1] : "";
+	var err;
+	try(func())
+	catch(crash_err){
+		show_debug_message(json_stringify(crash_err))
+		err = crash_err;
+	}	
+	grc_throw_result("Error", "No error",  is_undefined(err), additional_message);
+}
+
 ///@description Throws an exception if the provided values do not match
 ///@param {*} expected
 ///@param {*} actual
@@ -78,7 +92,7 @@ function grc_throw_result(expected, actual, matches) {
 	}
 	if (!matches){
 		var errorMessage = additional_message + "Expected [" + string(expected) + "] Actual [" + string(actual) + "]";
-		throw({message: errorMessage, stacktrace: debug_get_callstack()});
+		show_error(errorMessage, true);
 	}
 }
 

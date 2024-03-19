@@ -13,7 +13,7 @@ if active{
 	}
 	else {
 		//Struct's held array should not be empty
-		grc_async_assert(array_length(struct.held_array) > 0, true, "Struct's held array should not be empty");
+		grc_async_assert(array_length_safe(struct.held_array) > 0, true, "Struct's held array should not be empty");
 	}
 	
 	if frame < frame_max{

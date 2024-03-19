@@ -1,8 +1,10 @@
+/// @desc Registers all the tests
+
 active = true;
 var _grc_http_expected_headers = create_the_test_fixture_header();
 var _grc_http_expected_body = create_the_test_fixture_body();
 
-for (var j = 0; j < array_length(test_endpoints); j++){
+for (var j = 0; j < array_length_safe(test_endpoints); j++){
 	var test_endpoint = test_endpoints[j];
 	#region Set query parameters and test methods for different endpoints
 	var test_methods = ["POST"];
@@ -22,7 +24,7 @@ for (var j = 0; j < array_length(test_endpoints); j++){
 			for ( var h = 400; h <= 406; h++){	array_push(http_statuses, h);	}
 			for ( var h = 408; h <= 431; h++){	array_push(http_statuses, h);	}
 			for ( var h = 500; h <= 531; h++){	array_push(http_statuses, h);	}
-			for (var h = 0; h < array_length(http_statuses); h++){
+			for (var h = 0; h < array_length_safe(http_statuses); h++){
 				http_statuses[h] = "/" + string(http_statuses[h]);
 			}
 			test_query_parameters = http_statuses;
@@ -34,11 +36,11 @@ for (var j = 0; j < array_length(test_endpoints); j++){
 			break;
 	}
 	#endregion
-	for (var t = 0; t < array_length(test_query_parameters); t++){
+	for (var t = 0; t < array_length_safe(test_query_parameters); t++){
 		var test_query_parameter = test_query_parameters[t];
 		var test_url = _grc_url_root + test_endpoint + test_query_parameter;
 
-		for (var i = 0; i < array_length(test_methods); i++){
+		for (var i = 0; i < array_length_safe(test_methods); i++){
 		  var the_test_method = test_methods[i];
 
 		  #region Set the body according to the method
@@ -62,27 +64,23 @@ for (var j = 0; j < array_length(test_endpoints); j++){
 		  #endregion
 
 		  #region Fire the request and get the http handle
-		  var http_request_handle;
 		  if (the_test_method == "POST" || the_test_method == "PUT"){
 		    buffer_seek(body_handle, buffer_seek_start, 1);
 		  }
 		  else{
 		    buffer_seek(body_handle, buffer_seek_start, 0);
 		  }
-		  http_request_handle = http_request(test_url, the_test_method, header_handle, body_handle);
+		  
+
+			array_push(_test_endpoints, test_endpoint)
+			array_push(_test_urls, test_url)
+			array_push(_test_methods, the_test_method)
+			array_push(_header_handles, header_handle)
+			array_push(_body_handles, body_handle)
+			array_push(_test_query_parameters, test_query_parameter)  
+		  
 		  #endregion
 
-		  #region Register the test record
-		  var test_record = {
-			test_method: the_test_method,
-			test_endpoint: test_endpoint,
-			test_query_parameter: test_query_parameter,
-		    body_handle: body_handle,
-		    header_handle: header_handle
-		  }
-		  test_records[?http_request_handle] = test_record;
-		  test_completion_tracker [?http_request_handle] = 1; 
-		  #endregion
 		}		
 	}
 }
@@ -91,3 +89,5 @@ for (var j = 0; j < array_length(test_endpoints); j++){
 
 ds_map_destroy(_grc_http_expected_headers);
 buffer_delete(_grc_http_expected_body);
+
+alarm[1] = 1;

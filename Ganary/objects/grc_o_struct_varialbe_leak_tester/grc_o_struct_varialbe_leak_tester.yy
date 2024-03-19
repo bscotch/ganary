@@ -1,17 +1,16 @@
 {
   "$GMObject":"",
-  "%Name":"grc_o_audio_functions_test",
+  "%Name":"grc_o_struct_varialbe_leak_tester",
   "eventList":[
-    {"$GMEvent":"","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"","%Name":"","collisionObjectId":null,"eventNum":72,"eventType":7,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"grc_o_audio_functions_test",
+  "name":"grc_o_struct_varialbe_leak_tester",
   "overriddenProperties":[],
   "parent":{
-    "name":"manual_tests",
-    "path":"folders/Ganary/Objects/manual_tests.yy",
+    "name":"async_tests",
+    "path":"folders/Ganary/Objects/async_tests.yy",
   },
   "parentObjectId":{
     "name":"grc_o_async_parent",
@@ -21,7 +20,7 @@
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
   "physicsFriction":0.2,
-  "physicsGroup":0,
+  "physicsGroup":1,
   "physicsKinematic":false,
   "physicsLinearDamping":0.1,
   "physicsObject":false,

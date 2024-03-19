@@ -10,6 +10,9 @@ create_the_test_fixture_header = function(){
 	_grc_http_expected_headers_map[?"accept"] = "application/json";
 	//_grc_http_expected_headers_map[?"Content-Encoding"] = "deflate";
 	_grc_http_expected_headers_map[?"User-Agent"] = "Olympus/1.0.0";
+	if on_xbox(){
+		_grc_http_expected_headers_map[?"Authorization"] = XBOX_XSTS_TOKEN;
+	}
 	return _grc_http_expected_headers_map;
 }
 
@@ -67,7 +70,7 @@ test_endpoints = [
 ];
 test_records = ds_map_create();
 test_completion_tracker = ds_map_create();
-_grc_url_root = "https://beta.bscotch.net/api/dummy/";
+#macro _grc_url_root "https://beta.bscotch.net/api/dummy/"
 errors = [];
 #endregion
 
@@ -75,3 +78,12 @@ errors = [];
 #macro grc_http_test_endpoint_status "status"
 #macro grc_http_test_endpoint_headers "headers"
 #macro grc_http_test_endpoint_content_type "content-type"
+
+_test_urls = array_create(0);
+_test_methods = array_create(0);
+_header_handles = array_create(0);
+_body_handles = array_create(0);
+_test_query_parameters = array_create(0);
+_test_endpoints = array_create(0);
+_test_interval = (os_type == os_xboxone || os_type == os_xboxseriesxs) ? 3 : 1;
+_test_index = 0;
