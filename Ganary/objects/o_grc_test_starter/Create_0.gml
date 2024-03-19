@@ -1,5 +1,5 @@
 url_to_send_output_to = "http://192.168.1.98:4000"
-_should_resume_record = true;
+global._should_resume_record = true;
 
 _function_to_add_tests_and_hooks = function() {
 	grc_register_sync_function_tests();
@@ -26,16 +26,19 @@ _function_to_add_tests_and_hooks = function() {
 	});
 }
 
+
 _start_test = function(){
 	olympus_run(_function_to_add_tests_and_hooks, {
-		resume_previous_record: _should_resume_record, 
-		skip_user_feedback_tests: debug_mode || os_get_config() == "dev"
+		olympus_suite_options_skip_user_feedback_tests : debug_mode || os_get_config() == "dev",	
+		olympus_suite_options_ignore_if_completed: !debug_mode && !(os_get_config() == "dev"),
+		olympus_suite_options_abandon_unfinished_record: !global._should_resume_record,
+		olympus_suite_options_description: "CI test"
 	});
 	instance_destroy();
 }
 
 if debug_mode || os_get_config() == "dev"{
-	_should_resume_record = false;
+	global._should_resume_record = false;
 	_start_test();
 }
 else{
