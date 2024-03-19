@@ -48,6 +48,7 @@
     {"$GMIncludedFile":"","%Name":"grc_testbuff.compressed","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_testbuff.compressed","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_testbuff.raw","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_testbuff.raw","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Grc_Uppercase.json","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"Grc_Uppercase.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"Olympus_README.md","CopyToMask":-1,"filePath":"datafiles/Olympus","name":"Olympus_README.md","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"index.js","CopyToMask":-1,"filePath":"datafiles/OutPutReceiver","name":"index.js","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"package.json","CopyToMask":-1,"filePath":"datafiles/OutPutReceiver","name":"package.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],

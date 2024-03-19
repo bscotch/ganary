@@ -1,4 +1,22 @@
 #region private 
+//Ensure that launching in headless mode will exit the app if an error is thrown before reaching Olympus
+global.olympus_headless = false;
+var p_num = parameter_count();
+if p_num > 0
+{
+	for (var i = 0; i < p_num; i += 1)
+    {
+			var p_string = parameter_string(i + 1);
+			var headless_string = "--olympus_headless";
+			
+			if string_count(headless_string, p_string) > 0{
+				global.olympus_headless = true;
+				olympus_initialize_headless();
+				break;
+			}
+    }
+}
+
 /** 
 @desc In the suite summary struct, the "status" key uses the following macros
  */
@@ -6,16 +24,18 @@
 #macro olympus_summary_status_running "running"
 #macro olympus_summary_status_completed "completed"
 #macro olympus_summary_status_bailed "bailed"
+#macro olympus_summary_status_crashed "crashed"
 enum olympus_summary_status{
 	unstarted = 0,
 	running = 1,
 	completed = 2,
-	bailed = 3
+	bailed = 3,
+	crashed = 4
 }
 
 /// @desc Internal logging function
 /// @param item1
-/// @param [item2...]
+/// @param [...]
 function _olympus_console_log() {
 	if (!variable_global_exists("_olympus_debug_logging_suppressed")){	
 		global._olympus_debug_logging_suppressed = false;
@@ -39,9 +59,47 @@ function _olympus_console_log() {
 	}
 }
 
+/// @desc Merge the new context with the original context of the target_function. In case of conflicts, the new context's value is used
+function _olympus_merge_context(target_function, new_context){
+	var merged_context = {};
+	var source_context = method_get_self(target_function);
+	repeat 2 {
+		// Null check
+		//Feather ignore GM1041 need to support union types
+		if ( is_undefined(source_context) || (!is_struct(source_context) && !instance_exists(source_context))){
+			source_context = {};			
+		}
+
+		// Pick getter and setter based on the source_context type
+		var _variable_get_names = variable_struct_get_names;
+		var _variable_set_ = variable_struct_set;
+		if (!is_struct(source_context) && instance_exists(source_context)){
+			_variable_get_names = variable_instance_get_names;
+			_variable_set_ = variable_instance_set;
+			//Also set the instance id in the context
+			//Feather ignore GM1008 id is not a Struct Forbidden Variable
+			merged_context.id = source_context;
+		}
+		
+		// Clone the properties to the merged context
+		var source_context_keys = _variable_get_names(source_context);
+		var source_context_keys_length = array_length(source_context_keys);
+		for (var i = 0 ; i < source_context_keys_length; i++){
+			var source_context_key = source_context_keys[i];
+			var source_context_value = source_context[$ source_context_key];
+			merged_context[$ source_context_key] = source_context_value;
+		}		
+		
+		// Run the loop again withe new_context
+		source_context = new_context;
+	}	
+	return merged_context;
+}
+
 function _olympus_create_test_controller(){
 	if (!instance_exists(_olympus_async_test_controller)){
 		var _id = instance_create_depth(0,0, 0, _olympus_async_test_controller);
+		
 		if (!instance_exists(_id) || _id == -1){
 			show_error("Failed to instantiate _olympus_async_test_controller. Please run this function in an object or the room creation event!", true);	
 		}
@@ -51,50 +109,15 @@ function _olympus_create_test_controller(){
 ///@description Set up the requirement for the hook
 ///@arg {Function} fn
 ///@arg {Struct} [context]
-function _olympus_hook_set_up(fn, context) {
-	_olympus_forbid_adding_outside_suite();
-	_olympus_forbid_change_during_testing();
+function _olympus_hook_set_up(fn, context = self) {
 	if (!is_method(fn))
 		throw("Argument should be a function!");
 	else{
 		_olympus_create_test_controller();
-		var binded_function = method(context, fn);
-		return binded_function
+		var merged_context = _olympus_merge_context(fn, context);		
+		var binded_function = method(merged_context, fn);
+		return binded_function;
 	}	
-}
-
-#macro _olympus_forbid_change_during_testing_err "Cannot make changes while the test suite is running!"
-function _olympus_forbid_change_during_testing(){
-	if (variable_global_exists("_olympus_test_manager") && is_struct(global._olympus_test_manager) && global._olympus_test_manager[$"_startTime"]){
-		throw(_olympus_forbid_change_during_testing_err);
-	}	
-}
-
-#macro _olympus_forbid_adding_outside_suite_err "Cannot add tests or hooks outside of the execution of olympus_run()!"
-function _olympus_forbid_adding_outside_suite(){
-	if (!variable_global_exists("_olympus_test_manager") || !is_struct(global._olympus_test_manager)){
-		throw(_olympus_forbid_adding_outside_suite_err);
-	}	
-}
-
-function _olympus_add_hook_before_each_test_start(fn, context){
-	var function_with_setup = _olympus_hook_set_up(fn, context);
-	_olympus_async_test_controller._function_to_call_on_test_start = function_with_setup;		
-}
-
-function _olympus_add_hook_after_each_test_finish(fn, context){
-	var function_with_setup = _olympus_hook_set_up(fn, context)
-	_olympus_async_test_controller._function_to_call_on_test_finish = function_with_setup;		
-}
-
-function _olympus_add_hook_before_suite_start(fn, context){
-	var function_with_setup = _olympus_hook_set_up(fn, context)
-	global._olympus_test_manager._function_to_call_on_suite_start = function_with_setup;		
-}
-
-function _olympus_add_hook_after_suite_finish(fn, context){
-	var function_with_setup = _olympus_hook_set_up(fn, context)
-	global._olympus_test_manager._function_to_call_on_suite_finish = function_with_setup;			
 }
 
 function _olympus_get_resolve_function_handle(){
@@ -108,156 +131,262 @@ function _olympus_get_reject_function_handle(){
 }
 
 function _olympus_get_callback_handle(callback_struct_variable_name){
-	var callback_handle = function(){_olympus_console_log("The suite already completed")};
-	if (variable_global_exists("_olympus_test_manager") && is_struct(global._olympus_test_manager)){
-		var current_test = global._olympus_test_manager.get_current_test();
+	var callback_handle = function(){};
+	var current_suite = global._olympus_suite_manager.current_suite;
+	if (is_struct(current_suite) && current_suite.is_running()) {
+		var current_test = current_suite.get_current_test();
+		/// Feather ignore GM1028 Need to assert Mixed type or allow arbitary key
 		var callback_name = current_test[$ callback_struct_variable_name];
-		var mediator_id = global._olympus_test_manager.get_current_test()._mediator_id; 
-		var callback_handle = (mediator_id == id) ? variable_instance_get(id, callback_name) : function(){_olympus_console_log("This mediator already timed out:", object_get_name(object_index))};
+		var mediator_id = current_test._mediator_id;	
+		/// Feather ignore GM1041 Need to assert variable type when the user knows it
+		//Stitch TODO missing built-in globals
+		var callback_handle = (mediator_id == id) ? variable_instance_get(id, callback_name) : function(){_olympus_console_log("This mediator already timed out:", object_get_name(object_index), id)};
 	}
 	return callback_handle;
 }
 
 #endregion
 
-///@arg {string} message
-///@arg {olympus_error_code} error_code
+///@arg {string} error_message
+///@arg {enum.olympus_error_code} error_code
 ///@arg {struct} [info] Any additional information that is packaged in a struct
-///@arg {string[]} [stacktrace]
-function _Olympus_Test_Error(error_message, error_code) constructor{
+///@arg {Array<String>} [stacktrace]
+function _Olympus_Test_Error(error_message, error_code, info = undefined, stacktrace = undefined) constructor{
 	message = error_message;
 	code  = error_code;	
-	if (argument_count > 2) {
-		if (!is_undefined(argument[2])){
-			variable_instance_set(self, "info", argument[2]);
-		}
+	if (!is_undefined(info)){
+		variable_struct_set(self, "info", info);
+	}
+		
+	if (!is_undefined(stacktrace)){
+		variable_struct_set(self, "stacktrace", stacktrace);
 	}	
-	if (argument_count > 3) {
-		if (!is_undefined(argument[3])){
-			variable_instance_set(self, "stacktrace", argument[3]);
+}
+
+function _Olympus_Suite_Manager() constructor {
+	/// @type {Array<Struct._Olympus_Suite>} 
+	_suites = [];
+	/// @type {Struct._Olympus_Suite} 
+	current_suite = undefined;
+	index = 0;
+	
+	/// @arg {Struct._Olympus_Suite} suite
+	add_suite = function(suite){
+		array_push(_suites, suite);
+	}
+	
+	_process_queue = function(){
+		if (index < array_length(_suites)){		
+			current_suite = _suites[index];
+			var suite_status = current_suite.status();
+			switch (suite_status) {
+				case olympus_summary_status_crashed:				
+				case olympus_summary_status_unstarted:
+					//Stitch TODO constructor inheritance
+					if !current_suite.allow_uncaught {		
+						exception_unhandled_handler(function(ex){
+							//Feather ignore GM1041 need to support type narrowing of enums
+							var olympus_error = new _Olympus_Test_Error("Unhandled exception", olympus_error_code.unhandled_exception, ex);
+							current_suite._my_summary_manager_ref.update_tests_crashed(olympus_error);
+							current_suite._my_summary_manager_ref.write_summary_to_file();
+							//Stitch TODO constructor inheritance
+							if (current_suite.allow_uncaught_silent_termination){
+								show_debug_message(ex);
+							}
+							else{
+								show_message(ex);
+							}
+						})		
+					}
+					current_suite.queue_test();
+					break;
+				case olympus_summary_status_running:
+					//do nothing
+					break;
+				case olympus_summary_status_bailed:
+				case olympus_summary_status_completed:
+					index++;
+					break;
+			}
 		}
 	}
+	_queue_processing_time_source = time_source_create(time_source_global, 1, time_source_units_frames, _process_queue, [], -1, time_source_expire_after);
+	time_source_start(_queue_processing_time_source);
+	
+	purge = function(){
+		array_foreach(_suites, function(suite){
+			delete suite._my_summary_manager_ref;
+			delete suite;
+		})
+		index = 0;
+		_suites = [];
+	}
+}
+global._olympus_suite_manager = new _Olympus_Suite_Manager();
+
+#macro olympus_test_interval_millis_default 0.01 
+
+function _Olympus_Suite_Options_Internal(): Olympus_Suite_Options() constructor{
+	parent_timeout_time_source = time_source_global;
+	parent_test_interval_time_source = time_source_global;
+	function_to_call_on_test_start = undefined;
+	function_to_call_on_test_finish = undefined;
+	original_script_name = "";
 }
 
 ///@description Struct used to manage and execute all registered tests
-function _Olympus_Test_Manager(suite_name, function_to_add_tests_and_hooks, options) constructor {
-	_olympus_forbid_change_during_testing();
-	//TODO: The reference should be managed by the meta controller when it is implemented.
-	global._olympus_test_manager = self;
+/// @param {Function} function_to_add_tests_and_hooks 
+/// @param {Struct._Olympus_Suite_Options_Internal} options 
+function _Olympus_Suite(function_to_add_tests_and_hooks, options): _Olympus_Suite_Options_Internal() constructor {
+	/// @type {Array<Struct._Olympus_Test>} 
 	_tests = [];
 	_startTime=undefined;
-	_function_to_call_on_suite_finish= undefined; // User-provided function to execute when all tests have concluded.
-	_function_to_call_on_suite_start = undefined; // User-provided function to execute before all tests start.
-	_current_test_index = -1;
-	_default_timeout = 60000; 
-	_skip_user_feedback_tests  = false;
-	_bail_on_fail_or_crash = false;
+	_current_test_index = -1;	
 	_completion_time = undefined;
-	_suite_name = "unnamed_suite";
-	_global_resolution_callback_name = "_olympus_test_resolution_callback";
-	_global_rejection_callback_name = "_olympus_test_rejection_callback";
 	_dependency_chain_last_test_name = "";
 	_dependency_chain_active = false;
-	_allow_uncaught = false;
+	/// @type {Struct._Olympus_Summary_Manager} 
+	_my_summary_manager_ref = noone;	
+	_timeout_time_source = undefined;
+	_test_interval_time_source = undefined;
+	_my_parent = undefined;
+	default_options = new _Olympus_Suite_Options_Internal();
 
-	///@param {String} suite_name The name of the suite and the summary file
+	static _android_initialized = false;
+	if (!_android_initialized){
+		_android_initialized = true;
+		_olympus_android_init()
+	}
+
+	///@arg {Struct._Olympus_Suite_Options_Internal} options
+	_load_options = function(options){
+		if (is_struct(options)){
+			var options_keys = variable_struct_get_names(options);
+			var options_keys_length = array_length(options_keys);
+			for (var i = 0 ; i < options_keys_length; i++){
+				var options_key = options_keys[i];
+				var options_value = options[$options_key];
+				variable_struct_set(self, options_key, options_value);
+				self.default_options[$options_key] = options_value;
+			}
+		}
+	}
+
 	///@param {function} function_to_add_tests_and_hooks
-	///@param {Struct} options {abandon_unfinished_record:bool, skip_user_feedback_tests:bool, test_interval_milis: number, suppress_debug_logging:bool, global_resolution_callback_name: string, global_rejection_callback_name: string}
-	_set_up_with_options = function(suite_name, function_to_add_tests_and_hooks, options){		
-		var global_timeout_millis = options[$ "global_timeout_millis"];
-		if (is_numeric(global_timeout_millis)){
-			_default_timeout = global_timeout_millis;
-		}		
-		
-		var context = options[$ "context"];
-		if (is_struct(context)){
-			function_to_add_tests_and_hooks = method(context, function_to_add_tests_and_hooks);
-		}		
+	///@param {Struct._Olympus_Suite_Options_Internal} options
+	_set_up_with_options = function(function_to_add_tests_and_hooks, options){
+		_load_options(options);		
+
+		context = _olympus_merge_context(function_to_add_tests_and_hooks, context);		
+		context._olympus_suite_ref = self;
+		function_to_add_tests_and_hooks = method(context, function_to_add_tests_and_hooks);
 		function_to_add_tests_and_hooks();
-		_suite_name = suite_name;
-		 global._olympus_summary_manager = new _Olympus_Summary_Manager(_suite_name);
+			
+		_check_for_only_and_skipped_tests();				
+
+		var test_interval_seconds = olympus_test_interval_millis_default/1000;
+		//Stitch TODO constructor inheritance
+		_test_interval_time_source = time_source_create(parent_test_interval_time_source, test_interval_seconds, time_source_units_seconds, _callback_between_test_intervals, [], 1, time_source_expire_after);		
+
+		#region update suite_name
+		if (suite_name == "unnamed_suite"){
+			//Stitch TODO constructor inheritance
+			if original_script_name != ""{
+				suite_name = original_script_name;
+			}
+			else{
+				suite_name += ("_" + string(array_length(global._olympus_suite_manager._suites)));
+			}
+		}		
+
+		#endregion
+
+		_my_summary_manager_ref = new _Olympus_Summary_Manager(suite_name, self);
 		
 		_olympus_create_test_controller();
 		
 		date_set_timezone(timezone_utc);
 		_startTime = current_time;
 
-		var allow_uncaught = options[$ "allow_uncaught"];
-		if (allow_uncaught){
-			_allow_uncaught = true;
-		}
-
-		var abandon_unfinished_record = options[$ "abandon_unfinished_record"];
-		if (abandon_unfinished_record || _allow_uncaught) {
-			global._olympus_summary_manager.initialize_summary();
+		//Stitch TODO constructor inheritance
+		if (abandon_unfinished_record || allow_uncaught) {
+			_my_summary_manager_ref.initialize_summary();
 		}
 		else{
-			var ignore_if_completed = options[$ "ignore_if_completed"];			
-			global._olympus_summary_manager.load_previous_summary(ignore_if_completed);			
-		}
+			//Stitch TODO constructor inheritance			
+			_my_summary_manager_ref.load_previous_summary(ignore_if_completed);			
+		}				
 		
-		var skip_user_feedback_tests = options[$ "skip_user_feedback_tests"];
-		if (skip_user_feedback_tests) {
-			_skip_user_feedback_tests = true;
-		}
-		
-		var test_interval_milis = options[$ "test_interval_milis"];
-		if (is_numeric(test_interval_milis)){
-			with _olympus_async_test_controller{
-				var _interval_between_tests_in_seconds = real(test_interval_milis)/1000
-				_interval_between_tests = _interval_between_tests_in_seconds;
-			}
-		}
-		
-		var suppress_debug_logging  = options[$ "suppress_debug_logging"];
+		//Stitch TODO constructor inheritance
 		global._olympus_debug_logging_suppressed = suppress_debug_logging;
-		
-		var global_resolution_callback_name = options[$ "global_resolution_callback_name"];
-		if (is_string(global_resolution_callback_name)){
-			_global_resolution_callback_name = global_resolution_callback_name;
-		}
-		
-		var global_rejection_callback_name = options[$ "global_rejection_callback_name"];
-		if (is_string(global_rejection_callback_name)){
-			_global_rejection_callback_name = global_rejection_callback_name;
-		}
-		
-		var bail_on_fail_or_crash = options[$ "bail_on_fail_or_crash"];
-		if (bail_on_fail_or_crash){
-			_bail_on_fail_or_crash = true;
-		}
-		
-		if (!_allow_uncaught){
-			exception_unhandled_handler(function(ex){
-				var olympus_error = new _Olympus_Test_Error("Unhandled exception", olympus_error_code.unhandled_exception, ex);
-				global._olympus_summary_manager.update_tests_crashed(olympus_error);
-				global._olympus_summary_manager.write_summary_to_file();
-				show_message(ex);
-			})
-		}
-		
+				
 		show_debug_overlay(true);
-		execute();
+		global._olympus_suite_manager.add_suite(self);
 	}
 
-	///@description Execute the n-th test struct
-	///@param {Integer} [test_index]
-	execute = function (test_index) {
+	_callback_between_test_intervals = function(){
+		while (is_running()){
+			var _current_test = get_current_test();
+			var _current_test_status = _current_test.status;
+			if (_current_test_status == olympus_test_status_unstarted){					
+				var this_test_summary = _current_test.get_summary();
+				//Stitch TODO constructor inheritance
+				if (is_method(function_to_call_on_test_start)){
+					function_to_call_on_test_start(this_test_summary);
+				}
+				//Stitch TODO constructor inheritance
+				if (bail_on_fail_or_crash && _my_summary_manager_ref.has_failure_or_crash()){
+					_current_test.disabled = true;
+				}			
+				_olympus_console_log("Running test #", _current_test._index);				
+				_current_test.run();
+			}
+
+			if (_current_test._is_running()){
+				// An async test is running. Check for status change as soon as possible
+				time_source_reconfigure(_test_interval_time_source, olympus_test_interval_millis_default/1000, time_source_units_seconds, _callback_between_test_intervals, [], 1, time_source_expire_after);
+				time_source_start(_test_interval_time_source);				
+				return;
+			}
+			else{
+				// Test is completed
+				var this_test_summary =  _current_test.get_summary();	
+				//Stitch TODO constructor inheritance
+				if (is_method(function_to_call_on_test_finish)){
+					function_to_call_on_test_finish(this_test_summary);
+				}
+				queue_test(_current_test._index+1);
+				//Stitch TODO constructor inheritance
+				if (test_interval_millis != olympus_test_interval_millis_default){										
+					time_source_reconfigure(_test_interval_time_source, test_interval_millis/1000, time_source_units_seconds, _callback_between_test_intervals, [], 1, time_source_expire_after);
+					time_source_start(_test_interval_time_source);
+					return;
+				}
+				else{
+					continue;
+				}
+			}
+		}
+	}
+
+	///@description Queue the n-th test struct.
+	///@param {real} [test_index=undefined]
+	queue_test = function (test_index=undefined) {
 		if (is_undefined(test_index)){
 			// We are starting from the beginning
-			if (is_method(_function_to_call_on_suite_start)){
-				_function_to_call_on_suite_start(global._olympus_summary_manager.get_summary());
+			//Stitch TODO constructor inheritance
+			if (is_method(function_to_call_on_suite_start)){
+				function_to_call_on_suite_start(_my_summary_manager_ref.get_summary());
 			}
-			test_index = global._olympus_summary_manager.get_beginning_test_index();
-		}
-		else{
-			_olympus_console_log("Executing test #", test_index);
-		}
+			test_index = _my_summary_manager_ref.get_beginning_test_index();
+			time_source_start(_test_interval_time_source);
+		}		
 
 		if(test_index == array_length(_tests)){
 			// Then we have completed all tests
 			var end_status = olympus_summary_status_completed;
-			if (_bail_on_fail_or_crash && global._olympus_summary_manager.has_failure_or_crash()){
+			//Stitch TODO constructor inheritance
+			if (bail_on_fail_or_crash && _my_summary_manager_ref.has_failure_or_crash()){
 				end_status = olympus_summary_status_bailed;
 			}
 			_conclude_tests(end_status);
@@ -267,40 +396,88 @@ function _Olympus_Test_Manager(suite_name, function_to_add_tests_and_hooks, opti
 		}		
 	}
 	
+	//Stitch TODO constructor inheritance
 	get_global_resolution_callback_name = function(){
-		return _global_resolution_callback_name;
+		return global_resolution_callback_name;
 	}
 	
+	//Stitch TODO constructor inheritance
 	get_global_rejection_callback_name = function(){
-		return _global_rejection_callback_name;
+		return global_rejection_callback_name;
+	}
+
+	_check_for_only_and_skipped_tests = function(){
+		var should_remove_non_only_tests = false;
+		for (var i = 0; i < array_length(_tests); i++){
+			var this_test = _tests[i];
+			if (this_test._only == true) {
+				//Stitch TODO constructor inheritance
+				if (forbid_only){
+					#macro _olympus_suite_execution_error_forbid_only "The suite forbids using the olympus_test_options_only option."
+					throw({message: _olympus_suite_execution_error_forbid_only, test_name: this_test._name});
+				}
+				else{
+					should_remove_non_only_tests = true;					
+				}
+			}			
+			
+			//Stitch TODO constructor inheritance
+			if (forbid_skip){
+				if (this_test.disabled == true) {
+					#macro _olympus_suite_execution_error_forbid_skip "The suite forbids skipping test."
+					throw({message: _olympus_suite_execution_error_forbid_skip, test_name: this_test._name});
+				}				
+			}
+		}
+		//Stitch TODO constructor inheritance
+		if (bypass_only){
+			_olympus_console_log("bypass_only is enabled. Will not remove non-only tests.");
+			should_remove_non_only_tests = false;
+		}	
+		
+		if (should_remove_non_only_tests){
+			for (var i = array_length(_tests) -1; i >= 0; i--){
+				var this_test = _tests[i];
+				if (this_test._only != true) {
+					array_delete(_tests, i, 1);	
+				}
+			}
+		
+			//Re-index the suite after deleting a bunch of tests
+			for (var i = array_length(_tests) -1; i >= 0; i--){
+				var this_test = _tests[i];
+				this_test._index = i;
+			}		
+		}
 	}
 
 	_clean_up = function() {
+		time_source_stop(_test_interval_time_source);
+		time_source_destroy(_test_interval_time_source, true);
 		show_debug_overlay(false);		
-		with _olympus_async_test_controller{
-			instance_destroy();
-		}
-		delete global._olympus_summary_manager;
-		delete global._olympus_test_manager;
 	}	
 	
 	///@description Once all tests have passed, failed, or timed out, call this function.
 	_conclude_tests = function(status) {
+		//Feather ignore GM1010 need to be able to assert variable types
 		_completion_time = current_time - _startTime;
-		global._olympus_summary_manager.complete(status);
-		if (!_allow_uncaught){
-			exception_unhandled_handler(undefined);	//Restore the exception handler to default state.
-		}
-		if (is_method(_function_to_call_on_suite_finish)){
-			_function_to_call_on_suite_finish(global._olympus_summary_manager.get_summary());
+		_my_summary_manager_ref.complete(status);
+		//Stitch TODO constructor inheritance
+		if (is_method(function_to_call_on_suite_finish)){
+			function_to_call_on_suite_finish(_my_summary_manager_ref.get_summary());
 		}
 		_clean_up();
+		//Stitch TODO constructor inheritance
+		if (exit_on_completion){
+			game_end();
+		}
 	}
 	
-	///@description Adds a test to this manager and return the test index
-	///@param {Struct} test
+	/// @description Adds a test to this manager and return the test index
+	/// @param {Struct._Olympus_Test} test
 	add_test = function(test){
-		var test_name = test._name
+		var test_name = test._name;
+		
 		if (get_test_by_name(test_name) != noone){
 			throw({message: "This test name was already added: " + test_name, name: test_name});
 		}
@@ -332,52 +509,71 @@ function _Olympus_Test_Manager(suite_name, function_to_add_tests_and_hooks, opti
 	dependency_chain_end = function(){
 		_dependency_chain_active = false;
 		_dependency_chain_last_test_name = "";
-	} 
+	}
+	
+	is_running = function(){
+		return (_my_summary_manager_ref.status() == olympus_summary_status_running);
+	}
+	
+	status = function(){
+		return _my_summary_manager_ref.status();
+	}
 
-	_set_up_with_options(suite_name, function_to_add_tests_and_hooks, options)
+	_set_up_with_options(function_to_add_tests_and_hooks, options)
 }
 
 ///@description Struct used to hold the registered test data for later execution
 ///@param {String} name
 ///@param {Function} fn
-///@param {Function} [resolution_fn=noone] The function to be executed when the async function resolves
-///@param {String} [prompt=noone] The prompt to instruct the tester
-///@param {struct} [options] {resolution_callback_name, rejection_callback_name}
-function _Olympus_Test(name, fn) constructor {
-	_olympus_forbid_adding_outside_suite();
-	_olympus_forbid_change_during_testing();	
-
-	var options =  argument_count > 4 ? argument[4] : {};
+///@param {Function} [resolution_fn] The function to be executed when the async function resolves
+///@param {String} [prompt] The prompt to instruct the tester
+///@param {struct.Olympus_Test_Options} [options] 
+function _Olympus_Test(name, fn, resolution_fn = undefined, prompt = undefined, options = {}) constructor {	
 	var resolution_callback_name = options[$"resolution_callback_name"];
 	var rejection_callback_name = options[$"rejection_callback_name"];
 	var context = options[$"context"];
 	var resolution_context = options[$"resolution_context"];
 	var timeout_millis = options [$"timeout_millis"];
+	var options_only = options [$ "only"];
+	var importance = options [$ "importance"];
 
+	description = options [$ "description"];
 	_name = name;
 	_test_fn = fn;
 	_test_fn_context = is_struct(context) ? context : undefined;
-	var test_index = global._olympus_test_manager.add_test(self);
+	_only = options_only;
+	/// @type {Struct._Olympus_Suite} 
+	my_suite_ref = options[$ "_olympus_suite_ref"];
+	var test_index = my_suite_ref.add_test(self);
 	_index = test_index;
 	disabled = false;
 	_counting_time_out = true;
 	status = olympus_test_status_unstarted;
 	_err = undefined;
-	_resolution_fn = argument_count > 2 ? argument[2] : noone;
+	_resolution_fn = resolution_fn;
 	_is_async = is_method(_resolution_fn);	
 	_resolution_fn_context = is_struct(resolution_context) ? resolution_context : undefined;
 	_resolution_callback_name = is_string(resolution_callback_name) ? resolution_callback_name : "";
 	_rejection_callback_name = is_string(rejection_callback_name) ?  rejection_callback_name : "";
-	timeout = is_numeric(timeout_millis)? timeout_millis : global._olympus_test_manager._default_timeout;
-	_start_time = undefined;
+	//Stitch TODO constructor inheritance
+	timeout = is_numeric(timeout_millis)? timeout_millis : my_suite_ref.global_timeout_millis;
+	_start_time = current_time;
 	_completion_time = undefined;
-	_user_feedback_prompt = argument_count > 3 ? argument[3] : noone;	
-	_user_feedback_required = _user_feedback_prompt != noone;
+	_user_feedback_prompt = prompt;	
+	_user_feedback_required = is_string(prompt);
 	_mediator_id = -1;
 	_dependencies = [];
+	_timeout_time_source = undefined;
+	_importance = is_numeric(importance) ? importance : olympus_test_importance.normal;
+	
+	///@desc Equivalent of setting the olympus_test_options_only flag to true.
+	only = function(){
+		_only = true;
+	}
 	
 	_get_non_passing_dependency_names = function(){
 		var non_passing_dependency_names = [];
+		//Feather ignore GM1041 Need to detect variables from enclosing context
 		for (var i = 0; i < array_length(_dependencies); i++){
 			var dependency_test = _dependencies[i];
 			if (dependency_test.status != olympus_test_status_passed){
@@ -389,12 +585,13 @@ function _Olympus_Test(name, fn) constructor {
 	
 	///@desc Ensure the test callback and resolution callback have access to their contexts
 	_bind_callback_context = function(){		
-		if (is_struct(_test_fn_context)){
-			_test_fn = method(_test_fn_context, _test_fn);
-		}
-				
-		if (_is_async && _resolution_fn != noone &&  is_struct(_resolution_fn_context)){
-			_resolution_fn = method(_resolution_fn_context, _resolution_fn);
+
+		var merged_context = _olympus_merge_context(_test_fn, _test_fn_context)
+		_test_fn = method(merged_context, _test_fn);
+						
+		if (_is_async && is_method(_resolution_fn)){
+			var merged_context = _olympus_merge_context(_resolution_fn, _resolution_fn_context);
+			_resolution_fn = method(merged_context, _resolution_fn);
 		}						
 	}
 	
@@ -402,30 +599,43 @@ function _Olympus_Test(name, fn) constructor {
 		timeout = milliseconds;
 	}
 
+	_run_resolution_fn = function(_param_array){
+		_resolution_fn(_param_array);					
+		if (_user_feedback_required){
+			status = olympus_test_status_getting_user_feedback;
+			_set_completion_time(); //Stop incremention the completion time as we don't know how long the user will take to complete the test
+			var user_feedback_handle = _get_user_feedback_async();
+			with _olympus_async_test_controller{
+				_current_test = other;
+				_user_feedback_handle = user_feedback_handle;
+			}							
+		}
+		else{
+			resolve();
+		}		
+	}
+
 	_create_resolution_callback = function(){	
-		return method(self, function(){			
+		return method(self, function(){
+			//Feather ignore GM1013 Need to detect variables from enclosing context
 			if (status == olympus_test_status_running){
-				try{
-					var _param_array = [];
-					for (var i = 0; i < argument_count; i ++){
-						_param_array[i] = argument[i];
-					}					
-					_resolution_fn(_param_array);
-					
-					if (_user_feedback_required){
-						status = olympus_test_status_getting_user_feedback;
-						_set_completion_time(); //Stop incremention the completion time as we don't know how long the user will take to complete the test
-						var user_feedback_handle = _get_user_feedback_async();
-						with _olympus_async_test_controller{
-							_user_feedback_handle = user_feedback_handle;
-						}							
-					}
-					else{
-						resolve();
-					}										
+				var _param_array = [];
+				for (var i = 0; i < argument_count; i ++){
+					_param_array[i] = argument[i];
+				}						
+
+				//Stitch TODO constructor inheritance				
+				if (my_suite_ref.allow_uncaught){
+					_run_resolution_fn(_param_array);
 				}
-				catch(err){					
-					reject(err, olympus_error_code.failed_resolution);
+				else{
+					try{
+						_run_resolution_fn(_param_array);
+					}
+					//Stitch TODO catch error	documentation {Struct.Exception}
+					catch(err){			
+						reject(err, olympus_error_code.failed_resolution);
+					}					
 				}
 			}
 			else{
@@ -436,59 +646,83 @@ function _Olympus_Test(name, fn) constructor {
 
 	///@desc Displays the user feedback prompt, and returns the async handle
 	_get_user_feedback_async = function(){
+		//Feather ignore GM1010 need to be able to assert types
 		var prompt =  _user_feedback_prompt  + " (Type 'Pass' and hit 'OK' to pass, or enter your own message and hit 'OK' to fail the test. 'Cancel' will always fail the test.)"
 		var user_feedback_handle = get_string_async(prompt, _olympus_user_feedback_confirm_message);
 		return user_feedback_handle;
 	}
 
 	_set_up = function(){
+		//Stitch TODO constructor inheritance		
+		_timeout_time_source = time_source_create(my_suite_ref.parent_timeout_time_source, timeout/1000, time_source_units_seconds, reject, [{message:"Test timed out the threshhold: " + string(timeout)}, olympus_error_code.timeout], 1, time_source_expire_after);
+		time_source_start(_timeout_time_source);
 		status = olympus_test_status_running;
 		_start_time = current_time;
-		global._olympus_summary_manager.update_tests(get_summary());
-		global._olympus_summary_manager.update_progress(_index, _name);
-		global._olympus_summary_manager.write_summary_to_file();			
+		my_suite_ref._my_summary_manager_ref.update_tests(get_summary());
+		my_suite_ref._my_summary_manager_ref.update_progress(_index, _name);
+		my_suite_ref._my_summary_manager_ref.write_summary_to_file();			
+	}
+	
+	_is_running = function(){
+		return status == olympus_test_status_running ||
+				status == olympus_test_status_getting_user_feedback
 	}
 
 	/// @desc return a copy of the individual test's summary
 	get_summary = function(){
-		var individual_test_summary = {
-			index: _index,
-			name: _name,
-			millis: _completion_time,
-			status: status
-		}
-		if (_err){
-			individual_test_summary[$"err"] = _err;
-		}
-		return individual_test_summary;
+		return new _Olympus_Test_Summary(_index, _name, _completion_time, status, _importance, description, _err);
 	}
 
 	_tear_down = function() {
 		// After we are done testing 
 		if (is_undefined(_completion_time)){
-			_set_completion_time();
+			_set_completion_time();			
+			time_source_destroy(_timeout_time_source, true);			
 		}								
-		global._olympus_summary_manager.update_tests(get_summary());		
-		global._olympus_summary_manager.update_progress(_index, _name);
-		global._olympus_summary_manager.update_tallies();
-		global._olympus_summary_manager.write_summary_to_file();
+		my_suite_ref._my_summary_manager_ref.update_tests(get_summary());		
+		my_suite_ref._my_summary_manager_ref.update_progress(_index, _name);
+		my_suite_ref._my_summary_manager_ref.update_tallies();
+		my_suite_ref._my_summary_manager_ref.write_summary_to_file();
 	}
 
 	_update_err_for_disabling_reasons = function(){
 		if (disabled){
+			//Feather ignore GM1041 need to support type narrowing of enums
 			_err = new _Olympus_Test_Error("Skipped by xolympus_add_*", olympus_error_code.skip_with_x);
-		}		
-		else if (global._olympus_test_manager._bail_on_fail_or_crash && global._olympus_summary_manager.has_failure_or_crash()){
+		}
+		//Stitch TODO constructor inheritance				
+		else if (my_suite_ref.bail_on_fail_or_crash && my_suite_ref._my_summary_manager_ref.has_failure_or_crash()){
+			//Feather ignore GM1041 need to support type narrowing of enums
 			_err = new _Olympus_Test_Error("Skipped because of bail", olympus_error_code.skip_with_bail);
 		}
-		else if	(_user_feedback_required & global._olympus_test_manager._skip_user_feedback_tests){
+		//Stitch TODO constructor inheritance		
+		else if	(_user_feedback_required && my_suite_ref.skip_user_feedback_tests){
+			//Feather ignore GM1041 need to support type narrowing of enums
 			_err = new _Olympus_Test_Error("Skipped because user feedback is suppressed", olympus_error_code.skip_with_suppress);
 		}
 		else if (array_length(_get_non_passing_dependency_names()) > 0){
+			//Feather ignore GM1041 need to support type narrowing of enums
 			_err = new _Olympus_Test_Error("Skipped because dependency did not pass", olympus_error_code.skip_with_dependency, _get_non_passing_dependency_names());
 		}		
 	}	
-	
+
+	_run_test_fn = function(){
+		if(_is_async){
+			_attach_callback_to_mediator();
+		}
+		else{
+			_test_fn();
+			//Feather ignore GM1010 Need to detect variables from enclosing context or this is a bug		
+			if  ((current_time - _start_time) > timeout) {				
+				//Feather ignore GM1041 need to support type narrowing of enums
+				reject( new _Olympus_Test_Error("Sync Test Exceeded Timeout: " + string(timeout), olympus_error_code.timeout), olympus_error_code.timeout);
+			}
+			else{
+				resolve();
+			}
+		}			
+	}
+
 	///@description Run test
 	run = function (){
 		_set_up();
@@ -496,43 +730,41 @@ function _Olympus_Test(name, fn) constructor {
 		_bind_callback_context();
 		_update_err_for_disabling_reasons();
 
-		if (_err){
+		if (is_struct(_err)){
 			_skip();			
 		}
 		else{
-			try {
-				if(_is_async){
-					_attach_callback_to_mediator();
+			//Stitch TODO constructor inheritance		
+			if (my_suite_ref.allow_uncaught){
+					_run_test_fn()			
+			}
+			else{
+				try {
+					_run_test_fn();
 				}
-				else{
-					_test_fn(); 
-					if  ((current_time - _start_time) > timeout) {
-						reject( new _Olympus_Test_Error("Sync Test Exceeded Timeout: " + string(timeout)), olympus_error_code.timeout);
+				//Stitch TODO catch error	documentation {Struct.Exception} 
+				catch (err){
+					var code = olympus_error_code.failed_sync;
+					if (_is_async){
+						code = olympus_error_code.failed_async_mediator_spawning;
 					}
-					else{
-						resolve();
-					}
+					//Feather ignore GM1041 need to support type narrowing of enums
+					reject(err, code);
 				}
-			} catch (err){
-				var code = olympus_error_code.failed_sync;
-				if (_is_async){
-					code = olympus_error_code.failed_async_mediator_spawning;
-				}				
-				reject(err, code);
 			}
 		}
 	}		
 
 	_attach_resolution_to_mediator = function(mediator_id, resolution_callback){
 		if (_resolution_callback_name == ""){
-			_resolution_callback_name = global._olympus_test_manager.get_global_resolution_callback_name();
+			_resolution_callback_name = my_suite_ref.get_global_resolution_callback_name();
 		}
 		variable_instance_set(mediator_id, _resolution_callback_name, resolution_callback);
 	}
 
 	_attach_rejection_to_mediator = function(mediator_id){
 		if (_rejection_callback_name == ""){
-			_rejection_callback_name = global._olympus_test_manager.get_global_rejection_callback_name();
+			_rejection_callback_name = my_suite_ref.get_global_rejection_callback_name();
 		}
 		variable_instance_set(mediator_id, _rejection_callback_name, reject);			
 	}
@@ -561,29 +793,33 @@ function _Olympus_Test(name, fn) constructor {
 	}
 
 	_set_completion_time = function(){
-		var test_finish_time = current_time;
-		var test_duration = test_finish_time - _start_time;
+		//Feather ignore GM1010 Need to detect variables from enclosing context
+		time_source_stop(_timeout_time_source);
+		var test_duration = current_time - _start_time;
 		_completion_time = test_duration;
 		_counting_time_out = false;
 	}
 
 	/// @desc By default, log the result as failure. If _allow_uncaught, throw the error instead
-	/// @param {Error} err Error that caused the test to fail
-	/// @param {olympus_error_code} [code]
-	reject = function(err){
-			if (global._olympus_test_manager._allow_uncaught){
+	/// @param {Struct.Exception} err Error that caused the test to fail
+	/// @param {enum.olympus_error_code} [code = olympus_error_code.user_defined] olympus_error_code enums
+	reject = function(err, code = olympus_error_code.user_defined){
+			//Stitch TODO constructor inheritance
+			if (my_suite_ref.allow_uncaught){
 				throw(err);
 			}
 			else{
-				var code = argument_count > 1 ? argument[1] : olympus_error_code.user_defined;
 				status = olympus_test_status_failed;			
-				err = _convert_user_error_to_olympus_error(err, code);
-				_olympus_console_log(err.message);
-				_err = err;
+				//Feather ignore GM1041 need to support type narrowing of enums
+				var olympus_err = _convert_user_error_to_olympus_error(err, code);
+				_olympus_console_log(olympus_err.message);
+				_err = olympus_err;
 				_done();
 			}
 	}
 	
+	/// @param {Struct.Exception | Mixed} err Error that caused the test to fail
+	/// @param {enum.olympus_error_code} code olympus_error_code enums
 	_convert_user_error_to_olympus_error = function(err, code) {
 		if (is_struct(err)){
 			err = json_parse(json_stringify(err));
@@ -620,7 +856,8 @@ function _Olympus_Test(name, fn) constructor {
 	}
 	
 	///@description Logs the status for the test to the console
-	_log_status = function(){
+	_log_status = function(){		
+		//Feather ignore GM1010 Need to detect variables from enclosing context
 		_olympus_console_log("[" + status + "] " + _name);
 	}
 
@@ -633,8 +870,8 @@ function _Olympus_Test(name, fn) constructor {
 		else if (is_array(dependency_names_raw)){
 			dependency_names = dependency_names_raw;
 		}
-		if (global._olympus_test_manager._dependency_chain_active) {
-			var last_dependency_name = global._olympus_test_manager._dependency_chain_last_test_name;
+		if (my_suite_ref._dependency_chain_active) {
+			var last_dependency_name = my_suite_ref._dependency_chain_last_test_name;
 			if (last_dependency_name != ""){
 				array_push(dependency_names, last_dependency_name);
 			}
@@ -645,7 +882,7 @@ function _Olympus_Test(name, fn) constructor {
 		for (var i = 0; i < array_length(dependency_names); i++){
 			var dependency_name = dependency_names[i];
 			if (previous_dependency_name != dependency_name){
-				var dependency_test = global._olympus_test_manager.get_test_by_name(dependency_name);
+				var dependency_test = my_suite_ref.get_test_by_name(dependency_name);
 				if (dependency_test == noone){
 					throw({message: "The dependent test name " + dependency_name + " has not been added yet!", test_name: dependency_name});
 				}
@@ -662,16 +899,46 @@ function _Olympus_Test(name, fn) constructor {
 				_olympus_console_log(warning_message);
 			}
 		}
-		if (global._olympus_test_manager._dependency_chain_active){
-			global._olympus_test_manager._dependency_chain_last_test_name = _name;
+		if (my_suite_ref._dependency_chain_active){
+			my_suite_ref._dependency_chain_last_test_name = _name;
 		}		
 	#endregion
 }
 
+/// @param {Real} _index
+/// @param {String} _name
+/// @param {Real} _millis
+/// @param {Enum._olympus_test_status} _status
+/// @param {Enum._olympus_test_importance} _importance
+/// @param {String} _description
+/// @param {Struct._Olympus_Test_Error} _err
+function _Olympus_Test_Summary(_index, _name, _millis, _status, _importance, _description, _err) constructor{
+	index = _index;
+	name = _name;
+	millis = _millis;
+	status = _status;
+	importance = _importance;
+	description = _description;
+	err = _err;
+}
+
 ///@description Struct used to hold the test summary for resuming tests and export
-function _Olympus_Summary_Manager(suite_name) constructor{
-	//TODO: The reference should be managed by the meta controller when it is implemented.
-	global._olympus_summary_manager = self;
+/// @param {String} suite_name 
+/// @param {Struct._Olympus_Suite} _my_suite_ref
+function _Olympus_Summary_Manager(suite_name, _my_suite_ref) constructor{
+	static _get_device_info = function(){
+		var _device_info = {result: "NA"};
+		var _device_info_raw = os_get_info();
+		if (ds_exists(_device_info_raw, ds_type_map)){
+			var encoded_string = json_encode(_device_info_raw);
+			var parsed_struct = json_parse(encoded_string);
+			if (is_struct(parsed_struct)){
+				_device_info = parsed_struct;
+			}
+		}
+		return _device_info;
+	}	
+	
 	static _config = { 
 		runtime: {
 			version: GM_runtime_version,
@@ -686,9 +953,12 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 			version: GM_version,
 			debug: debug_mode 
 		},
+		device_info: _get_device_info()
 	};
 
 	_summary = {};
+	my_suite_ref = _my_suite_ref;
+	run_id = "";
 	
 	///@description Initialize a new summary
 	initialize_summary = function() {
@@ -696,7 +966,7 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 		_summary = {
 			config: _config,
 			tallies: {
-				total:  array_length(global._olympus_test_manager._tests),
+				total:  array_length(my_suite_ref._tests),
 				failed: -1,
 				skipped: -1,
 				passed: -1,
@@ -705,16 +975,20 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 			tests: [],
 			progress: {
 				last_test_index: 0,
-				last_test_name: "N/A"
+				last_test_name: "N/A",
+				resume_count: 0
 			},
 			status: olympus_summary_status_unstarted,
-			name: _get_safe_name(global._olympus_test_manager._suite_name)
+			name: _get_safe_name(my_suite_ref.suite_name),
+			run_id: run_id,
+			//Stitch TODO constructor inheritance
+			description: my_suite_ref.description
 		}
 		_initialize_tests();
 	}
 	
 	_initialize_tests = function(){
-		var tests = global._olympus_test_manager._tests;
+		var tests = my_suite_ref._tests;
 		for (var i = 0; i < array_length(tests); i++){
 			update_tests(tests[i].get_summary());
 		}
@@ -779,15 +1053,17 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 		||summary.config.project.name != game_project_name
 		|| summary.config.project.version != GM_version
 		|| summary.config.project.debug != debug_mode
-		|| summary.tallies.total != array_length(global._olympus_test_manager._tests)
+		|| summary.tallies.total != array_length(my_suite_ref._tests)
 		|| summary.config.runtime.version != GM_runtime_version
 		|| summary.config.runtime.optimized != code_is_compiled()
 	}
 	
 	///@description Returns the unit index to begin the test suite with
 	get_beginning_test_index = function(){
+		_olympus_console_log("Suite name:", _summary.name);
 		var beginning_test_index = 0; 
-		if (_summary.status == olympus_summary_status_running) {
+		if (_summary.status == olympus_summary_status_crashed) {
+			_summary.status = olympus_summary_status_running;
 			beginning_test_index = _summary.progress.last_test_index;
 			_olympus_console_log("We are resuming a suite. Skipping the last test because it probably caused a crash: ", beginning_test_index);
 			beginning_test_index ++;
@@ -815,10 +1091,15 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 			else{
 				_summary = previous_summary;
 				if (_summary.status == olympus_summary_status_running){	
-					_olympus_console_log("The summary is resumed from an interrupted run. Need to ensure that the last test is recorded as a crash.");
+					_olympus_console_log("The summary is resumed from an interrupted run. Incrementing resume count");
+					var resume_count = _summary.progress.resume_count;
+					_summary.progress.resume_count = resume_count + 1;
+					_olympus_console_log("Need to ensure that the last test is recorded as a crash.");
+					_summary.status = olympus_summary_status_crashed;
 					var crashed_test = _summary.tests[_summary.progress.last_test_index];
 					if  (crashed_test[$ "status"] != olympus_test_status_crashed) {
 						_olympus_console_log("Last run had a crash with uncaught exception.");
+						//Feather ignore GM1041 need to support type narrowing of enums
 						var err = new _Olympus_Test_Error("Uncaught crash", olympus_error_code.uncaught_crash);
 						update_tests_crashed(err);
 					}
@@ -849,16 +1130,16 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 	}
 	
 	///@desc Convert summary to a json string and write to file
-	write_summary_to_file = function(){
-		if (!global._olympus_test_manager._allow_uncaught){		
-			var summary = argument_count > 0 ? argument[0] : _summary;
-			var file_name = argument_count > 1 ? argument[1] : _get_summary_file_name();	
+	write_summary_to_file = function(summary =_summary, file_name = _get_summary_file_name()){
+		//Stitch TODO constructor inheritance
+		if (!my_suite_ref.allow_uncaught){		
 			var output_string = json_stringify(summary);
 			var fh = file_text_open_write(file_name);
 			file_text_write_string(fh,output_string);
 			file_text_close(fh);
 
 			if (os_type == os_switch){
+				//Feather ignore GM1013 Need to support console specific functions
 				switch_save_data_commit();
 			}
 		}
@@ -893,7 +1174,7 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 	}
 	
 	///@desc Update the summary's progress section
-	///@arg {Integer} test_index
+	///@arg {Real} test_index
 	///@arg {String} name
 	update_progress = function(test_index, name){
 		_summary.progress.last_test_index = test_index;
@@ -901,30 +1182,47 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 	}
 	
 	///@desc Update the summary's tests section
-	///@arg {Struct} individual_test_summary
+	///@arg {Struct._Olympus_Test_Summary} individual_test_summary
 	update_tests = function(individual_test_summary){		
 		_summary.tests[individual_test_summary.index] = individual_test_summary;
 	}
 	
 	///@desc Update the summary's units crashed section
-	///@arg {struct} olympus_error
+	///@arg {Struct._Olympus_Test_Error} olympus_error
 	update_tests_crashed = function(olympus_error){		
-		var crashed_test_summary = global._olympus_test_manager._tests[_summary.progress.last_test_index].get_summary();
+		var crashed_test_summary = my_suite_ref._tests[_summary.progress.last_test_index].get_summary();
 		crashed_test_summary.status = olympus_test_status_crashed;
-		variable_struct_remove(crashed_test_summary, "millis");
+		crashed_test_summary[$"millis"] = 1;
 		crashed_test_summary[$"err"] = olympus_error;
 		update_tests(crashed_test_summary);
 	}
 	
 	///@desc Return the copy of the summary struct
+	///@return {Struct._Olympus_Summary_Manager._summary}
 	get_summary = function(){
 		return  json_parse(json_stringify(_summary));
 	}
 	
-	///@desc Return the copy of the summary struct
+	///@desc Return whether there are tests that failed or crashed
 	has_failure_or_crash = function(){
 		return (_summary.tallies.failed > 0 || _summary.tallies.crashed >0);				
-	}	
+	}
+	
+	get_failed_or_crashed_tests = function(){
+		var failed_or_crashed_tests = array_create(0);
+		for (var i = 0; i < array_length(_summary.tests); i++){
+			var a_test = _summary.tests[i];
+			switch (a_test.status){
+				case olympus_test_status_failed:
+				case olympus_test_status_crashed:
+					array_push(failed_or_crashed_tests, a_test);
+					break;
+				default:
+					break;
+			}
+		}
+		return failed_or_crashed_tests;
+	}
 
 	_get_prettified_summary = function(){
 		var _summary = get_summary();
@@ -950,6 +1248,10 @@ function _Olympus_Summary_Manager(suite_name) constructor{
 		_olympus_console_log(olympus_test_status_crashed + ": " + +	string(_summary.tallies.crashed));
 		_olympus_console_log("Record written to file as", summary_file_name);
 		_olympus_console_log("-------------------------");				
+	}
+	
+	status = function(){
+		return _summary.status;
 	}
 		
 	_set_name(suite_name);
