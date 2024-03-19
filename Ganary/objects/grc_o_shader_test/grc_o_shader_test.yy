@@ -34,7 +34,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"grc_sp_juicebox",
+    "path":"sprites/grc_sp_juicebox/grc_sp_juicebox.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

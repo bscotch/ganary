@@ -10,6 +10,7 @@
       {"children":[],"name":"dev",},
       {"children":[],"name":"steam",},
       {"children":[],"name":"demo",},
+      {"children":[],"name":"gamepipe_test",},
     ],
     "name":"Default",
   },
@@ -59,8 +60,10 @@
   },
   "name":"Ganary",
   "resources":[
+    {"id":{"name":"_olympus_extension","path":"extensions/_olympus_extension/_olympus_extension.yy",},},
     {"id":{"name":"grc_fnt_cjk","path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},},
     {"id":{"name":"grc_fnt_ui","path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},},
+    {"id":{"name":"_olympus_async_awaiter","path":"objects/_olympus_async_awaiter/_olympus_async_awaiter.yy",},},
     {"id":{"name":"_olympus_async_test_controller","path":"objects/_olympus_async_test_controller/_olympus_async_test_controller.yy",},},
     {"id":{"name":"grc_o_array_reference_test","path":"objects/grc_o_array_reference_test/grc_o_array_reference_test.yy",},},
     {"id":{"name":"grc_o_async_parent","path":"objects/grc_o_async_parent/grc_o_async_parent.yy",},},

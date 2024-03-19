@@ -31,7 +31,7 @@ if (ds_map_exists(test_records, _id)){
 			var actual_headers = actual_response_map[?"data"];
 			var expected_headers = test_record.header_handle;
 			var keys = ds_map_keys_to_array(expected_headers);
-			for (var i = 0; i < array_length_safe(keys); i++){
+			for (var i = 0; i < array_length(keys); i++){
 				var key = keys[i];
 				var key_lower = string_lower(key);
 				if (expected_headers[?key] != actual_headers[?key_lower]){

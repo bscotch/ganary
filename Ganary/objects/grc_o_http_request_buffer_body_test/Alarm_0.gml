@@ -4,7 +4,7 @@ active = true;
 var _grc_http_expected_headers = create_the_test_fixture_header();
 var _grc_http_expected_body = create_the_test_fixture_body();
 
-for (var j = 0; j < array_length_safe(test_endpoints); j++){
+for (var j = 0; j < array_length(test_endpoints); j++){
 	var test_endpoint = test_endpoints[j];
 	#region Set query parameters and test methods for different endpoints
 	var test_methods = ["POST"];
@@ -24,7 +24,7 @@ for (var j = 0; j < array_length_safe(test_endpoints); j++){
 			for ( var h = 400; h <= 406; h++){	array_push(http_statuses, h);	}
 			for ( var h = 408; h <= 431; h++){	array_push(http_statuses, h);	}
 			for ( var h = 500; h <= 531; h++){	array_push(http_statuses, h);	}
-			for (var h = 0; h < array_length_safe(http_statuses); h++){
+			for (var h = 0; h < array_length(http_statuses); h++){
 				http_statuses[h] = "/" + string(http_statuses[h]);
 			}
 			test_query_parameters = http_statuses;
@@ -36,11 +36,11 @@ for (var j = 0; j < array_length_safe(test_endpoints); j++){
 			break;
 	}
 	#endregion
-	for (var t = 0; t < array_length_safe(test_query_parameters); t++){
+	for (var t = 0; t < array_length(test_query_parameters); t++){
 		var test_query_parameter = test_query_parameters[t];
 		var test_url = _grc_url_root + test_endpoint + test_query_parameter;
 
-		for (var i = 0; i < array_length_safe(test_methods); i++){
+		for (var i = 0; i < array_length(test_methods); i++){
 		  var the_test_method = test_methods[i];
 
 		  #region Set the body according to the method

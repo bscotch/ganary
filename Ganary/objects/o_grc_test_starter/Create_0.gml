@@ -27,7 +27,7 @@ _function_to_add_tests_and_hooks = function() {
 }
 
 _start_test = function(){
-	olympus_run("grc_test", _function_to_add_tests_and_hooks, {
+	olympus_run(_function_to_add_tests_and_hooks, {
 		resume_previous_record: _should_resume_record, 
 		skip_user_feedback_tests: debug_mode || os_get_config() == "dev"
 	});

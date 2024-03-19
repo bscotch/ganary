@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "preversion": "git fetch --tags",
+    "import": "npx stitch merge --source='E:/repos/Games/bscotch-pack/BscotchPack' --ifFolderMatches=Olympus -f",
     "postversion": "git push --follow-tags"
   },
   "repository": {

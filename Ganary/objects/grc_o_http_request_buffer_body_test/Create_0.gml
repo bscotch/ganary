@@ -10,9 +10,6 @@ create_the_test_fixture_header = function(){
 	_grc_http_expected_headers_map[?"accept"] = "application/json";
 	//_grc_http_expected_headers_map[?"Content-Encoding"] = "deflate";
 	_grc_http_expected_headers_map[?"User-Agent"] = "Olympus/1.0.0";
-	if on_xbox(){
-		_grc_http_expected_headers_map[?"Authorization"] = XBOX_XSTS_TOKEN;
-	}
 	return _grc_http_expected_headers_map;
 }
 
