@@ -53,6 +53,7 @@
     {"$GMIncludedFile":"","%Name":"Olympus_README.md","CopyToMask":-1,"filePath":"datafiles/Olympus","name":"Olympus_README.md","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"index.js","CopyToMask":-1,"filePath":"datafiles/OutPutReceiver","name":"index.js","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"package.json","CopyToMask":-1,"filePath":"datafiles/OutPutReceiver","name":"package.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"PrivacyInfo.xcprivacy","CopyToMask":-1,"filePath":"datafiles","name":"PrivacyInfo.xcprivacy","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
   "isEcma":false,
   "LibraryEmitters":[],
