@@ -653,16 +653,21 @@ function grc_register_sync_function_tests(){
 		var gif_fn = "Ganary/grc_test_gif_crash.gif"
 		var png_fn = "Ganary/grc_test_png_crash.png"
 
+		grc_console_log("Testing jpg")
 		var jpg = sprite_add(jpg_fn, 1, true, true, 0, 0);
 		grc_expect_eq(sprite_exists(jpg), true);
 		sprite_delete(jpg);
 		grc_expect_eq(sprite_exists(jpg), false);
 
+		grc_console_log("Testing gif")
 		var gif = sprite_add(gif_fn, 1, true, true, 0, 0);
 		grc_expect_eq(sprite_exists(gif), true);
+		grc_console_log("Deleting gif")
 		sprite_delete(gif);
+		grc_console_log("Check sprite exists")
 		grc_expect_eq(sprite_exists(gif), false);
 
+		grc_console_log("Testing png")
 		var png = sprite_add(png_fn, 1, true, true, 0, 0);
 		grc_expect_eq(sprite_exists(png), true);
 		sprite_delete(png);

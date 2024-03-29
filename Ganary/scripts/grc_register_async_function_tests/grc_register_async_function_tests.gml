@@ -72,9 +72,9 @@ function grc_register_async_function_tests(){
 	
 	olympus_add_async_test("video_function_test_headless", function(){
 		video_open("Ganary/cutscenes/grc.mp4");
-		grc_expect_eq(video_get_duration(), 1000, "The included video should be 1000 ms long.");
-		grc_expect_eq(video_get_format(), video_format_rgba, "The format should be rgba");
-		grc_expect_eq(video_is_looping(), false, "the video should not be looping.");		
+		grc_expect_eq(1000, video_get_duration(), "The included video should be 1000 ms long.");
+		grc_expect_eq(video_format_rgba, video_get_format(), "The format should be rgba");
+		grc_expect_eq(false, video_is_looping(), "the video should not be looping.");		
 		return grc_instance_create(grc_o_video_function_test);
-	});		
+	});	
 }
