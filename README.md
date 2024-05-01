@@ -1,6 +1,6 @@
 # Ganary
 
-Ganary (alias for "GMS Runtime Canary", and henceforth abbreviated as "GRC") is a GMS 2.3 project that uses [Olympus](https://github.com/bscotch/olympus) to perform regression tests for GMS runtimes.
+Ganary (alias for "GameMaker Runtime Canary", and henceforth abbreviated as "GRC") is a GameMaker project that uses [Olympus](https://github.com/bscotch/olympus) to perform regression tests for GameMaker runtimes.
 
 When a new runtime is released, it should pass all existing tests to confirm that known issues are fixed.
 
@@ -22,7 +22,7 @@ In the `Ganary/datafiles/OutPutReceiver` path, you can spawn a simple [Express](
 
 1. Navigate to `Ganary/datafiles/OutPutReceiver`
 2. Run `npm i` to install the dependencies
-3. Run `node index` to spawn the server at http://localhost:4000
+3. Run `node index` to spawn the server at <http://localhost:4000>
 4. [Identify your local IPv4 Address](https://www.whatismybrowser.com/detect/what-is-my-local-ip-address)
 5. Go back to GMS project and edit the variable `url_to_send_output_to` in `o_grc_test_starter`'s Create event. For example, if your local IPv4 address is `192.168.1.98`, then you can have `url_to_send_output_to = "http://192.168.1.98:4000"`
 6. Ensure the testing device is on the same network as the machine that you are running the Express server on.
