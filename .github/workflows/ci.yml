@@ -26,7 +26,7 @@ jobs:
       - name: Get the version from the yyp file
         shell: bash
         run: |
-          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/igor_demo.yyp)" >> $GITHUB_ENV  
+          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/Ganary/Ganary.yyp)" >> $GITHUB_ENV  
       - uses: FedericoCarboni/setup-ffmpeg@v3
         if: runner.os == 'Linux'
       - name: Create the settings file
@@ -49,7 +49,7 @@ jobs:
         uses: bscotch/igor-setup@main
         with:
           access-key: ${{ secrets.ACCESS_KEY }}
-          target-yyp: ${{ github.workspace }}/igor_demo.yyp
+          target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
         id: igor
       - name: Read settings-dir and echo the json content
@@ -61,7 +61,7 @@ jobs:
         uses: bscotch/igor-build@main
         id: build
         with:
-          yyp-path: ${{ github.workspace }}/igor_demo.yyp
+          yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
           user-dir: ${{ steps.igor.outputs.user-dir }}
       - name: upload-build
         uses: actions/upload-artifact@v4
