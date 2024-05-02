@@ -21,15 +21,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Get the version from the yyp file
-        shell: bash
+      - name: Get the version from the yyp file for Linux
+        if: runner.os == 'Linux'
         run: |
-          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/Ganary/Ganary.yyp)" >> $GITHUB_ENV  
+          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/Ganary/Ganary.yyp)" >> $GITHUB_ENV
+      - name: Get the version from the yyp file for MacOS
+        if: runner.os == 'macOS'
+        run: |
+          echo "YYP_VERSION=$(egrep -o 'IDEVersion":"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)' ${GITHUB_WORKSPACE}/Ganary/Ganary.yyp | cut -d '"' -f 3)" >> $GITHUB_ENV
+      - name: Get the version from the yyp file for Windows
+        if: runner.os == 'Windows'
+        run: |
+          $yypVersion = Select-String -Path "${env:GITHUB_WORKSPACE}\Ganary\Ganary.yyp" -Pattern 'IDEVersion":"(\d+\.\d+\.\d+\.\d+)' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
+          "YYP_VERSION=$yypVersion" | Out-File -Append -FilePath $env:GITHUB_ENV 
       - uses: FedericoCarboni/setup-ffmpeg@v3
         if: runner.os == 'Linux'
       - name: Create the settings file
