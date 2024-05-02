@@ -24,7 +24,7 @@ function grc_register_async_function_tests(){
 	
 	olympus_add_async_test("spine_draw_in_struct_test", function(){
 		return grc_instance_create(grc_o_spine_draw_in_struct_test);
-	}, function(){}).only()	
+	}, function(){})
 	
 	olympus_add_async_test("struct_built_in_variable_test", function(){
 		return grc_instance_create(grc_o_struct_built_in_variable_test);
@@ -35,7 +35,7 @@ function grc_register_async_function_tests(){
 	}, function(){},
 	{
 		olympus_test_options_timeout_millis: 5000
-	})
+	}).only()
 	
 	olympus_add_async_test("spine_low_fps_test", function(){
 		return grc_instance_create(grc_o_spine_test);

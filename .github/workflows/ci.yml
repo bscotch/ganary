@@ -76,10 +76,10 @@ jobs:
         name: Run Olympus test
         shell: pwsh
         run: |
-          $baseName = Ganary
+          $baseName = "Ganary"
           $saveDataDir = Join-Path $env:LOCALAPPDATA $baseName
 
-          $executableName = Ganary
+          $executableName = $baseName
           $exeDir = Resolve-Path "$executableName.exe"
           if (-not (Test-Path $exeDir)) {
               throw "$exeDir does not exist"

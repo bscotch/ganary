@@ -16,18 +16,6 @@ Under this config, the tester has 3 seconds to enter inputs through mouse/touchs
 
 Under this config, the tests will always start fresh, and the Olympus async test that requires user feedback are skipped.
 
-### Testing on devices that are hard to access the save data
-
-In the `Ganary/datafiles/OutPutReceiver` path, you can spawn a simple [Express](https://expressjs.com/) server to receive the Olympus record.
-
-1. Navigate to `Ganary/datafiles/OutPutReceiver`
-2. Run `npm i` to install the dependencies
-3. Run `node index` to spawn the server at <http://localhost:4000>
-4. [Identify your local IPv4 Address](https://www.whatismybrowser.com/detect/what-is-my-local-ip-address)
-5. Go back to GMS project and edit the variable `url_to_send_output_to` in `o_grc_test_starter`'s Create event. For example, if your local IPv4 address is `192.168.1.98`, then you can have `url_to_send_output_to = "http://192.168.1.98:4000"`
-6. Ensure the testing device is on the same network as the machine that you are running the Express server on.
-7. Run the game, and when the test is completed, the Olympus record will be sent the Express server, which will write to a file at `Ganary/datafiles/OutPutReceiver/grc_test.olympus.json`
-
 ## Project Organization and How to Add Tests
 
 All tests are registered in these script resources in the `Ganary/Test_registration` group in the yyp project:
