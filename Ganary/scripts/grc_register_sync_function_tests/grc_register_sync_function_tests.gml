@@ -1,4 +1,48 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("ds_map_to_test", function(){
+		var existing_arr = array_create(1, "value");
+		show_debug_message("Should be able to access values with accessor, no accessor, and the function");
+		for (var i = 0; i < array_length(existing_arr); i++){
+				show_debug_message("no accessor:" + (existing_arr[i]));
+				show_debug_message("accessor:" + (existing_arr[@i]));
+				show_debug_message("function:" + (array_get(existing_arr, i)));
+		}
+		
+		show_debug_message("Calling ds_map_*_to_array() on an empty map");
+		var _map = ds_map_create();
+		ds_map_keys_to_array(_map);
+		ds_map_values_to_array(_map);
+		
+		for (var i = 0; i < array_length(existing_arr); i++){
+			show_debug_message("no accessor:" + string(existing_arr[i]));
+			show_debug_message("accessor:" + string(existing_arr[@i]));
+			//Using the function throws an error
+			show_debug_message("function:" + string(array_get(existing_arr, i)));
+		}
+		ds_map_destroy(_map);
+	})
+	
+	olympus_add_test("ds_map_to_with_chain_accessor_test", function(){
+		var existing_arr = array_create(1, "value");
+
+		show_debug_message("Calling ds_map_*_to_array() on an empty map");
+		var _map = ds_map_create();
+		ds_map_keys_to_array(_map);
+		ds_map_values_to_array(_map);
+		
+		
+		var _map_hold_arrays = ds_map_create();
+		_map_hold_arrays[? existing_arr[0]] = existing_arr;
+		show_debug_message("Just bracket notaion:" + existing_arr[0]);
+		show_debug_message("Using chain accessor with bracket notation in a ds_map: " + string(_map_hold_arrays[? existing_arr[0]]));
+		ds_map_destroy(_map_hold_arrays);
+		
+		
+		var array_of_structs = array_create(1, { "hello": "world" });
+		show_debug_message("Just bracket notaion:" + string(array_of_structs[0]));
+		show_debug_message("Using chain accessor with bracket notation to access the content of the struct: " +string(array_of_structs[0][$"hello"]));
+	})	
+	
 	olympus_add_test("self_comparison_test", function(){
 		var fist_comp = (self == other)
 		var _self = self
@@ -653,21 +697,16 @@ function grc_register_sync_function_tests(){
 		var gif_fn = "Ganary/grc_test_gif_crash.gif"
 		var png_fn = "Ganary/grc_test_png_crash.png"
 
-		grc_console_log("Testing jpg")
 		var jpg = sprite_add(jpg_fn, 1, true, true, 0, 0);
 		grc_expect_eq(sprite_exists(jpg), true);
 		sprite_delete(jpg);
 		grc_expect_eq(sprite_exists(jpg), false);
 
-		grc_console_log("Testing gif")
 		var gif = sprite_add(gif_fn, 1, true, true, 0, 0);
 		grc_expect_eq(sprite_exists(gif), true);
-		grc_console_log("Deleting gif")
 		sprite_delete(gif);
-		grc_console_log("Check sprite exists")
 		grc_expect_eq(sprite_exists(gif), false);
 
-		grc_console_log("Testing png")
 		var png = sprite_add(png_fn, 1, true, true, 0, 0);
 		grc_expect_eq(sprite_exists(png), true);
 		sprite_delete(png);

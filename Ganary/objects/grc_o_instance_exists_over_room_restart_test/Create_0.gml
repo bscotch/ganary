@@ -1,4 +1,4 @@
-// https://github.com/YoYoGames/GameMaker-Bugs/issues/4851
+// Inherit the parent event
 event_inherited();
 alarm[0] = 3;
 restarted = false;

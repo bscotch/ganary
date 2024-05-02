@@ -1,0 +1,10 @@
+skeleton.png
+size:1024,128
+filter:MipMapNearestNearest,MipMapNearestNearest
+0001
+bounds:4,4,102,541
+offsets:5,25,133,566
+rotate:90
+0002
+bounds:549,30,131,76
+offsets:1,1,133,566

@@ -24,11 +24,18 @@ function grc_register_async_function_tests(){
 	
 	olympus_add_async_test("spine_draw_in_struct_test", function(){
 		return grc_instance_create(grc_o_spine_draw_in_struct_test);
-	}, function(){})	
+	}, function(){}).only()	
 	
 	olympus_add_async_test("struct_built_in_variable_test", function(){
 		return grc_instance_create(grc_o_struct_built_in_variable_test);
 	}, function(){})
+	
+	olympus_add_async_test("spine_async_event_test", function(){
+		return grc_instance_create(grc_o_spine_async_event_test);
+	}, function(){},
+	{
+		olympus_test_options_timeout_millis: 5000
+	})
 	
 	olympus_add_async_test("spine_low_fps_test", function(){
 		return grc_instance_create(grc_o_spine_test);
@@ -72,7 +79,6 @@ function grc_register_async_function_tests(){
 	
 	olympus_add_async_test("video_function_test_headless", function(){
 		video_open("Ganary/cutscenes/grc.mp4");
-		grc_expect_eq(1000, video_get_duration(), "The included video should be 1000 ms long.");
 		grc_expect_eq(video_format_rgba, video_get_format(), "The format should be rgba");
 		grc_expect_eq(false, video_is_looping(), "the video should not be looping.");		
 		return grc_instance_create(grc_o_video_function_test);

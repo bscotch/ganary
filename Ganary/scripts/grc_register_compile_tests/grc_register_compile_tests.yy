@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"grc_register_compile_tests",
   "parent":{
-    "name":"Test_registration",
-    "path":"folders/Ganary/Test_registration.yy",
+    "name":"MERGE_CONFLICTS",
+    "path":"folders/MERGE_CONFLICTS.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -29,4 +29,21 @@ function grc_register_async_user_feedback_tests(){
 			})		
 			break;
 	}
+
+	switch os_type{
+		case os_windows:
+		case os_macosx:
+		case os_linux:
+		case os_ios:
+		case os_android:
+			olympus_add_async_test_with_user_feedback("mouse_or_touch_or_keyboard_test", "Did the keyboard/mouse/touch input register?",function(){
+				return grc_instance_create(grc_o_mouse_keyboard_test);
+			});
+		case os_switch:
+		case os_xboxseriesxs:
+			olympus_add_async_test_with_user_feedback("controller_test", "Did the controller input register?",function(){
+				return grc_instance_create(grc_o_controller_test);
+			});	
+		break;
+	}
 }
