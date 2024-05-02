@@ -34,7 +34,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"grc_player_fallfromspace_spine",
+    "path":"sprites/grc_player_fallfromspace_spine/grc_player_fallfromspace_spine.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

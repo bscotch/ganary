@@ -79,7 +79,7 @@ jobs:
           $baseName = "Ganary"
           $saveDataDir = Join-Path $env:LOCALAPPDATA $baseName
 
-          $executableName = $baseName
+          $executableName = "Ganary"
           $exeDir = Resolve-Path "$executableName.exe"
           if (-not (Test-Path $exeDir)) {
               throw "$exeDir does not exist"
@@ -90,6 +90,7 @@ jobs:
             Remove-Item $logFile -Force
           }
           New-Item -Path $logFile -ItemType File -Force
+          $logFile = Resolve-Path $logFile
 
           Write-Host "Running $exeDir"
           $process = Start-Process -FilePath $exeDir -ArgumentList "--olympus_headless","-output","$logFile","-debugoutput","$logFile" -PassThru -NoNewWindow
@@ -100,10 +101,19 @@ jobs:
 
 
           $process.WaitForExit()
-          Get-Content $logFile
+          $reader = [System.IO.StreamReader]::new($logFile)
+          try {
+              while (-not $reader.EndOfStream) {
+                $line = $reader.ReadLine()
+                # Process the line
+                Write-Output $line        
+              }
+          }
+          finally {
+              $reader.Close()
+          }
 
           $success = $true
-          $completeMessage = "Olympus test completed with no failure or crashes."
 
           $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal"
 
@@ -112,21 +122,27 @@ jobs:
           foreach ($file in $files) {
               $filePath = $file.FullName
               $json = Get-Content $filePath | ConvertFrom-Json
+              $suiteName = $json.name
+              if ($json.status -ne "completed") {
+                $failMessage = "$suiteName : this suite did not complete."
+                Write-Error $failMessage
+                Add-Content $logFile $failMessage
+                $success = $false
+              }
+
               foreach ($test in $json.tests) {
-                  if ($test.status -eq "failed" -or $test.status -eq "crashed") {
+                if ($test.status -eq "failed" -or $test.status -eq "crashed") {
                       $failMessage = "$($test.name): $($test.status)"
-                      Write-Host $failMessage
+                      Write-Error $failMessage
                       Add-Content $logFile $failMessage
-                      $completeMessage = "Olympus test completed with failures or crashes."
                       $success = $false
                   }
               }
           }
 
           if ($success) {
-              Write-Host $completeMessage
+              Write-Host "Olympus test completed with no failure or crashes."
               exit 0
           } else {
-              Write-Error $completeMessage
               exit 1
           }
