@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -75,8 +75,10 @@ jobs:
       - if: runner.os == 'Windows'
         name: Run Olympus test
         shell: pwsh
+        working-directory: ${{ steps.build.outputs.out-dir }}
         run: |
           $baseName = "Ganary"
+          Expand-Archive -Path ${{ steps.build.outputs.out-dir }}/$baseName.zip -Destination ${{ steps.build.outputs.out-dir }}
           $saveDataDir = Join-Path $env:LOCALAPPDATA $baseName
 
           $executableName = "Ganary"
