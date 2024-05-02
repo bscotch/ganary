@@ -7,7 +7,10 @@ on:
     tags:
       - "*"
   workflow_dispatch:
-
+    inputs:
+      runtime:
+        description: 'Target runtime'
+        required: false
 permissions:
   contents: write
 
@@ -44,13 +47,14 @@ jobs:
           path: |
             ${{ github.workspace }}/bootstrapper
             ${{ github.workspace }}/runtimes
-          key: ${{ runner.os }}-${{ env.YYP_VERSION }}
+          key: ${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}
       - name: use Igor Setup
         uses: bscotch/igor-setup@main
         with:
           access-key: ${{ secrets.ACCESS_KEY }}
           target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
+          runtime: ${{ inputs.runtime }}
         id: igor
       - name: Read settings-dir and echo the json content
         run: |
@@ -68,3 +72,61 @@ jobs:
         with:
           name: igor-build-${{ matrix.os }}
           path: ${{ steps.build.outputs.out-dir }}
+      - if: runner.os == 'Windows'
+        name: Run Olympus test
+        shell: pwsh
+        run: |
+          $baseName = Ganary
+          $saveDataDir = Join-Path $env:LOCALAPPDATA $baseName
+
+          $executableName = Ganary
+          $exeDir = Resolve-Path "$executableName.exe"
+          if (-not (Test-Path $exeDir)) {
+              throw "$exeDir does not exist"
+          }
+
+          $logFile = "runLog.txt"
+          if ((Test-Path $logFile)) {
+            Remove-Item $logFile -Force
+          }
+          New-Item -Path $logFile -ItemType File -Force
+
+          Write-Host "Running $exeDir"
+          $process = Start-Process -FilePath $exeDir -ArgumentList "--olympus_headless","-output","$logFile","-debugoutput","$logFile" -PassThru -NoNewWindow
+
+          if ((Test-Path $saveDataDir)) {
+            Remove-Item $saveDataDir -Recurse -Force
+          }
+
+
+          $process.WaitForExit()
+          Get-Content $logFile
+
+          $success = $true
+          $completeMessage = "Olympus test completed with no failure or crashes."
+
+          $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal"
+
+          # Iterate through all the json files in the directory
+          $files = Get-ChildItem $olympusResultDir -Filter "*.json"
+          foreach ($file in $files) {
+              $filePath = $file.FullName
+              $json = Get-Content $filePath | ConvertFrom-Json
+              foreach ($test in $json.tests) {
+                  if ($test.status -eq "failed" -or $test.status -eq "crashed") {
+                      $failMessage = "$($test.name): $($test.status)"
+                      Write-Host $failMessage
+                      Add-Content $logFile $failMessage
+                      $completeMessage = "Olympus test completed with failures or crashes."
+                      $success = $false
+                  }
+              }
+          }
+
+          if ($success) {
+              Write-Host $completeMessage
+              exit 0
+          } else {
+              Write-Error $completeMessage
+              exit 1
+          }
