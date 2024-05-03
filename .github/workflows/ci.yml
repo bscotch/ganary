@@ -145,6 +145,7 @@ jobs:
         with:
           name: igor-build-${{ matrix.os }}
           path: ${{ steps.build.outputs.out-dir }}
+          retention-days: 1
       - if: runner.os == 'Windows'
         name: Run Olympus test
         timeout-minutes: 30
