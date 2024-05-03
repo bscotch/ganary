@@ -11,23 +11,46 @@ on:
       runtime:
         description: 'Target runtime'
         required: false
+      runner:
+        description: 'Runner'
+        required: false
+        default: 'macOS-latest'
   workflow_call:
     inputs:
       runtime:
         description: 'Target runtime'
         required: false
         type: string
+      runner:
+        description: 'Runner'
+        required: false
+        default: 'macOS-latest'
+        type: string
 permissions:
   contents: write
 
+env:
+  MATRIX_STRING: '[\"windows-latest\",\"ubuntu-latest\", \"macOS-latest\"]'
+
 jobs:
+  runner:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - if: ${{ inputs.runner }}
+      run: echo "MATRIX_STRING=[\\\"${{ github.event.inputs.runner }}\\\"]" >> $GITHUB_ENV
+    - id: set-matrix
+      run: echo "matrix=${{ env.MATRIX_STRING }}" >> $GITHUB_OUTPUT
+
   test:
+    needs: runner
     runs-on: ${{ matrix.os }}
     # runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: ${{ fromJSON(needs.runner.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
         with:
