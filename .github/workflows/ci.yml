@@ -4,8 +4,8 @@ on:
   push:
     paths-ignore:
       - "**.md"
-    tags:
-      - "*"
+    branches:
+      - "main"
   workflow_dispatch:
     inputs:
       runtime:
@@ -117,26 +117,28 @@ jobs:
           # Create the fastlane/Fastfile with the following content
           mkdir -p fastlane
           cat << EOF > fastlane/Fastfile
-          setup_ci
-          matchType = "appstore"
-          bundleId = "com.bscotch.ganary"
-          match(
-            type: matchType,
-            git_url:"https://github.com/bscotch/public-project-ios-match-files.git",
-            storage_mode: "git",
-            shallow_clone: "true",
-            app_identifier: bundleId,
-            readonly: "true",
-          )
-          update_code_signing_settings(
-            use_automatic_signing: false,
-            team_id: ENV["sigh_#{bundleId}_#{matchType}_team-id"],
-            profile_name: ENV["sigh_#{bundleId}_#{matchType}_profile-name"],
-            code_sign_identity: "iPhone Distribution"
-          )
-          build_app
+          lane :beta do
+            setup_ci
+            matchType = "appstore"
+            bundleId = "com.bscotch.ganary"
+            match(
+              type: matchType,
+              git_url:"https://github.com/bscotch/public-project-ios-match-files.git",
+              storage_mode: "git",
+              shallow_clone: "true",
+              app_identifier: bundleId,
+              readonly: "true",
+            )
+            update_code_signing_settings(
+              use_automatic_signing: false,
+              team_id: ENV["sigh_#{bundleId}_#{matchType}_team-id"],
+              profile_name: ENV["sigh_#{bundleId}_#{matchType}_profile-name"],
+              code_sign_identity: "iPhone Distribution"
+            )
+            build_app
+          end
           EOF
-          # Run fastlane
+          # Run fastlane beta
           fastlane
       - name: upload-build
         uses: actions/upload-artifact@v4
