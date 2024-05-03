@@ -79,9 +79,33 @@ jobs:
       - name: use Igor build
         uses: bscotch/igor-build@main
         id: build
+        timeout-minutes: 30
         with:
           yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
           user-dir: ${{ steps.igor.outputs.user-dir }}
+      - if: runner.os == 'MacOS'
+        name: Build the XCode project
+        timeout-minutes: 30
+        working-directory: ${{ steps.build.outputs.out-dir }}
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }}
+        run: |
+          # Create the fastlane/Fastfile with the following content
+          mkdir -p fastlane
+          cat << EOF > fastlane/Fastfile
+          matchType = "appstore"
+          bundleId = "com.bscotch.ganary"
+          match(
+            type: matchType,
+            git_url:"https://github.com/bscotch/public-project-ios-match-files.git",
+            storage_mode: "git",
+            shallow_clone: "true",
+            app_identifier: bundleId,
+            readonly: "true",
+          )
+          build_app
+          EOF
       - name: upload-build
         uses: actions/upload-artifact@v4
         with:
@@ -89,6 +113,7 @@ jobs:
           path: ${{ steps.build.outputs.out-dir }}
       - if: runner.os == 'Windows'
         name: Run Olympus test
+        timeout-minutes: 30
         shell: pwsh
         working-directory: ${{ steps.build.outputs.out-dir }}
         run: |
