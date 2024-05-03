@@ -46,7 +46,7 @@ jobs:
     if: ${{ needs.check_latest_runtime.outputs.runtime }}
     needs: check_latest_runtime
     name: Order test builds
-    uses: ./.github/workflows/ci.yml@main
+    uses: ./.github/workflows/ci.yml
     with:
       runtime: ${{ needs.check_latest_runtime.outputs.runtime }}
     secrets: inherit
