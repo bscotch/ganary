@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Cron job to check latest runtime for testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      feed:
+        description: 'Feed type'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - lts
+          - stable
+          - beta
+          - unstable
+  schedule:
+    # At minute 30 past hour 14 and 22 UTC on every day-of-week from Monday through Friday.
+    - cron: '30 14,22 * * 1-5'
+env:
+  FEED: ${{ github.event.inputs.feed || 'beta' }}
+
+permissions:
+  contents: write
+
+jobs:
+  check_latest_runtime:
+    name: Check latest runtime
+    runs-on: ubuntu-20.04
+    outputs:
+      runtime: ${{ steps.sync.outputs.runtime }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: runtime_test_cron
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+      - run: echo "//registry.npmjs.org/:_authToken=${{secrets.BSCOTCH_NPM_READ_ANY}}" > .npmrc
+      - run: npm install @bscotch/runtime-test-manager
+      - id: sync
+        run: npx rtm sync -f ${{ env.FEED}}
+
+  order_test:
+    if: ${{ needs.check_latest_runtime.outputs.runtime }}
+    needs: check_latest_runtime
+    name: Order test builds
+    uses: ./.github/workflows/ci.yml@main
+    with:
+      runtime: ${{ needs.check_latest_runtime.outputs.runtime }}
+    secrets: inherit

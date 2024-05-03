@@ -11,6 +11,12 @@ on:
       runtime:
         description: 'Target runtime'
         required: false
+  workflow_call:
+    inputs:
+      runtime:
+        description: 'Target runtime'
+        required: false
+        type: string
 permissions:
   contents: write
 
