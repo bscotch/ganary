@@ -117,6 +117,7 @@ jobs:
           # Create the fastlane/Fastfile with the following content
           mkdir -p fastlane
           cat << EOF > fastlane/Fastfile
+          setup_ci
           matchType = "appstore"
           bundleId = "com.bscotch.ganary"
           match(
