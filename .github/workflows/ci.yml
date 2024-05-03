@@ -128,6 +128,12 @@ jobs:
             app_identifier: bundleId,
             readonly: "true",
           )
+          update_code_signing_settings(
+            use_automatic_signing: false,
+            team_id: ENV["sigh_#{bundleId}_#{matchType}_team-id"],
+            profile_name: ENV["sigh_#{bundleId}_#{matchType}_profile-name"],
+            code_sign_identity: "iPhone Distribution"
+          )
           build_app
           EOF
           # Run fastlane
