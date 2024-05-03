@@ -106,6 +106,8 @@ jobs:
           )
           build_app
           EOF
+          # Run fastlane
+          fastlane
       - name: upload-build
         uses: actions/upload-artifact@v4
         with:
