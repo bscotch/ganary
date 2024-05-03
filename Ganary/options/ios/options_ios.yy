@@ -3,7 +3,7 @@
   "%Name":"iOS",
   "name":"iOS",
   "option_ios_build_number":0,
-  "option_ios_bundle_name":"com.bscotch.gamepipe",
+  "option_ios_bundle_name":"com.bscotch.ganary",
   "option_ios_defer_home_indicator":false,
   "option_ios_devices":2,
   "option_ios_display_name":"Created with GameMaker Studio 2",
