@@ -136,16 +136,20 @@ jobs:
               code_sign_identity: "iPhone Distribution"
             )
             build_app
+            sh("echo firebase-bin-name=#{lane_context[SharedValues::IPA_OUTPUT_PATH]} >> $GITHUB_ENV")
           end
           EOF
           # Run fastlane beta
           fastlane beta
+          echo firebase-test-type=ios >> $GITHUB_ENV
       - name: upload-build
         uses: actions/upload-artifact@v4
         with:
           name: igor-build-${{ matrix.os }}
           path: ${{ steps.build.outputs.out-dir }}
           retention-days: 1
+
+      # region start: Windows testing
       - if: runner.os == 'Windows'
         name: Run Olympus test
         timeout-minutes: 30
@@ -223,3 +227,31 @@ jobs:
           } else {
               exit 1
           }
+        # endregion
+
+      # region start Mobile testing
+      - if: runner.os == 'Linux'
+        name: Set firebase test type and artifact name
+        run: |
+          echo firebase-bin-name=${{ steps.build.outputs.out-dir }}/${{ steps.build.outputs.out-name }} >> $GITHUB_ENV
+          echo firebase-test-type=android >> $GITHUB_ENV
+      - uses: google-github-actions/auth@v2
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      - name: Set up Cloud SDK
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          install_components: beta
+          project_id: ganary-fd9e0
+      - name: Use gcloud CLI to run the game loop test
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        run: |
+          gcloud beta firebase test ${{ env.firebase-test-type }}  run \
+          --type game-loop \
+          --app ${{ env.firebase-bin-name }} \
+          --timeout 1m \
+          --scenario-numbers=1 \
+          --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}"
+      # endregion
