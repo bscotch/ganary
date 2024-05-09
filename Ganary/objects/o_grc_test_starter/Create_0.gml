@@ -1,4 +1,8 @@
 global._should_resume_record = true;
+if os_get_config() == "gamepipe_test"{
+	global.olympus_headless = true;
+}
+
 if os_type == os_android{
 	_olympus_android_init();
 	var intent = _olympus_android_get_intent();
@@ -22,25 +26,41 @@ _function_to_add_tests_and_hooks = function() {
 	grc_register_compile_tests();
 	
 	olympus_add_hook_after_suite_finish( function(summary){ 
+		var failed = false;
+		var has_skips = false;
+		if summary.tallies.failed > 0 || 
+			summary.tallies.crashed >0 || 
+			summary.status != olympus_summary_status_completed
+			{
+				failed = true;
+			}
+		else if summary.tallies.skipped > 0{
+			has_skips = true;
+		}		
+
 		if global.olympus_headless {
-			if os_type == os_ios{
-				_olympus_ios_finish_loop();	
+			if failed {
+				throw("Olympus test suite " + summary.name + " has failed!");
 			}
-			else if os_type == os_android{
-				_olympus_android_game_end();
+			else{
+				if os_type == os_ios{
+					_olympus_ios_finish_loop();	
+				}
+				else if os_type == os_android{
+					_olympus_android_game_end();
+				}
+				else {
+					game_end();
+				}
 			}
-			else {
-				game_end();
-			}		
 		}
 		else{
 			with grc_instance_create(o_grc_test_end_result) {			
-				if summary.tallies.failed > 0 || 
-					summary.tallies.crashed >0{
+				if failed{
 						res_color = c_red;
 						test_message = "Some tests failed or crashed";
 					}
-				else if summary.tallies.skipped > 0{
+				else if has_skips{
 					res_color = c_orange;
 					test_message = "Some tests were skipped";
 				}
@@ -55,7 +75,8 @@ _start_test = function(){
 		olympus_suite_options_skip_user_feedback_tests : debug_mode || os_get_config() == "dev" || global.olympus_headless,	
 		olympus_suite_options_ignore_if_completed: !debug_mode && !(os_get_config() == "dev"),
 		olympus_suite_options_abandon_unfinished_record: !global._should_resume_record,
-		olympus_suite_options_description: "CI test"
+		olympus_suite_options_description: "CI test",
+		olympus_suite_options_allow_uncaught_silent_termination: global.olympus_headless
 	});
 	instance_destroy();
 }
