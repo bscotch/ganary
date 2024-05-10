@@ -257,7 +257,9 @@ jobs:
       - name: Parse the output and fail the run if the content contains the string `| Failed  |` 
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         run: |
-          if grep -q "| Failed  |" test_output.txt; then
+          if grep -q "| Passed  |" test_output.txt; then
+            echo "Game loop test passed"
+          else
             echo "Game loop test failed"
             exit 1
           fi
