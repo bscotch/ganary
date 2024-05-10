@@ -40,6 +40,12 @@ _function_to_add_tests_and_hooks = function() {
 
 		if global.olympus_headless {
 			if failed {
+				//Force the app to crash so Firebase would report it as failure
+				if os_type == os_ios || os_type == os_android{
+					exception_unhandled_handler(function(ex){
+						throw(ex)
+					})
+				}
 				throw("Olympus test suite " + summary.name + " has failed!");
 			}
 			else{
