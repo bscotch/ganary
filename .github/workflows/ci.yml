@@ -253,5 +253,12 @@ jobs:
           --app ${{ env.firebase-bin-name }} \
           --timeout 1m \
           --scenario-numbers=1 \
-          --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}"
+          --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" | tee test_output.txt
+      - name: Parse the output and fail the run if the content contains the string `| Failed  |` 
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        run: |
+          if grep -q "| Failed  |" test_output.txt; then
+            echo "Game loop test failed"
+            exit 1
+          fi
       # endregion
