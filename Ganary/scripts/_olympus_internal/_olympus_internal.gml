@@ -196,6 +196,7 @@ function _Olympus_Suite_Manager() constructor {
 							else{
 								show_message(ex);
 							}
+							return 999;
 						})		
 					}
 					current_suite.queue_test();

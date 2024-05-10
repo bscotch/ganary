@@ -254,10 +254,10 @@ jobs:
           --timeout 1m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" | tee test_output.txt
-      - name: Parse the output and fail the run if the content contains the string `| Failed  |` 
+      - name: Parse the output and fail the run if the content does not contains the string `│ Passed  │` 
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         run: |
-          if grep -q "| Passed  |" test_output.txt; then
+          if grep -q "│ Passed  │" test_output.txt; then
             echo "Game loop test passed"
           else
             echo "Game loop test failed"
