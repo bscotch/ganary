@@ -24,14 +24,14 @@ jobs:
         uses: bscotch/igor-setup@v1
         with:
           access-key: ${{ secrets.ACCESS_KEY }}
-          target-yyp: ${{ github.workspace }}/${{ steps.find_yyp.outputs.yyp-path }}
+          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
         id: igor
       - name: use Igor build
         uses: bscotch/igor-build@v1
         id: build
         timeout-minutes: 30
         with:
-          yyp-path: ${{ github.workspace }}/${{ steps.find_yyp.outputs.yyp-path }}
+          yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
           user-dir: ${{ steps.igor.outputs.user-dir }}
       - name: upload-build
         uses: actions/upload-artifact@v4
