@@ -1,0 +1,266 @@
+name: Build the project and run Olympus test suites
+
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+    tags:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      runtime:
+        description: 'Target runtime'
+        required: false
+      runner:
+        description: 'Runner'
+        required: false
+        default: 'macOS-latest'
+  workflow_call:
+    inputs:
+      runtime:
+        description: 'Target runtime'
+        required: false
+        type: string
+      runner:
+        description: 'Runner'
+        required: false
+        default: 'macOS-latest'
+        type: string
+permissions:
+  contents: write
+
+env:
+  MATRIX_STRING: '[\"windows-latest\",\"ubuntu-latest\", \"macOS-latest\"]'
+
+jobs:
+  runner:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - if: ${{ inputs.runner }}
+      run: echo "MATRIX_STRING=[\\\"${{ github.event.inputs.runner }}\\\"]" >> $GITHUB_ENV
+    - id: set-matrix
+      run: echo "matrix=${{ env.MATRIX_STRING }}" >> $GITHUB_OUTPUT
+
+  test:
+    needs: runner
+    runs-on: ${{ matrix.os }}
+    # runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(needs.runner.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Get the version from the yyp file for Linux
+        if: runner.os == 'Linux'
+        run: |
+          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/Ganary/Ganary.yyp)" >> $GITHUB_ENV
+      - name: Get the version from the yyp file for MacOS
+        if: runner.os == 'macOS'
+        run: |
+          echo "YYP_VERSION=$(egrep -o 'IDEVersion":"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)' ${GITHUB_WORKSPACE}/Ganary/Ganary.yyp | cut -d '"' -f 3)" >> $GITHUB_ENV
+      - name: Get the version from the yyp file for Windows
+        if: runner.os == 'Windows'
+        run: |
+          $yypVersion = Select-String -Path "${env:GITHUB_WORKSPACE}\Ganary\Ganary.yyp" -Pattern 'IDEVersion":"(\d+\.\d+\.\d+\.\d+)' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
+          "YYP_VERSION=$yypVersion" | Out-File -Append -FilePath $env:GITHUB_ENV 
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        if: runner.os == 'Linux'
+      - name: Create the settings file
+        if: runner.os == 'Linux'
+        run: |
+          echo '{"machine.Platform Settings.Android.Keystore.filename": "${{ github.workspace }}/ascx.keystore", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}"}' > local_settings.json
+      - name: Set Up Android tools (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
+          --sdk_root=$ANDROID_SDK_ROOT \
+          "platform-tools"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/bootstrapper
+            ${{ github.workspace }}/runtimes
+          key: ${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}
+      - name: use Igor Setup
+        uses: bscotch/igor-setup@main
+        with:
+          access-key: ${{ secrets.ACCESS_KEY }}
+          target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
+          local-settings-override-file: ${{ github.workspace }}/local_settings.json
+          runtime: ${{ inputs.runtime }}
+        id: igor
+      - name: Read settings-dir and echo the json content
+        run: |
+          echo "UserDir: ${{ steps.igor.outputs.settings-dir }}"
+          # Read the json content
+          cat ${{ steps.igor.outputs.settings-dir }}
+      - name: use Igor build
+        uses: bscotch/igor-build@main
+        id: build
+        timeout-minutes: 30
+        with:
+          yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
+          user-dir: ${{ steps.igor.outputs.user-dir }}
+      - if: runner.os == 'MacOS'
+        name: Build the XCode project
+        timeout-minutes: 30
+        working-directory: ${{ steps.build.outputs.out-dir }}
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }}
+        run: |
+          # Create the fastlane/Fastfile with the following content
+          mkdir -p fastlane
+          cat << EOF > fastlane/Fastfile
+          lane :beta do
+            setup_ci
+            matchType = "appstore"
+            bundleId = "com.bscotch.ganary"
+            match(
+              type: matchType,
+              git_url:"https://github.com/bscotch/public-project-ios-match-files.git",
+              storage_mode: "git",
+              shallow_clone: "true",
+              app_identifier: bundleId,
+              readonly: "true",
+            )
+            update_code_signing_settings(
+              use_automatic_signing: false,
+              team_id: ENV["sigh_#{bundleId}_#{matchType}_team-id"],
+              profile_name: ENV["sigh_#{bundleId}_#{matchType}_profile-name"],
+              code_sign_identity: "iPhone Distribution"
+            )
+            build_app
+            sh("echo firebase-bin-name=#{lane_context[SharedValues::IPA_OUTPUT_PATH]} >> $GITHUB_ENV")
+          end
+          EOF
+          # Run fastlane beta
+          fastlane beta
+          echo firebase-test-type=ios >> $GITHUB_ENV
+      - name: upload-build
+        uses: actions/upload-artifact@v4
+        with:
+          name: igor-build-${{ matrix.os }}
+          path: ${{ steps.build.outputs.out-dir }}
+          retention-days: 1
+
+      # region start: Windows testing
+      - if: runner.os == 'Windows'
+        name: Run Olympus test
+        timeout-minutes: 30
+        shell: pwsh
+        working-directory: ${{ steps.build.outputs.out-dir }}
+        run: |
+          $baseName = "Ganary"
+          Expand-Archive -Path ${{ steps.build.outputs.out-dir }}/$baseName.zip -Destination ${{ steps.build.outputs.out-dir }}
+          $saveDataDir = Join-Path $env:LOCALAPPDATA $baseName
+
+          $executableName = "Ganary"
+          $exeDir = Resolve-Path "$executableName.exe"
+          if (-not (Test-Path $exeDir)) {
+              throw "$exeDir does not exist"
+          }
+
+          $logFile = "runLog.txt"
+          if ((Test-Path $logFile)) {
+            Remove-Item $logFile -Force
+          }
+          New-Item -Path $logFile -ItemType File -Force
+          $logFile = Resolve-Path $logFile
+
+          Write-Host "Running $exeDir"
+          $process = Start-Process -FilePath $exeDir -ArgumentList "--olympus_headless","-output","$logFile","-debugoutput","$logFile" -PassThru -NoNewWindow
+
+          if ((Test-Path $saveDataDir)) {
+            Remove-Item $saveDataDir -Recurse -Force
+          }
+
+
+          $process.WaitForExit()
+          $reader = [System.IO.StreamReader]::new($logFile)
+          try {
+              while (-not $reader.EndOfStream) {
+                $line = $reader.ReadLine()
+                # Process the line
+                Write-Output $line        
+              }
+          }
+          finally {
+              $reader.Close()
+          }
+
+          $success = $true
+
+          $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal"
+
+          # Iterate through all the json files in the directory
+          $files = Get-ChildItem $olympusResultDir -Filter "*.json"
+          foreach ($file in $files) {
+              $filePath = $file.FullName
+              $json = Get-Content $filePath | ConvertFrom-Json
+              $suiteName = $json.name
+              if ($json.status -ne "completed") {
+                $failMessage = "$suiteName : this suite did not complete."
+                Write-Error $failMessage
+                Add-Content $logFile $failMessage
+                $success = $false
+              }
+
+              foreach ($test in $json.tests) {
+                if ($test.status -eq "failed" -or $test.status -eq "crashed") {
+                      $failMessage = "$($test.name): $($test.status)"
+                      Write-Error $failMessage
+                      Add-Content $logFile $failMessage
+                      $success = $false
+                  }
+              }
+          }
+
+          if ($success) {
+              Write-Host "Olympus test completed with no failure or crashes."
+              exit 0
+          } else {
+              exit 1
+          }
+        # endregion
+
+      # region start Mobile testing
+      - if: runner.os == 'Linux'
+        name: Set firebase test type and artifact name
+        run: |
+          echo firebase-bin-name=${{ steps.build.outputs.out-dir }}/${{ steps.build.outputs.out-name }} >> $GITHUB_ENV
+          echo firebase-test-type=android >> $GITHUB_ENV
+      - uses: google-github-actions/auth@v2
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      - name: Set up Cloud SDK
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          install_components: beta
+          project_id: ganary-fd9e0
+      - name: Use gcloud CLI to run the game loop test
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        run: |
+          gcloud beta firebase test ${{ env.firebase-test-type }}  run \
+          --type game-loop \
+          --app ${{ env.firebase-bin-name }} \
+          --timeout 1m \
+          --scenario-numbers=1 \
+          --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" | tee test_output.txt
+      - name: Parse the output and fail the run if the content does not contains the string `│ Passed  │` 
+        if: runner.os == 'Linux'|| runner.os == 'macOS'
+        run: |
+          if grep -q "│ Passed  │" test_output.txt; then
+            echo "Game loop test passed"
+          else
+            echo "Game loop test failed"
+            exit 1
+          fi
+      # endregion
