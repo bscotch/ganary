@@ -4,8 +4,6 @@ on:
   # push: #Uncomment this line to run the workflow on push
   workflow_dispatch: #This line allows you to run the workflow manually from the GitHub Actions page
   workflow_call: #This line allows you to run the workflow from another workflow
-permissions:
-  contents: write
 
 jobs:
   build:
@@ -25,15 +23,14 @@ jobs:
       # This step sets up the GameMaker build CLI tool Igor https://github.com/bscotch/igor-setup
       - name: use Igor Setup
         uses: bscotch/igor-setup@v1
-        with:
-          access-key: ${{ secrets.ACCESS_KEY }}
-          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
         id: igor
+        with:
+          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
+          access-key: ${{ secrets.ACCESS_KEY }}
       # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
       - name: use Igor build
         uses: bscotch/igor-build@v1
         id: build
-        timeout-minutes: 30
         with:
           yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
           user-dir: ${{ steps.igor.outputs.user-dir }}
@@ -43,4 +40,3 @@ jobs:
         with:
           name: igor-build-windows
           path: ${{ steps.build.outputs.out-dir }}
-          retention-days: 1
