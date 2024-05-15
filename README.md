@@ -29,4 +29,4 @@ These scripts are then called in `o_grc_test_starter`'s `Create` event in the `_
 
 You can add your tests to these script resources, or you can create a new script and add it to the `_function_to_add_tests_and_hooks()` function and move the script to the `Ganary/Test_registration` group.
 
-If you add resouces such as sprites, audios, and shaders, move them to the `Ganary/misc_resources` group. If you add objects, move them to `Ganary/Objects`'s subgroups based on their test type.
+If you add resources such as sprites, audios, and shaders, move them to the `Ganary/misc_resources` group. If you add objects, move them to `Ganary/Objects`'s subgroups based on their test type.
