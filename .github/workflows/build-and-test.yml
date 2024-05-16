@@ -71,26 +71,29 @@ jobs:
           "YYP_VERSION=$yypVersion" | Out-File -Append -FilePath $env:GITHUB_ENV 
       #endregion
       #region Android setup
-      - uses: FedericoCarboni/setup-ffmpeg@v3
-        if: runner.os == 'Linux'
-      - id: write_file
+      - name: Create the keystore file from secrets
+        id: write_file
         if: runner.os == 'Linux'
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'myTemporaryFile.keystore'
           encodedString: ${{ secrets.KEYSTORE_BASE64 }}
-      - name: Create the settings file
+      - name: Create the local-settings-override-file for igor-setup
         if: runner.os == 'Linux'
         run: |
           echo '{"machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}"}' > local_settings.json
-      - name: Set Up Android tools (Linux only)
+      - name: Set up ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        if: runner.os == 'Linux'
+      - name: Set Up Android SDK's platform-tools
         if: runner.os == 'Linux'
         run: |
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
           --sdk_root=$ANDROID_SDK_ROOT \
           "platform-tools"
       #endregion
-      - uses: actions/cache@v4
+      - name: Cache bootstrapper and runtimes to speed up the build
+        uses: actions/cache@v4
         with:
           path: |
             ${{ github.workspace }}/bootstrapper
@@ -113,7 +116,7 @@ jobs:
           user-dir: ${{ steps.igor.outputs.user-dir }}
       # region iOS testing
       - if: runner.os == 'MacOS'
-        name: Build the XCode project
+        name: Set up the Fastlane fast file and build the XCode project
         timeout-minutes: 30
         working-directory: ${{ steps.build.outputs.out-dir }}
         env:
