@@ -55,6 +55,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
+      #region Get the version from the yyp file
       - name: Get the version from the yyp file for Linux
         if: runner.os == 'Linux'
         run: |
@@ -68,6 +69,8 @@ jobs:
         run: |
           $yypVersion = Select-String -Path "${env:GITHUB_WORKSPACE}\Ganary\Ganary.yyp" -Pattern 'IDEVersion":"(\d+\.\d+\.\d+\.\d+)' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
           "YYP_VERSION=$yypVersion" | Out-File -Append -FilePath $env:GITHUB_ENV 
+      #endregion
+      #region Android setup
       - uses: FedericoCarboni/setup-ffmpeg@v3
         if: runner.os == 'Linux'
       - id: write_file
@@ -86,6 +89,7 @@ jobs:
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
           --sdk_root=$ANDROID_SDK_ROOT \
           "platform-tools"
+      #endregion
       - uses: actions/cache@v4
         with:
           path: |
@@ -100,11 +104,6 @@ jobs:
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
           runtime: ${{ inputs.runtime }}
         id: igor
-      - name: Read settings-dir and echo the json content
-        run: |
-          echo "UserDir: ${{ steps.igor.outputs.settings-dir }}"
-          # Read the json content
-          cat ${{ steps.igor.outputs.settings-dir }}
       - name: use Igor build
         uses: bscotch/igor-build@main
         id: build
@@ -112,6 +111,7 @@ jobs:
         with:
           yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
           user-dir: ${{ steps.igor.outputs.user-dir }}
+      # region iOS testing
       - if: runner.os == 'MacOS'
         name: Build the XCode project
         timeout-minutes: 30
@@ -154,8 +154,8 @@ jobs:
           name: igor-build-${{ matrix.os }}
           path: ${{ steps.build.outputs.out-dir }}
           retention-days: 1
-
-      # region start: Windows testing
+      # endregion
+      # region Windows testing
       - if: runner.os == 'Windows'
         name: Run Olympus test
         timeout-minutes: 30
@@ -235,7 +235,7 @@ jobs:
           }
         # endregion
 
-      # region start Mobile testing
+      # region Mobile testing
       - if: runner.os == 'Linux'
         name: Set firebase test type and artifact name
         run: |
