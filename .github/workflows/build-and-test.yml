@@ -33,6 +33,7 @@ env:
   MATRIX_STRING: '[\"windows-latest\",\"ubuntu-latest\", \"macOS-latest\"]'
 
 jobs:
+  # By default, this workflow will run on Windows, Ubuntu, and MacOS runners, making and testing the Windows, Android, and iOS builds. However, this job checks for the manual input of `runner` to override the default, so we can manually run the workflow on a specific runner instead of all three.
   runner:
     runs-on: ubuntu-latest
     outputs:
@@ -46,7 +47,6 @@ jobs:
   test:
     needs: runner
     runs-on: ${{ matrix.os }}
-    # runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -82,10 +82,10 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           echo '{"machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}"}' > local_settings.json
-      - name: Set up ffmpeg
+      - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
         uses: FedericoCarboni/setup-ffmpeg@v3
         if: runner.os == 'Linux'
-      - name: Set Up Android SDK's platform-tools
+      - name: Set Up Android SDK's platform-tools # The default Android SDK does not include platform-tools and its component `adb`, which is required by Igor for the Android build
         if: runner.os == 'Linux'
         run: |
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
@@ -120,8 +120,8 @@ jobs:
         timeout-minutes: 30
         working-directory: ${{ steps.build.outputs.out-dir }}
         env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }} # This is the password for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=for%20each%20app.-,Passphrase,-Git%20Repo%20storage
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }} # This is the basic authorization for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=MATCH_GIT_BASIC_AUTHORIZATION
         run: |
           # Create the fastlane/Fastfile with the following content
           mkdir -p fastlane
@@ -151,7 +151,7 @@ jobs:
           # Run fastlane beta
           fastlane beta
           echo firebase-test-type=ios >> $GITHUB_ENV
-      - name: upload-build
+      - name: upload build as artifact
         uses: actions/upload-artifact@v4
         with:
           name: igor-build-${{ matrix.os }}
@@ -238,7 +238,7 @@ jobs:
           }
         # endregion
 
-      # region Mobile testing
+      # region Mobile testing on Firebase Test Lab https://firebase.google.com/docs/test-lab
       - if: runner.os == 'Linux'
         name: Set firebase test type and artifact name
         run: |
@@ -247,14 +247,14 @@ jobs:
       - uses: google-github-actions/auth@v2
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }} # This service account should have the editor role for the project, and the Google Cloud Testing API and Cloud Tool Results API should be enabled. See https://firebase.google.com/docs/test-lab/android/continuous#:~:text=Create%20and%20authorize%20a%20service%20account
       - name: Set up Cloud SDK
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         uses: google-github-actions/setup-gcloud@v2
         with:
           install_components: beta
           project_id: ganary-fd9e0
-      - name: Use gcloud CLI to run the game loop test
+      - name: Use gcloud CLI to run the game loop test and output result to a file #For more options of gcloud CLI, see https://firebase.google.com/docs/test-lab/android/command-line
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         run: |
           gcloud beta firebase test ${{ env.firebase-test-type }}  run \
@@ -263,7 +263,7 @@ jobs:
           --timeout 1m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" | tee test_output.txt
-      - name: Parse the output and fail the run if the content does not contains the string `│ Passed  │` 
+      - name: Parse the output and fail the run if the content contains the string `│ Passed  │` 
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         run: |
           if grep -q "│ Passed  │" test_output.txt; then
