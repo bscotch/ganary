@@ -114,7 +114,7 @@ jobs:
         with:
           yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
           user-dir: ${{ steps.igor.outputs.user-dir }}
-      # region iOS testing
+      # region Build for iOS through Fastlane
       - if: runner.os == 'MacOS'
         name: Set up the Fastlane fast file and build the XCode project
         timeout-minutes: 30
