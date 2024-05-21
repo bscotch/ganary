@@ -40,3 +40,5 @@ jobs:
         with:
           name: igor-build-windows
           path: ${{ steps.build.outputs.out-dir }}
+          retention-days: 1
+          
