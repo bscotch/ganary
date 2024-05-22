@@ -79,7 +79,13 @@ jobs:
       - name: Create the local-settings-override-file for igor-setup
         if: runner.os == 'Linux'
         run: |
-          echo '{"machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}"}' > local_settings.json
+          echo '{
+          "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", 
+          "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", 
+          "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", 
+          "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}"
+          }' \
+          > local_settings.json
       - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
         uses: FedericoCarboni/setup-ffmpeg@v3
         if: runner.os == 'Linux'
