@@ -14,7 +14,6 @@ on:
       runner:
         description: 'Runner'
         required: false
-        default: 'macOS-latest'
   workflow_call:
     inputs:
       runtime:
@@ -24,7 +23,6 @@ on:
       runner:
         description: 'Runner'
         required: false
-        default: 'macOS-latest'
         type: string
 permissions:
   contents: write
