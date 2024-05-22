@@ -40,5 +40,5 @@ jobs:
         with:
           name: igor-build-windows
           path: ${{ steps.build.outputs.out-dir }}
-          retention-days: 1
+          retention-days: 1 # Longer retention days can incur additional charges. See https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
           
