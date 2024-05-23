@@ -1,0 +1,75 @@
+name: Continuous Integration for iOS export
+
+on: 
+  # push: #Uncomment this line to run the workflow on push
+  workflow_dispatch: #This line allows you to run the workflow manually from the GitHub Actions page
+  workflow_call: #This line allows you to run the workflow from another workflow
+
+jobs:
+  Build:
+    runs-on: macOS-latest
+    steps:
+      # Check out the repository with the GameMaker project
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      # This step finds the yyp file in the repository and saves the path to an output
+      - id: find_yyp
+        name: Find the yyp file
+        run: |
+          $yyp = Get-ChildItem -Path ${{ github.workspace }} -Recurse -Filter *.yyp
+          Write-Output "YYP file found at: $yyp"
+          "yyp-path=$yyp" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      # This step sets up the GameMaker build CLI tool Igor https://github.com/bscotch/igor-setup
+      - name: use Igor Setup
+        uses: bscotch/igor-setup@v1
+        id: igor
+        with:
+          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
+          access-key: ${{ secrets.ACCESS_KEY }} # To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
+      # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
+      - name: use Igor build
+        uses: bscotch/igor-build@v1
+        id: build
+        with:
+          yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
+          user-dir: ${{ steps.igor.outputs.user-dir }}
+      # This step uses Fastlane to import the certificate and provisioning profile, and then it builds the XCode project
+      - name: Set up the Fastlane fast file and build the XCode project
+        working-directory: ${{ steps.build.outputs.out-dir }}
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }} # This is the password for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=for%20each%20app.-,Passphrase,-Git%20Repo%20storage
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }} # This is the basic authorization for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=MATCH_GIT_BASIC_AUTHORIZATION
+        run: |
+          # Create the fastlane/Fastfile with the following content
+          mkdir -p fastlane
+          cat << EOF > fastlane/Fastfile
+          lane :beta do
+            setup_ci
+            matchType = "appstore"
+            bundleId = "com.bscotch.ganary"
+            match(
+              type: matchType,
+              git_url:"https://github.com/bscotch/public-project-ios-match-files.git",
+              storage_mode: "git",
+              shallow_clone: "true",
+              app_identifier: bundleId,
+              readonly: "true",
+            )
+            update_code_signing_settings(
+              use_automatic_signing: false,
+              team_id: ENV["sigh_#{bundleId}_#{matchType}_team-id"],
+              profile_name: ENV["sigh_#{bundleId}_#{matchType}_profile-name"],
+              code_sign_identity: "iPhone Distribution"
+            )
+            build_app
+          end
+          EOF
+          # Run fastlane beta
+          fastlane beta
+      - name: upload build as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: igor-build-${{ matrix.os }}
+          path: ${{ steps.build.outputs.out-dir }}
+          retention-days: 1
