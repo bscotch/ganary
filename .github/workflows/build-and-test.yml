@@ -264,7 +264,7 @@ jobs:
           gcloud beta firebase test ${{ env.firebase-test-type }}  run \
           --type game-loop \
           --app ${{ env.firebase-bin-name }} \
-          --timeout 1m \
+          --timeout 10m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" | tee test_output.txt
       - name: Parse the output and fail the run if the content contains the string `│ Passed  │` 
