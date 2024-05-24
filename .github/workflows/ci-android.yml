@@ -1,0 +1,67 @@
+name: Continuous Integration for Android export
+
+on: 
+  # push: #Uncomment this line to run the workflow on push
+  workflow_dispatch: #This line allows you to run the workflow manually from the GitHub Actions page
+  workflow_call: #This line allows you to run the workflow from another workflow
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository with the GameMaker project
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      # This step finds the yyp file in the repository and saves the path to an output
+      - id: find_yyp
+        name: Find the yyp file
+        run: |
+          yyp=$(find ${{ github.workspace }} -name "*.yyp")
+          echo "YYP file found at: $yyp"
+          echo "yyp-path=$yyp" >> $GITHUB_OUTPUT
+      #region Android setup
+      - name: Create the keystore file from secrets
+        id: write_file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'myTemporaryFile.keystore'
+          encodedString: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Create the local-settings-override-file for igor-setup
+        run: |
+          echo '{
+          "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", 
+          "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", 
+          "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", 
+          "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}"
+          }' \
+          > local_settings.json
+      - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
+        uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Set Up Android SDK's platform-tools # The default Android SDK does not include platform-tools and its component `adb`, which is required by Igor for the Android build
+        run: |
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
+          --sdk_root=$ANDROID_SDK_ROOT \
+          "platform-tools"
+      #endregion
+      # This step sets up the GameMaker build CLI tool Igor https://github.com/bscotch/igor-setup
+      - name: use Igor Setup
+        uses: bscotch/igor-setup@v1
+        id: igor
+        with:
+          local-settings-override-file: ${{ github.workspace }}/local_settings.json
+          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
+          access-key: ${{ secrets.ACCESS_KEY }} # To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
+      # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
+      - name: use Igor build
+        uses: bscotch/igor-build@v1
+        id: build
+        with:
+          yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
+          user-dir: ${{ steps.igor.outputs.user-dir }}
+      - name: upload build as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: igor-build-ubuntu
+          path: ${{ steps.build.outputs.out-dir }}
+          retention-days: 1

@@ -17,9 +17,9 @@ jobs:
       - id: find_yyp
         name: Find the yyp file
         run: |
-          $yyp = Get-ChildItem -Path ${{ github.workspace }} -Recurse -Filter *.yyp
-          Write-Output "YYP file found at: $yyp"
-          "yyp-path=$yyp" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          yyp=$(find ${{ github.workspace }} -name "*.yyp")
+          echo "YYP file found at: $yyp"
+          echo "yyp-path=$yyp" >> $GITHUB_OUTPUT
       # This step sets up the GameMaker build CLI tool Igor https://github.com/bscotch/igor-setup
       - name: use Igor Setup
         uses: bscotch/igor-setup@v1
@@ -34,12 +34,9 @@ jobs:
         with:
           yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
           user-dir: ${{ steps.igor.outputs.user-dir }}
-      # This step uses Fastlane to import the certificate and provisioning profile, and then it builds the XCode project
-      - name: Set up the Fastlane fast file and build the XCode project
+      # This step sets up the Fastlane fast file
+      - name: Set up the Fastlane fast file
         working-directory: ${{ steps.build.outputs.out-dir }}
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }} # This is the password for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=for%20each%20app.-,Passphrase,-Git%20Repo%20storage
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }} # This is the basic authorization for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=MATCH_GIT_BASIC_AUTHORIZATION
         run: |
           # Create the fastlane/Fastfile with the following content
           mkdir -p fastlane
@@ -65,11 +62,17 @@ jobs:
             build_app
           end
           EOF
-          # Run fastlane beta
+      # This step runs Fastlane to build the XCode project
+      - name: Run Fastlane to build the XCode project
+        working-directory: ${{ steps.build.outputs.out-dir }}
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }} # This is the password for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=for%20each%20app.-,Passphrase,-Git%20Repo%20storage
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }} # This is the basic authorization for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=MATCH_GIT_BASIC_AUTHORIZATION
+        run: |
           fastlane beta
       - name: upload build as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: igor-build-${{ matrix.os }}
+          name: igor-build-macOS
           path: ${{ steps.build.outputs.out-dir }}
           retention-days: 1
