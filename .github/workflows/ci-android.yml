@@ -38,6 +38,8 @@ jobs:
           > local_settings.json
       - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
         uses: FedericoCarboni/setup-ffmpeg@v3
+        with:
+          ffmpeg-version: '6.1.0'
       - name: Set Up Android SDK's platform-tools # The default Android SDK does not include platform-tools and its component `adb`, which is required by Igor for the Android build
         run: |
           ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
