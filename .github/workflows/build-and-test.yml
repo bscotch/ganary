@@ -126,8 +126,8 @@ jobs:
         timeout-minutes: 30
         working-directory: ${{ steps.build.outputs.out-dir }}
         env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSPHRASE }} # This is the password for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=for%20each%20app.-,Passphrase,-Git%20Repo%20storage
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_REPO_ACCESS }} # This is the basic authorization for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=MATCH_GIT_BASIC_AUTHORIZATION
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }} # This is the password for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=for%20each%20app.-,Passphrase,-Git%20Repo%20storage
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }} # This is the basic authorization for the match repo, see https://docs.fastlane.tools/actions/match/#:~:text=MATCH_GIT_BASIC_AUTHORIZATION
         run: |
           # Create the fastlane/Fastfile with the following content
           mkdir -p fastlane
