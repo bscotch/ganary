@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"grc_register_compile_tests",
   "isCompatibility":false,
   "isDnD":false,

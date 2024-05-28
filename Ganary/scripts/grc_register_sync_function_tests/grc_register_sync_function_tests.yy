@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"grc_register_sync_function_tests",
   "isCompatibility":false,
   "isDnD":false,

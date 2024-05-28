@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"_grc_expect_api",
   "isCompatibility":false,
   "isDnD":false,

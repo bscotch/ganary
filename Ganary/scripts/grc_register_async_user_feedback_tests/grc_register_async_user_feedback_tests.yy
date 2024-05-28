@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"grc_register_async_user_feedback_tests",
   "isCompatibility":false,
   "isDnD":false,

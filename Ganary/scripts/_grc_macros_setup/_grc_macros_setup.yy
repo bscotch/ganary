@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"_grc_macros_setup",
   "isCompatibility":false,
   "isDnD":false,

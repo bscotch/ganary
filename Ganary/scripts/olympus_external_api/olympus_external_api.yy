@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"olympus_external_api",
   "isCompatibility":false,
   "isDnD":false,
