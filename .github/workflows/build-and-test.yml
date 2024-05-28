@@ -112,7 +112,7 @@ jobs:
           access-key: ${{ secrets.ACCESS_KEY }}
           target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
-          runtime: ${{ inputs.runtime }}
+          runtime-version: ${{ inputs.runtime }}
         id: igor
       - name: use Igor build
         uses: bscotch/igor-build@main
