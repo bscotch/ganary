@@ -50,7 +50,7 @@
   "option_android_orient_portrait_flipped":true,
   "option_android_package_company":"bscotch",
   "option_android_package_domain":"com",
-  "option_android_package_product":"ganary",
+  "option_android_package_product":"gamepipe",
   "option_android_permission_bluetooth":true,
   "option_android_permission_internet":true,
   "option_android_permission_network_state":false,

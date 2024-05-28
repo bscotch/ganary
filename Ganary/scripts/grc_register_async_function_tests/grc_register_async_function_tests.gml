@@ -5,12 +5,10 @@ function grc_register_async_function_tests(){
 		})
 	}
 
-	if (os_type == os_android && os_get_config() == "google"){
-		olympus_add_async_test("dynamic_asset_audio_track_pos_test", function(){
-			return grc_instance_create(grc_o_dynamic_asset_ogg_track_test);
-		})
-	}
-
+	olympus_add_async_test("dynamic_asset_audio_track_pos_test", function(){
+		return grc_instance_create(grc_o_dynamic_asset_ogg_track_test);
+	})
+	
 	//os_xboxseriesxs requires XSTS token to talk to the bscotch dummy endpoint	
 	if grc_internet_required {
 		olympus_add_async_test("http_delete_receiver_test", function(){
