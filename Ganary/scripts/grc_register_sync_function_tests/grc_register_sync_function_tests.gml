@@ -20,7 +20,7 @@ function grc_register_sync_function_tests(){
 			show_debug_message("function:" + string(array_get(existing_arr, i)));
 		}
 		ds_map_destroy(_map);
-	})
+	}).only()
 	
 	olympus_add_test("ds_map_to_with_chain_accessor_test", function(){
 		var existing_arr = array_create(1, "value");

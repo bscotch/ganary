@@ -45,7 +45,7 @@ jobs:
   order_test:
     if: ${{ needs.check_latest_runtime.outputs.runtime }}
     needs: check_latest_runtime
-    name: Order test builds
+    name: Order test builds for ${{ needs.check_latest_runtime.outputs.runtime }}
     uses: ./.github/workflows/build-and-test.yml
     with:
       runtime: ${{ needs.check_latest_runtime.outputs.runtime }}

@@ -36,9 +36,14 @@ _function_to_add_tests_and_hooks = function() {
 			}
 		else if summary.tallies.skipped > 0{
 			has_skips = true;
-		}		
+		}
 
 		if global.olympus_headless {
+			var summary_file_content = json_stringify(summary);
+			if os_type == os_android{
+				_olympus_android_write_custom_output(summary_file_content);
+			}
+			
 			if failed {
 				//Force the app to crash so Firebase would report it as failure
 				if os_type == os_ios || os_type == os_android{

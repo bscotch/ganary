@@ -1020,7 +1020,11 @@ function _Olympus_Summary_Manager(suite_name, _my_suite_ref) constructor{
 	}
 
 	_get_summary_file_name = function(){
-		return "Olympus_records/internal/" + string(_summary.name) + ".raw.olympus.json"
+		var rootdir = "Olympus_records/internal/";
+		if global.olympus_headless && os_type == os_ios {
+			rootdir = "GameLoopResults/";
+		}
+		return rootdir + string(_summary.name) + ".raw.olympus.json"
 	}
 	
 	_get_prettified_summary_file_name = function(){
