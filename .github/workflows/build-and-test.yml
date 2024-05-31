@@ -198,6 +198,7 @@ jobs:
 
 
           $process.WaitForExit()
+          Write-Host "Finished running $exeDir. Parsing log file at $logFile"
           $reader = [System.IO.StreamReader]::new($logFile)
           try {
               while (-not $reader.EndOfStream) {
