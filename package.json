@@ -1,6 +1,6 @@
 {
   "name": "ganary",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "A project to test GMS functions across runtime on all platforms",
   "main": "index.js",
   "scripts": {
