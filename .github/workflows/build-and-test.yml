@@ -278,7 +278,7 @@ jobs:
           $suiteName = $json.name
           if ($json.status -ne "completed") {
             $failMessage = "$suiteName : this suite did not complete."
-            Write-Error $failMessage
+            Write-Host $failMessage
             Add-Content $logFile $failMessage
             $success = $false
           }
@@ -286,7 +286,7 @@ jobs:
           foreach ($test in $json.tests) {
             if ($test.status -eq "failed" -or $test.status -eq "crashed") {
                   $failMessage = "$($test.name): $($test.status)"
-                  Write-Error $failMessage
+                  Write-Host $failMessage
                   $success = $false
               }
           }
