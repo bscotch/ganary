@@ -243,7 +243,7 @@ jobs:
           gcloud beta firebase test ${{ env.firebase-test-type }}  run \
           --type game-loop \
           --app ${{ env.firebase-bin-name }} \
-          --timeout 10m \
+          --timeout 5m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" \
           --format="text(axis_value)" 2>&1 | tee test_output.txt
@@ -259,49 +259,42 @@ jobs:
           echo "GCS_BUCKET_URL=$unique_part" >> $GITHUB_ENV
           # Get the axis_value
           axis_value=$(grep "axis_value:" test_output.txt | awk -F': ' '{print $2}')
+          echo "The AXIS_VALUE is $axis_value"
           echo "AXIS_VALUE=$axis_value" >> $GITHUB_ENV
       - name: Get the results json from GSC bucket for Android
         if: runner.os == 'Linux'
         run: |
-          gcloud storage cp gs://${{env.GCS_BUCKET_URL}}/${{env.AXIS_VALUE}}/game_loop_results/results_scenario_1.json ${{ env.TEST_RESULT_FILE_NAME }}
+          gcloud storage cp gs://${{env.GCS_BUCKET_URL}}${{env.AXIS_VALUE}}/game_loop_results/results_scenario_1.json ${{ env.TEST_RESULT_FILE_NAME }}
       - name: Get the results json from GSC bucket for iOS
         if: runner.os == 'macOS'
         run: |
-          gcloud storage cp gs://${{env.GCS_BUCKET_URL}}/${{env.AXIS_VALUE}}/CustomResults/${{env.RAW_TEST_RESULT_FILE_NAME}} ${{ env.TEST_RESULT_FILE_NAME }}
-      - name: Parse the results json in bash
-        shell: bash
+          gcloud storage cp gs://${{env.GCS_BUCKET_URL}}${{env.AXIS_VALUE}}/CustomResults/${{env.RAW_TEST_RESULT_FILE_NAME}} ${{ env.TEST_RESULT_FILE_NAME }}
+      - name: Parse the results json in powershell
+        shell: powershell
         run: |
-          filePath=${{ env.TEST_RESULT_FILE_NAME }}
-          success=true
-          suiteName=$(jq -r '.name' $filePath)
-          status=$(jq -r '.status' $filePath)
+          $success = $true
+          $filePath="${{ env.TEST_RESULT_FILE_NAME }}"
+          $json = Get-Content $filePath | ConvertFrom-Json
+          $suiteName = $json.name
+          if ($json.status -ne "completed") {
+            $failMessage = "$suiteName : this suite did not complete."
+            Write-Error $failMessage
+            Add-Content $logFile $failMessage
+            $success = $false
+          }
 
-          if [ "$status" != "completed" ]; then
-              failMessage="$suiteName : this suite did not complete."
-              echo $failMessage 1>&2
-              success=false
-          fi
-
-          tests=$(jq -r '.tests[] | @base64' $filePath)
-          for test in $tests; do
-              _jq() {
-                  echo ${test} | base64 --decode | jq -r ${1}
+          foreach ($test in $json.tests) {
+            if ($test.status -eq "failed" -or $test.status -eq "crashed") {
+                  $failMessage = "$($test.name): $($test.status)"
+                  Write-Error $failMessage
+                  $success = $false
               }
+          }
 
-              testName=$(_jq '.name')
-              testStatus=$(_jq '.status')
-
-              if [ "$testStatus" == "failed" ] || [ "$testStatus" == "crashed" ]; then
-                  failMessage="$testName: $testStatus"
-                  echo $failMessage 1>&2
-                  success=false
-              fi
-          done
-
-          if $success; then
-              echo "Olympus test suite $suiteName completed with no failure or crashes."
+          if ($success) {
+              Write-Host "Olympus test completed with no failure or crashes."
               exit 0
-          else
+          } else {
               exit 1
-          fi
+          }
       # endregion
