@@ -87,7 +87,8 @@ _start_test = function(){
 		olympus_suite_options_ignore_if_completed: !debug_mode && !(os_get_config() == "dev"),
 		olympus_suite_options_abandon_unfinished_record: !global._should_resume_record,
 		olympus_suite_options_description: "CI test",
-		olympus_suite_options_allow_uncaught_silent_termination: global.olympus_headless
+		olympus_suite_options_allow_uncaught_silent_termination: global.olympus_headless,
+		olympus_suite_options_suite_name: "ganary"
 	});
 	instance_destroy();
 }

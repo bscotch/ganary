@@ -30,6 +30,8 @@ permissions:
 
 env:
   MATRIX_STRING: '[\"windows-latest\",\"ubuntu-latest\", \"macOS-latest\"]'
+  RAW_TEST_RESULT_FILE_NAME: 'ganary.raw.olympus.json'
+  TEST_RESULT_FILE_NAME: 'result.json'
 
 jobs:
   # By default, this workflow will run on Windows, Ubuntu, and MacOS runners, making and testing the Windows, Android, and iOS builds. However, this job checks for the manual input of `runner` to override the default, so we can manually run the workflow on a specific runner instead of all three.
@@ -213,37 +215,8 @@ jobs:
 
           $success = $true
 
-          $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal"
-
-          # Iterate through all the json files in the directory
-          $files = Get-ChildItem $olympusResultDir -Filter "*.json"
-          foreach ($file in $files) {
-              $filePath = $file.FullName
-              $json = Get-Content $filePath | ConvertFrom-Json
-              $suiteName = $json.name
-              if ($json.status -ne "completed") {
-                $failMessage = "$suiteName : this suite did not complete."
-                Write-Error $failMessage
-                Add-Content $logFile $failMessage
-                $success = $false
-              }
-
-              foreach ($test in $json.tests) {
-                if ($test.status -eq "failed" -or $test.status -eq "crashed") {
-                      $failMessage = "$($test.name): $($test.status)"
-                      Write-Error $failMessage
-                      Add-Content $logFile $failMessage
-                      $success = $false
-                  }
-              }
-          }
-
-          if ($success) {
-              Write-Host "Olympus test completed with no failure or crashes."
-              exit 0
-          } else {
-              exit 1
-          }
+          $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal/${{ env.RAW_TEST_RESULT_FILE_NAME }}"
+          cp $olympusResultDir ${{ env.TEST_RESULT_FILE_NAME }}
         # endregion
 
       # region Mobile testing on Firebase Test Lab https://firebase.google.com/docs/test-lab
@@ -270,14 +243,63 @@ jobs:
           --app ${{ env.firebase-bin-name }} \
           --timeout 10m \
           --scenario-numbers=1 \
-          --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" | tee test_output.txt
-      - name: Parse the output and fail the run if the content contains the string `│ Passed  │` 
+          --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" \
+          --format="text(axis_value)" | tee test_output.txt
+      - name: Parse the output to get the GCS bucket and axis value
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         run: |
-          if grep -q "│ Passed  │" test_output.txt; then
-            echo "Game loop test passed"
+          gcs_url_part=$(cat test_output.txt | grep -o 'https://console.developers.google.com/storage/browser/\S*')
+          # Extract the unique part from the GCS bucket URL
+          unique_part=$(echo "$gcs_url_part" | sed 's/https:\/\/console.developers.google.com\/storage\/browser\///g')
+          # Remove the trailing bracket
+          unique_part=$(echo "$unique_part" | sed 's/]//g')
+          echo "The unique part of the GCS bucket URL is: $unique_part"
+          echo "GCS_BUCKET_URL=$unique_part" >> $GITHUB_ENV
+          # Get the axis_value
+          axis_value=$(grep "axis_value:" test_output.txt | awk -F': ' '{print $2}')
+          echo "AXIS_VALUE=$axis_value" >> $GITHUB_ENV
+      - name: Get the results json from GSC bucket for Android
+        if: runner.os == 'Linux'
+        run: |
+          gcloud storage cp gs://${{env.GCS_BUCKET_URL}}/${{env.AXIS_VALUE}}/game_loop_results/results_scenario_1.json ${{ env.TEST_RESULT_FILE_NAME }}
+      - name: Get the results json from GSC bucket for iOS
+        if: runner.os == 'macOS'
+        run: |
+          gcloud storage cp gs://${{env.GCS_BUCKET_URL}}/${{env.AXIS_VALUE}}/CustomResults/${{env.RAW_TEST_RESULT_FILE_NAME}} ${{ env.TEST_RESULT_FILE_NAME }}
+      - name: Parse the results json in bash
+        shell: bash
+        run: |
+          filePath=${{ env.TEST_RESULT_FILE_NAME }}
+          success=true
+          suiteName=$(jq -r '.name' $filePath)
+          status=$(jq -r '.status' $filePath)
+
+          if [ "$status" != "completed" ]; then
+              failMessage="$suiteName : this suite did not complete."
+              echo $failMessage 1>&2
+              success=false
+          fi
+
+          tests=$(jq -r '.tests[] | @base64' $filePath)
+          for test in $tests; do
+              _jq() {
+                  echo ${test} | base64 --decode | jq -r ${1}
+              }
+
+              testName=$(_jq '.name')
+              testStatus=$(_jq '.status')
+
+              if [ "$testStatus" == "failed" ] || [ "$testStatus" == "crashed" ]; then
+                  failMessage="$testName: $testStatus"
+                  echo $failMessage 1>&2
+                  success=false
+              fi
+          done
+
+          if $success; then
+              echo "Olympus test suite $suiteName completed with no failure or crashes."
+              exit 0
           else
-            echo "Game loop test failed"
-            exit 1
+              exit 1
           fi
       # endregion
