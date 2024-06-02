@@ -216,7 +216,9 @@ jobs:
           $success = $true
 
           $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal/${{ env.RAW_TEST_RESULT_FILE_NAME }}"
-          cp $olympusResultDir ${{ env.TEST_RESULT_FILE_NAME }}
+          $resultDir = Join-Path ${{ github.workspace }} "${{ env.TEST_RESULT_FILE_NAME }}"
+          Write-Host "Copying $olympusResultDir to  $resultDir"
+          cp $olympusResultDir  $resultDir
         # endregion
 
       # region Mobile testing on Firebase Test Lab https://firebase.google.com/docs/test-lab
@@ -244,7 +246,7 @@ jobs:
           --timeout 10m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" \
-          --format="text(axis_value)" | tee test_output.txt
+          --format="text(axis_value)" 2>&1 | tee test_output.txt
       - name: Parse the output to get the GCS bucket and axis value
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         run: |
