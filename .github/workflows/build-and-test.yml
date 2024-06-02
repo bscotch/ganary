@@ -1,5 +1,4 @@
 name: Build the project and run Olympus test suites
-run-name: Runtime ${{ inputs.runtime }}
 
 on:
   push:
@@ -200,18 +199,6 @@ jobs:
 
 
           $process.WaitForExit()
-          Write-Host "Finished running $exeDir. Parsing log file at $logFile"
-          $reader = [System.IO.StreamReader]::new($logFile)
-          try {
-              while (-not $reader.EndOfStream) {
-                $line = $reader.ReadLine()
-                # Process the line
-                Write-Output $line        
-              }
-          }
-          finally {
-              $reader.Close()
-          }
 
           $success = $true
 
@@ -269,6 +256,12 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           gcloud storage cp gs://${{env.GCS_BUCKET_URL}}${{env.AXIS_VALUE}}/CustomResults/${{env.RAW_TEST_RESULT_FILE_NAME}} ${{ env.TEST_RESULT_FILE_NAME }}
+      - name: upload test result as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-test-result
+          path: ${{ env.TEST_RESULT_FILE_NAME }}
+          retention-days: 1
       - name: Parse the results json in powershell
         shell: powershell
         run: |
@@ -279,7 +272,6 @@ jobs:
           if ($json.status -ne "completed") {
             $failMessage = "$suiteName : this suite did not complete."
             Write-Host $failMessage
-            Add-Content $logFile $failMessage
             $success = $false
           }
 
