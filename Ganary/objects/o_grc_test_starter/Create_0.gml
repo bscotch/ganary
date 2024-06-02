@@ -51,7 +51,11 @@ _function_to_add_tests_and_hooks = function() {
 						throw(ex)
 					})
 				}
-				throw("Olympus test suite " + summary.name + " has failed!");
+				else{
+					show_debug_message("Olympus test suite " + summary.name + " has failed!");
+					game_end();
+				}
+				
 			}
 			else{
 				if os_type == os_ios{
