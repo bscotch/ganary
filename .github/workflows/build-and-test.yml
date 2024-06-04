@@ -263,7 +263,7 @@ jobs:
           path: ${{ env.TEST_RESULT_FILE_NAME }}
           retention-days: 1
       - name: Parse the results json in powershell
-        shell: powershell
+        shell: pwsh
         run: |
           $success = $true
           $filePath="${{ env.TEST_RESULT_FILE_NAME }}"
