@@ -45,14 +45,16 @@ _function_to_add_tests_and_hooks = function() {
 			}
 			
 			if failed {
+				var failure_message = "Olympus test suite " + summary.name + " has failed!";
 				//Force the app to crash so Firebase would report it as failure
 				if os_type == os_ios || os_type == os_android{
 					exception_unhandled_handler(function(ex){
 						throw(ex)
 					})
+					throw(failure_message)
 				}
 				else{
-					show_debug_message("Olympus test suite " + summary.name + " has failed!");
+					show_debug_message(failure_message);
 					game_end();
 				}
 				
