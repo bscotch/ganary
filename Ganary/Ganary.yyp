@@ -111,6 +111,7 @@
     {"id":{"name":"grc_snd_silence_for_dynamic_asset","path":"sounds/grc_snd_silence_for_dynamic_asset/grc_snd_silence_for_dynamic_asset.yy",},},
     {"id":{"name":"grc_snd_silence_for_dynamic_asset2","path":"sounds/grc_snd_silence_for_dynamic_asset2/grc_snd_silence_for_dynamic_asset2.yy",},},
     {"id":{"name":"grc_snd_silence","path":"sounds/grc_snd_silence/grc_snd_silence.yy",},},
+    {"id":{"name":"grc_player_fallfromspace_spine","path":"sprites/grc_player_fallfromspace_spine/grc_player_fallfromspace_spine.yy",},},
     {"id":{"name":"grc_sp_a_spine_sprite","path":"sprites/grc_sp_a_spine_sprite/grc_sp_a_spine_sprite.yy",},},
   ],
   "resourceType":"GMProject",
