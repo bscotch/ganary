@@ -25,16 +25,22 @@ function grc_register_sync_function_tests(){
 	olympus_add_test("real_number_to_int32", function(){
 		var t = 8080;
 		var t_type = typeof(t);
-		grc_expect_eq(t_type, "real");
+		grc_console_log("t_type:", t_type);
+		grc_expect_eq(t_type, "number");
 
 		var a = {
 			// when assigning a number that will be the result of a ?? or ? operation
 			b: undefined ?? 8080,
 			c: is_undefined(undefined) ? 8080 : undefined
 		}
-
-		grc_expect_eq(typeof(a.b), "real");
-		grc_expect_eq(typeof(a.c), "real");
+		
+		var b_type = typeof(a.b);
+		grc_console_log("b_type:", b_type);
+		grc_expect_eq(b_type, "number");
+		
+		var c_type = typeof(a.c);
+		grc_console_log("c_type:", c_type);
+		grc_expect_eq(c_type, "number");
 	})
 
 	olympus_add_test("ds_map_to_with_chain_accessor_test", function(){
