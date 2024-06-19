@@ -361,14 +361,26 @@ function grc_register_sync_function_tests(){
 		grc_console_log("buffer_base64_decode did not crash the runner");	
 	})
 	
+	olympus_test_dependency_chain_begin();
+	olympus_add_test("GM_runtime_version_test", function(){
+		var runtime = GM_runtime_version;
+		grc_expect_neq(runtime, "0.0.0.0");
+		var version = string_split(runtime, ".");
+		var major_version = real(version[0]);
+		grc_expect_gt(2023, major_version);
+	})
+
 	olympus_add_test("json_parse_null_to_ptr_test", function(){
 		var struc  = {crates: undefined};
 		var str = json_stringify(struc);
 		show_debug_message(str);
 		var decode_struc = json_parse(str);
 		var type = typeof(decode_struc.crates);
+		var runtime = GM_runtime_version;
+		var version = string_split(runtime, ".");
+		var major_version = real(version[0]);
 		var expected_type;	
-		if string_starts_with(GM_runtime_version, "2024"){
+		if major_version >= 2024{
 			expected_type = "undefined";
 		}
 		else{
@@ -376,6 +388,7 @@ function grc_register_sync_function_tests(){
 		}
 		grc_expect_eq(expected_type, type, "For runtime "+GM_runtime_version+", the type should be "+expected_type + " but it is " +type);
 	})
+	olympus_test_dependency_chain_end();
 	
 	olympus_add_test("destroyed_ds_list_reference", function(){
 		var destroyed_list = ds_list_create();
