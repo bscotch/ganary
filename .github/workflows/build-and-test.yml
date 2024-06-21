@@ -100,13 +100,6 @@ jobs:
           --sdk_root=$ANDROID_SDK_ROOT \
           "platform-tools"
       #endregion
-      - name: Cache bootstrapper and runtimes to speed up the build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ github.workspace }}/bootstrapper
-            ${{ github.workspace }}/runtimes
-          key: ${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}
       - name: use Igor Setup
         uses: bscotch/igor-setup@develop
         with:
@@ -114,6 +107,7 @@ jobs:
           target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
           runtime-version: ${{ inputs.runtime }}
+          cache: true
         id: igor
       - name: use Igor build
         uses: bscotch/igor-build@main
