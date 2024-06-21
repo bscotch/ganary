@@ -116,7 +116,7 @@ jobs:
           runtime-version: ${{ inputs.runtime }}
         id: igor
       - name: use Igor build
-        uses: bscotch/igor-build@develop
+        uses: bscotch/igor-build@main
         id: build
         timeout-minutes: 30
         with:
