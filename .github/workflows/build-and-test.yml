@@ -108,7 +108,7 @@ jobs:
             ${{ github.workspace }}/runtimes
           key: ${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}
       - name: use Igor Setup
-        uses: bscotch/igor-setup@main
+        uses: bscotch/igor-setup@develop
         with:
           access-key: ${{ secrets.ACCESS_KEY }}
           target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
@@ -116,7 +116,7 @@ jobs:
           runtime-version: ${{ inputs.runtime }}
         id: igor
       - name: use Igor build
-        uses: bscotch/igor-build@main
+        uses: bscotch/igor-build@develop
         id: build
         timeout-minutes: 30
         with:
