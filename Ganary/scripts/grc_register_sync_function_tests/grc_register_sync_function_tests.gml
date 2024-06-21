@@ -1,4 +1,14 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("show_debug_message_try_catch_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/6190
+		try {
+		    show_error("test", false);
+		}
+		catch(exception) {
+			show_debug_message(exception);
+		}
+	})
+	
 	olympus_add_test("ds_map_to_test", function(){
 		var existing_arr = array_create(1, "value");
 		show_debug_message("Should be able to access values with accessor, no accessor, and the function");
