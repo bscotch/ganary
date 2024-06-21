@@ -3,6 +3,10 @@ name: For manual testing of the igor actions
 on: 
   # push: #Uncomment this line to run the workflow on push
   workflow_dispatch: #This line allows you to run the workflow manually from the GitHub Actions page
+    inputs:
+      runtime:
+        description: 'Target runtime'
+        required: false
   workflow_call: #This line allows you to run the workflow from another workflow
 
 jobs:
@@ -28,6 +32,7 @@ jobs:
           target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
           access-key: ${{ secrets.ACCESS_KEY }} # To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
           cache: true
+          runtime-version: ${{ inputs.runtime }}
       # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
       - name: use Igor build
         uses: bscotch/igor-build@v1
