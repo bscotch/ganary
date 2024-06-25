@@ -55,4 +55,4 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
           https://api.github.com/repos/bscotch/ganary/actions/workflows/build-and-test.yml/dispatches \
           -d '{"ref": "main", "inputs": {"runtime": "${{ needs.check_latest_runtime.outputs.runtime }}"}}' \
-          -f -w "%{http_code}"
+          --fail-with-body -w "%{http_code}"
