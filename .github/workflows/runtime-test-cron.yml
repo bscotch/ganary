@@ -48,9 +48,11 @@ jobs:
     needs: check_latest_runtime
     name: Order test builds for ${{ needs.check_latest_runtime.outputs.runtime }}
     steps:
-      - run: |
+      - name: Use curl to order test builds at https://api.github.com/repos/bscotch/ganary/actions/workflows/build-and-test.yml/dispatche and fail the step if the http status is not 204
+        run: |
           curl -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
           https://api.github.com/repos/bscotch/ganary/actions/workflows/build-and-test.yml/dispatches \
-          -d '{"ref": "main", "inputs": {"runtime": "${{ needs.check_latest_runtime.outputs.runtime }}"}}'
+          -d '{"ref": "main", "inputs": {"runtime": "${{ needs.check_latest_runtime.outputs.runtime }}"}}' \
+          -f -w "%{http_code}"
