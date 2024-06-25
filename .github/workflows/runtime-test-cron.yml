@@ -43,10 +43,14 @@ jobs:
         run: npx rtm sync -f ${{ env.FEED}}
 
   order_test:
+    runs-on: 'ubuntu-latest'
     if: ${{ needs.check_latest_runtime.outputs.runtime }}
     needs: check_latest_runtime
     name: Order test builds for ${{ needs.check_latest_runtime.outputs.runtime }}
-    uses: ./.github/workflows/build-and-test.yml
-    with:
-      runtime: ${{ needs.check_latest_runtime.outputs.runtime }}
-    secrets: inherit
+    steps:
+      - run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
+          https://api.github.com/repos/bscotch/ganary/actions/workflows/build-and-test.yml/dispatches \
+          -d '{"ref": "main", "inputs": {"runtime": "${{ needs.check_latest_runtime.outputs.runtime }}"}}'
