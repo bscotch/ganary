@@ -159,7 +159,6 @@ jobs:
         with:
           name: igor-build-${{ matrix.os }}
           path: ${{ steps.build.outputs.out-dir }}
-          retention-days: 1
       # endregion
       # region Windows testing
       - if: runner.os == 'Windows'
@@ -256,7 +255,6 @@ jobs:
         with:
           name: ${{ matrix.os }}-test-result
           path: ${{ env.TEST_RESULT_FILE_NAME }}
-          retention-days: 1
       - name: Parse the results json in powershell
         shell: pwsh
         run: |
