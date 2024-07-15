@@ -6,6 +6,8 @@ try{
 }
 catch(err){
 	olympus_test_reject(err);
+	instance_destroy();
 	return;
 }
 olympus_test_resolve();
+instance_destroy();

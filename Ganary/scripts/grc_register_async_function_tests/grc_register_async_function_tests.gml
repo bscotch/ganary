@@ -5,6 +5,19 @@ function grc_register_async_function_tests(){
 		})
 	}
 
+
+	olympus_add_async_test("deleting_ds_map_pre_http_async", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/4505
+		var map_count = debug_event("ResourceCounts", true).mapCount;
+		show_debug_message("Num ds_maps: " + string(map_count));
+		http_get("https://www.bscotch.net/api/dummy/headers");
+		var new_map_count = debug_event("ResourceCounts", true).mapCount;
+		show_debug_message("Num ds_maps: " + string(new_map_count));
+		var new_map_index = new_map_count-1
+		ds_map_destroy(new_map_index);
+		return grc_instance_create(grc_o_deleting_ds_map_pre_http_async);
+	})
+
 	olympus_add_async_test("dynamic_asset_audio_track_pos_test", function(){
 		return grc_instance_create(grc_o_dynamic_asset_ogg_track_test);
 	})

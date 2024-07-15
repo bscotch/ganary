@@ -7,6 +7,7 @@
     {"name":"grc_o_async_saveload_test","order":2,"path":"objects/grc_o_async_saveload_test/grc_o_async_saveload_test.yy",},
     {"name":"grc_o_audio_functions_test","order":1,"path":"objects/grc_o_audio_functions_test/grc_o_audio_functions_test.yy",},
     {"name":"grc_o_camera_test","order":11,"path":"objects/grc_o_camera_test/grc_o_camera_test.yy",},
+    {"name":"grc_o_deleting_ds_map_pre_http_async","order":14,"path":"objects/grc_o_deleting_ds_map_pre_http_async/grc_o_deleting_ds_map_pre_http_async.yy",},
     {"name":"grc_o_dynamic_asset_ogg_track_test","order":10,"path":"objects/grc_o_dynamic_asset_ogg_track_test/grc_o_dynamic_asset_ogg_track_test.yy",},
     {"name":"grc_o_garbage_collection_test_helper","order":9,"path":"objects/grc_o_garbage_collection_test_helper/grc_o_garbage_collection_test_helper.yy",},
     {"name":"grc_o_garbage_collection_test","order":1,"path":"objects/grc_o_garbage_collection_test/grc_o_garbage_collection_test.yy",},
