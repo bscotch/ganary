@@ -85,6 +85,7 @@
     {"id":{"name":"grc_o_keyboard_functions_test","path":"objects/grc_o_keyboard_functions_test/grc_o_keyboard_functions_test.yy",},},
     {"id":{"name":"grc_o_mouse_keyboard_test","path":"objects/grc_o_mouse_keyboard_test/grc_o_mouse_keyboard_test.yy",},},
     {"id":{"name":"grc_o_room_functions_test","path":"objects/grc_o_room_functions_test/grc_o_room_functions_test.yy",},},
+    {"id":{"name":"grc_o_self_with_scope_test","path":"objects/grc_o_self_with_scope_test/grc_o_self_with_scope_test.yy",},},
     {"id":{"name":"grc_o_shader_test","path":"objects/grc_o_shader_test/grc_o_shader_test.yy",},},
     {"id":{"name":"grc_o_spine_async_event_test","path":"objects/grc_o_spine_async_event_test/grc_o_spine_async_event_test.yy",},},
     {"id":{"name":"grc_o_spine_draw_in_struct_test","path":"objects/grc_o_spine_draw_in_struct_test/grc_o_spine_draw_in_struct_test.yy",},},

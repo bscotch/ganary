@@ -3,3 +3,4 @@ node_modules
 COMMIT_EDITMSG
 package-lock.json
 *.olympus.json
+Ganary/tmp

@@ -5,6 +5,10 @@ function grc_register_async_function_tests(){
 		})
 	}
 
+	olympus_add_async_test("self_with_scope_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/6765
+		return grc_instance_create(grc_o_self_with_scope_test);
+	})
 
 	olympus_add_async_test("deleting_ds_map_pre_http_async", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/4505
