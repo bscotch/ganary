@@ -1,4 +1,8 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("static_scope_test", function(){
+		new Bar();
+	})
+	
 	olympus_add_test("show_debug_message_try_catch_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/6190
 		try {

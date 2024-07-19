@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"static_scope_test",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"static_scope_test",
+  "parent":{
+    "name":"misc_resources",
+    "path":"folders/Ganary/misc_resources.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
