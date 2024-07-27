@@ -5,6 +5,31 @@ function grc_register_async_function_tests(){
 		})
 	}
 
+	olympus_add_async_test("http_header_test_short_body", function(){
+	  //https://github.com/YoYoGames/GameMaker-Bugs/issues/6919
+		var ins = grc_instance_create(grc_o_http_header_test);
+		with ins {
+			var s = "a"
+			repeat 3052 {
+				s += "a";
+			}
+			body = s		
+		}
+		return ins;
+	})
+
+	olympus_add_async_test("http_header_test_long_body", function(){
+		var ins = grc_instance_create(grc_o_http_header_test);
+		with ins {
+			var s = "a"
+			repeat 3054 {
+				s += "a";
+			}
+			body = s		
+		}
+		return ins;
+	})
+
 	olympus_add_async_test("self_with_scope_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/6765
 		return grc_instance_create(grc_o_self_with_scope_test);

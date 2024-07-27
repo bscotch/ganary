@@ -57,7 +57,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.800.0.593",
+    "IDEVersion":"2024.600.0.585",
   },
   "name":"Ganary",
   "resources":[
@@ -80,6 +80,7 @@
     {"id":{"name":"grc_o_helper_async","path":"objects/grc_o_helper_async/grc_o_helper_async.yy",},},
     {"id":{"name":"grc_o_helper_blank","path":"objects/grc_o_helper_blank/grc_o_helper_blank.yy",},},
     {"id":{"name":"grc_o_http_buffer_delete_test","path":"objects/grc_o_http_buffer_delete_test/grc_o_http_buffer_delete_test.yy",},},
+    {"id":{"name":"grc_o_http_header_test","path":"objects/grc_o_http_header_test/grc_o_http_header_test.yy",},},
     {"id":{"name":"grc_o_http_request_buffer_body_test","path":"objects/grc_o_http_request_buffer_body_test/grc_o_http_request_buffer_body_test.yy",},},
     {"id":{"name":"grc_o_instance_exists_over_room_restart_test","path":"objects/grc_o_instance_exists_over_room_restart_test/grc_o_instance_exists_over_room_restart_test.yy",},},
     {"id":{"name":"grc_o_keyboard_functions_test","path":"objects/grc_o_keyboard_functions_test/grc_o_keyboard_functions_test.yy",},},

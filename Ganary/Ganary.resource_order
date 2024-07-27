@@ -16,6 +16,7 @@
     {"name":"grc_o_http_request_buffer_body_test","order":7,"path":"objects/grc_o_http_request_buffer_body_test/grc_o_http_request_buffer_body_test.yy",},
     {"name":"grc_o_keyboard_functions_test","order":4,"path":"objects/grc_o_keyboard_functions_test/grc_o_keyboard_functions_test.yy",},
     {"name":"grc_o_room_functions_test","order":3,"path":"objects/grc_o_room_functions_test/grc_o_room_functions_test.yy",},
+    {"name":"grc_o_self_with_scope_test","order":15,"path":"objects/grc_o_self_with_scope_test/grc_o_self_with_scope_test.yy",},
     {"name":"grc_o_video_end_event_missing","order":12,"path":"objects/grc_o_video_end_event_missing/grc_o_video_end_event_missing.yy",},
     {"name":"grc_o_video_open_block","order":13,"path":"objects/grc_o_video_open_block/grc_o_video_open_block.yy",},
     {"name":"o_grc_test_starter","order":1,"path":"objects/o_grc_test_starter/o_grc_test_starter.yy",},
