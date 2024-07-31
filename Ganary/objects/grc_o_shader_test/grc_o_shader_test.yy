@@ -35,8 +35,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"grc_sp_a_spine_sprite",
-    "path":"sprites/grc_sp_a_spine_sprite/grc_sp_a_spine_sprite.yy",
+    "name":"grc_player_fallfromspace_spine",
+    "path":"sprites/grc_player_fallfromspace_spine/grc_player_fallfromspace_spine.yy",
   },
   "spriteMaskId":null,
   "visible":true,
