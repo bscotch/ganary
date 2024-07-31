@@ -46,4 +46,9 @@ function grc_register_async_user_feedback_tests(){
 			});	
 		break;
 	}
+
+	olympus_add_async_test_with_user_feedback("video_resume_test", "Please pause the game by going to anther app, come back to the game, and see if the video resumes playing", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/7035
+		return grc_instance_create(grc_o_video_resume_test);
+	})
 }
