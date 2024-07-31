@@ -51,4 +51,10 @@ function grc_register_async_user_feedback_tests(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/7035
 		return grc_instance_create(grc_o_video_resume_test);
 	})
+	
+	olympus_add_test("video_resume_test_cleanup", function(){
+		with grc_o_video_resume_test{
+			instance_destroy();
+		}
+	})
 }
