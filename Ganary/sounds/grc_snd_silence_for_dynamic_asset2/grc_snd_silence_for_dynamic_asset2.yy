@@ -10,7 +10,7 @@
   "compression":3,
   "ConfigValues":{
     "dev":{
-      "audioGroupId":"{\"name\":\"a_group_test\",\"path\":\"audiogroups/a_group_test\"}",
+      "audioGroupId":"{ \"name\":\"audiogroup_default\", \"path\":\"audiogroups/audiogroup_default\" }",
     },
   },
   "conversionMode":0,

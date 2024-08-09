@@ -29,6 +29,7 @@
     {"$GMFolder":"","%Name":"Modules","folderPath":"folders/Modules.yy","name":"Modules","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Olympus","folderPath":"folders/Modules/Olympus.yy","name":"Olympus","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"NEW","folderPath":"folders/NEW.yy","name":"NEW","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Sounds","folderPath":"folders/Sounds.yy","name":"Sounds","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"ThisProject","folderPath":"folders/ThisProject.yy","name":"ThisProject","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
   "IncludedFiles":[
@@ -57,7 +58,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.800.0.597",
+    "IDEVersion":"2024.800.0.605",
   },
   "name":"Ganary",
   "resources":[
@@ -70,6 +71,7 @@
     {"id":{"name":"grc_o_async_parent","path":"objects/grc_o_async_parent/grc_o_async_parent.yy",},},
     {"id":{"name":"grc_o_async_saveload_test","path":"objects/grc_o_async_saveload_test/grc_o_async_saveload_test.yy",},},
     {"id":{"name":"grc_o_audio_functions_test","path":"objects/grc_o_audio_functions_test/grc_o_audio_functions_test.yy",},},
+    {"id":{"name":"grc_o_audio_play_stop","path":"objects/grc_o_audio_play_stop/grc_o_audio_play_stop.yy",},},
     {"id":{"name":"grc_o_camera_test","path":"objects/grc_o_camera_test/grc_o_camera_test.yy",},},
     {"id":{"name":"grc_o_controller_test","path":"objects/grc_o_controller_test/grc_o_controller_test.yy",},},
     {"id":{"name":"grc_o_controller","path":"objects/grc_o_controller/grc_o_controller.yy",},},
@@ -116,6 +118,10 @@
     {"id":{"name":"grc_snd_silence_for_dynamic_asset","path":"sounds/grc_snd_silence_for_dynamic_asset/grc_snd_silence_for_dynamic_asset.yy",},},
     {"id":{"name":"grc_snd_silence_for_dynamic_asset2","path":"sounds/grc_snd_silence_for_dynamic_asset2/grc_snd_silence_for_dynamic_asset2.yy",},},
     {"id":{"name":"grc_snd_silence","path":"sounds/grc_snd_silence/grc_snd_silence.yy",},},
+    {"id":{"name":"grc_snd_wave","path":"sounds/grc_snd_wave/grc_snd_wave.yy",},},
+    {"id":{"name":"grc_snd_wave2","path":"sounds/grc_snd_wave2/grc_snd_wave2.yy",},},
+    {"id":{"name":"grc_snd_wave3","path":"sounds/grc_snd_wave3/grc_snd_wave3.yy",},},
+    {"id":{"name":"grc_snd_wave4","path":"sounds/grc_snd_wave4/grc_snd_wave4.yy",},},
     {"id":{"name":"grc_player_fallfromspace_spine","path":"sprites/grc_player_fallfromspace_spine/grc_player_fallfromspace_spine.yy",},},
     {"id":{"name":"grc_sp_a_spine_sprite","path":"sprites/grc_sp_a_spine_sprite/grc_sp_a_spine_sprite.yy",},},
   ],
