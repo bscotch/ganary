@@ -17,6 +17,11 @@ else if os_type == os_ios{
 	if (is_test_loop) {
 		global.olympus_headless = true;
 	}
+	
+	var is_echo_mode = string_ends_with(intent, "echo");
+	if (is_echo_mode) {
+		//Echo result out
+	}
 }
 
 _function_to_add_tests_and_hooks = function() {
