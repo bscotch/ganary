@@ -272,7 +272,7 @@ function grc_register_sync_function_tests(){
 		}
 		
 		if (!is_undefined(initialization_confirmation)){
-			grc_expect_eq("initialized", initialization_confirmation, "android initialization")
+			grc_expect_eq("initialized", initialization_confirmation, "Extension did not initialize properly!")
 		}		
 	});
 
