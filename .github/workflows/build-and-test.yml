@@ -87,7 +87,7 @@ jobs:
           "machine.Platform Settings.Android.Keystore.keystore_password": "${{ secrets.KEYSTORE_PASSWORD }}", 
           "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ secrets.KEYSTORE_PASSWORD }}", 
           "machine.Platform Settings.Android.Keystore.alias": "${{ secrets.KEYSTORE_USERNAME }}",
-          "machine.Platform Settings.Android.Paths.jdk_location": "$JAVA_HOME_17_X64",          
+          "machine.Platform Settings.Android.Paths.jdk_location": "$env.JAVA_HOME_17_X64",          
           }' \
           > local_settings.json
       - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
