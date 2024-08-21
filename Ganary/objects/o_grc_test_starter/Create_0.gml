@@ -22,6 +22,7 @@ else if os_type == os_ios{
 	if (is_echo_mode) {
 		//Echo result out
 	}
+	grc_console_log("RAM available: ", _olympus_ios_get_available_ram());
 }
 
 _function_to_add_tests_and_hooks = function() {

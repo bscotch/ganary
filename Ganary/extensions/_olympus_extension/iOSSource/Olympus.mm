@@ -1,5 +1,6 @@
 #import "Olympus.h"
 #import "OlympusDelegate.h"
+#import <os/proc.h>
 @implementation Olympus
 - (void)_olympus_ios_finish_loop {
 
@@ -21,5 +22,12 @@ completionHandler:^(BOOL success) {}];
 {
     NSString *value = [OlympusDelegate get_intent];
     return value;
+}
+
+- (NSString*) _olympus_ios_get_available_ram
+{
+    size_t ram = os_proc_available_memory();
+    NSString *ramString = [NSString stringWithFormat:@"%lu", (unsigned long)ram];
+    return ramString;
 }
 @end
