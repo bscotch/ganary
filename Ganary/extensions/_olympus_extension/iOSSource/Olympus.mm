@@ -24,10 +24,9 @@ completionHandler:^(BOOL success) {}];
     return value;
 }
 
-- (NSString*) _olympus_ios_get_available_ram
+- (double) _olympus_ios_get_available_ram
 {
     size_t ram = os_proc_available_memory();
-    NSString *ramString = [NSString stringWithFormat:@"%lu", (unsigned long)ram];
-    return ramString;
+    return (double)ram;
 }
 @end
