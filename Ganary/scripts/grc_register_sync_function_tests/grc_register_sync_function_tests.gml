@@ -780,7 +780,11 @@ function grc_register_sync_function_tests(){
 		buffer_delete(_buff);	
 	})
 	
-	
+	olympus_add_test("audio_destroy_sync_group_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/7305
+		var syncGroup = audio_create_sync_group(false);
+		audio_destroy_sync_group(syncGroup);
+	})	
 	
 	if os_get_config() == "dev"{
 		olympus_add_test("show_debug_message_test", function(){
