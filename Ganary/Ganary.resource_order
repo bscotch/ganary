@@ -10,6 +10,7 @@
     {"name":"grc_o_async_saveload_test","order":2,"path":"objects/grc_o_async_saveload_test/grc_o_async_saveload_test.yy",},
     {"name":"grc_o_audio_functions_test","order":3,"path":"objects/grc_o_audio_functions_test/grc_o_audio_functions_test.yy",},
     {"name":"grc_o_audio_play_stop","order":16,"path":"objects/grc_o_audio_play_stop/grc_o_audio_play_stop.yy",},
+    {"name":"grc_o_audio_sound_set_track_position","order":17,"path":"objects/grc_o_audio_sound_set_track_position/grc_o_audio_sound_set_track_position.yy",},
     {"name":"grc_o_camera_test","order":11,"path":"objects/grc_o_camera_test/grc_o_camera_test.yy",},
     {"name":"grc_o_controller_test","order":2,"path":"objects/grc_o_controller_test/grc_o_controller_test.yy",},
     {"name":"grc_o_controller","order":1,"path":"objects/grc_o_controller/grc_o_controller.yy",},

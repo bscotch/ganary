@@ -1,4 +1,5 @@
 /// @description Insert description here
 // You can write your code in this editor
-olympus_test_resolve();
-instance_destroy();
+alarm[0] = room_speed*2;
+alarm[1] = 1;
+ts = undefined;
