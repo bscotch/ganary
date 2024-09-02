@@ -3,7 +3,7 @@
   "%Name":"_olympus_extension",
   "androidactivityinject":"\r\n   <intent-filter>\r\n       <action android:name=\"com.google.intent.action.TEST_LOOP\"></action>\r\n       <category android:name=\"android.intent.category.DEFAULT\"></category>\r\n       <data android:mimeType=\"application/javascript\"></data>\r\n   </intent-filter>\r\n",
   "androidclassname":"Olympus",
-  "androidcodeinjection":"<YYAndroidManifestActivityInject>\r\n   <intent-filter>\r\n       <action android:name=\"com.google.intent.action.TEST_LOOP\"/>\r\n       <category android:name=\"android.intent.category.DEFAULT\"/>\r\n       <data android:mimeType=\"application/javascript\"/>\r\n   </intent-filter>\r\n</YYAndroidManifestActivityInject>\r\n\r\n<YYAndroidManifestApplicationInject>\r\n<meta-data\r\n  android:name=\"com.google.test.loops\"\r\n  android:value=\"5\" />\r\n</YYAndroidManifestApplicationInject>\r\n",
+  "androidcodeinjection":"<YYAndroidManifestActivityInject>\r\n   <intent-filter>\r\n       <action android:name=\"com.google.intent.action.TEST_LOOP\"/>\r\n       <category android:name=\"android.intent.category.DEFAULT\"/>\r\n       <data android:mimeType=\"application/javascript\"/>\r\n   </intent-filter>\r\n</YYAndroidManifestActivityInject>\r\n\r\n<YYAndroidManifestApplicationInject>\r\n<meta-data\r\n  android:name=\"com.google.test.loops\"\r\n  android:value=\"5\" />\r\n</YYAndroidManifestApplicationInject>\r\n<YYAndroidManifestApplicationAttributes>\r\nandroid:debuggable=\"true\" \r\n</YYAndroidManifestApplicationAttributes>\r\n",
   "androidinject":"\r\n<meta-data android:name=\"com.google.test.loops\" android:value=\"5\"></meta-data>\r\n",
   "androidmanifestinject":"",
   "androidPermissions":[],
@@ -14,9 +14,6 @@
   "ConfigValues":{
     "gamepipe_test":{
       "copyToTargets":"3035461389054378222",
-    },
-    "dev":{
-      "copyToTargets":"12",
     },
   },
   "copyToTargets":12,
