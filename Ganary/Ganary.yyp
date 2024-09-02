@@ -58,7 +58,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.800.0.612",
+    "IDEVersion":"2024.800.0.605",
   },
   "name":"Ganary",
   "resources":[
@@ -72,7 +72,6 @@
     {"id":{"name":"grc_o_async_saveload_test","path":"objects/grc_o_async_saveload_test/grc_o_async_saveload_test.yy",},},
     {"id":{"name":"grc_o_audio_functions_test","path":"objects/grc_o_audio_functions_test/grc_o_audio_functions_test.yy",},},
     {"id":{"name":"grc_o_audio_play_stop","path":"objects/grc_o_audio_play_stop/grc_o_audio_play_stop.yy",},},
-    {"id":{"name":"grc_o_audio_sound_set_track_position","path":"objects/grc_o_audio_sound_set_track_position/grc_o_audio_sound_set_track_position.yy",},},
     {"id":{"name":"grc_o_camera_test","path":"objects/grc_o_camera_test/grc_o_camera_test.yy",},},
     {"id":{"name":"grc_o_controller_test","path":"objects/grc_o_controller_test/grc_o_controller_test.yy",},},
     {"id":{"name":"grc_o_controller","path":"objects/grc_o_controller/grc_o_controller.yy",},},
