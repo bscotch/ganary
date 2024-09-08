@@ -54,7 +54,7 @@ function grc_register_async_function_tests(){
 	olympus_add_async_test("audio_play_stop_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/7200
 		return grc_instance_create(grc_o_audio_play_stop);
-	})
+	}, function(){}, {olympus_test_options_timeout_millis: 1000 * 300})
 	
 	//os_xboxseriesxs requires XSTS token to talk to the bscotch dummy endpoint	
 	if grc_internet_required {
