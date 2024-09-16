@@ -136,4 +136,8 @@ function grc_register_async_function_tests(){
 	olympus_add_async_test("video_open_block", function(){
 		return grc_instance_create(grc_o_video_open_block);
 	});
+
+	olympus_add_async_test("global_function_definition_test", function(){
+		return grc_instance_create(grc_o_global_function_definition_test);
+	})
 }
