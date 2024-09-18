@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"cutom_constcutor_accessor",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"cutom_constcutor_accessor",
+  "parent":{
+    "name":"misc_resources",
+    "path":"folders/Ganary/misc_resources.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

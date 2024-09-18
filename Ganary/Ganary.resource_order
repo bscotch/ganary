@@ -35,6 +35,7 @@
     {"name":"_grc_macros_setup","order":1,"path":"scripts/_grc_macros_setup/_grc_macros_setup.yy",},
     {"name":"_grc_setup","order":2,"path":"scripts/_grc_setup/_grc_setup.yy",},
     {"name":"_olympus_internal","order":1,"path":"scripts/_olympus_internal/_olympus_internal.yy",},
+    {"name":"cutom_constcutor_accessor","order":16,"path":"scripts/cutom_constcutor_accessor/cutom_constcutor_accessor.yy",},
     {"name":"grc_register_async_function_tests","order":2,"path":"scripts/grc_register_async_function_tests/grc_register_async_function_tests.yy",},
     {"name":"grc_register_async_user_feedback_tests","order":3,"path":"scripts/grc_register_async_user_feedback_tests/grc_register_async_user_feedback_tests.yy",},
     {"name":"grc_register_compile_tests","order":4,"path":"scripts/grc_register_compile_tests/grc_register_compile_tests.yy",},

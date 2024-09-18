@@ -109,6 +109,7 @@
     {"id":{"name":"_grc_macros_setup","path":"scripts/_grc_macros_setup/_grc_macros_setup.yy",},},
     {"id":{"name":"_grc_setup","path":"scripts/_grc_setup/_grc_setup.yy",},},
     {"id":{"name":"_olympus_internal","path":"scripts/_olympus_internal/_olympus_internal.yy",},},
+    {"id":{"name":"cutom_constcutor_accessor","path":"scripts/cutom_constcutor_accessor/cutom_constcutor_accessor.yy",},},
     {"id":{"name":"grc_register_async_function_tests","path":"scripts/grc_register_async_function_tests/grc_register_async_function_tests.yy",},},
     {"id":{"name":"grc_register_async_user_feedback_tests","path":"scripts/grc_register_async_user_feedback_tests/grc_register_async_user_feedback_tests.yy",},},
     {"id":{"name":"grc_register_compile_tests","path":"scripts/grc_register_compile_tests/grc_register_compile_tests.yy",},},

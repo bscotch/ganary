@@ -24,7 +24,34 @@ function grc_register_sync_function_tests(){
 
 			show_debug_message(Hello.variable);
 	})
-	
+
+	olympus_add_test("chained_custom_constructor_test", function(){
+		test_class_in_self = new TestClass();
+		if (keyboard_check_pressed(ord("Q"))) { // NOT crashed
+			some_function(test_class_in_self.get_1().func(), test_class_in_self.get_1().func());
+		}
+
+		if (keyboard_check_pressed(ord("W"))) { // crashed
+			some_function(test_class_in_self.get_2().func(), test_class_in_self.get_2().func());
+		}
+		some_function(test_class_in_self.get_2().func(), test_class_in_self.get_2().func());
+
+		if (keyboard_check_pressed(ord("E"))) { // NOT crashed
+			var func_1 = test_class_in_self.get_2().func();
+			var func_2 = test_class_in_self.get_2().func();
+			some_function(func_1, func_2);
+		}
+
+		// Instead some_function can be any function with two or more arguments - clamp, max, etc
+		if (keyboard_check_pressed(ord("R"))) { // crashed
+			max(test_class_in_self.get_2().func(), test_class_in_self.get_2().func());
+		}
+		max(test_class_in_self.get_2().func(), test_class_in_self.get_2().func());
+
+		if (keyboard_check_pressed(ord("T"))) { // NOT crashed
+			some_function(test_class_in_self.__test_class.func(), test_class_in_self.__test_class.func());
+		}
+	})
 	
 	olympus_add_test("static_scope_test", function(){
 		new Bar();
