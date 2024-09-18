@@ -140,4 +140,8 @@ function grc_register_async_function_tests(){
 	olympus_add_async_test("global_function_definition_test", function(){
 		return grc_instance_create(grc_o_global_function_definition_test);
 	})
+	
+	xolympus_add_async_test("global_anon_function_leak_test", function(){
+		return grc_instance_create(grc_o_anon_function_leak);
+	})
 }

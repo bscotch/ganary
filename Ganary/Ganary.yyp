@@ -58,7 +58,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.1000.0.621",
+    "IDEVersion":"2024.800.0.618",
   },
   "name":"Ganary",
   "resources":[
@@ -67,6 +67,7 @@
     {"id":{"name":"grc_fnt_ui","path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},},
     {"id":{"name":"_olympus_async_awaiter","path":"objects/_olympus_async_awaiter/_olympus_async_awaiter.yy",},},
     {"id":{"name":"_olympus_async_test_controller","path":"objects/_olympus_async_test_controller/_olympus_async_test_controller.yy",},},
+    {"id":{"name":"grc_o_anon_function_leak","path":"objects/grc_o_anon_function_leak/grc_o_anon_function_leak.yy",},},
     {"id":{"name":"grc_o_array_reference_test","path":"objects/grc_o_array_reference_test/grc_o_array_reference_test.yy",},},
     {"id":{"name":"grc_o_async_parent","path":"objects/grc_o_async_parent/grc_o_async_parent.yy",},},
     {"id":{"name":"grc_o_async_saveload_test","path":"objects/grc_o_async_saveload_test/grc_o_async_saveload_test.yy",},},

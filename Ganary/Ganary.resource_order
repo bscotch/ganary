@@ -6,6 +6,7 @@
     {"name":"grc_fnt_cjk","order":2,"path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},
     {"name":"grc_fnt_ui","order":9,"path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},
     {"name":"_olympus_async_test_controller","order":5,"path":"objects/_olympus_async_test_controller/_olympus_async_test_controller.yy",},
+    {"name":"grc_o_anon_function_leak","order":18,"path":"objects/grc_o_anon_function_leak/grc_o_anon_function_leak.yy",},
     {"name":"grc_o_async_parent","order":8,"path":"objects/grc_o_async_parent/grc_o_async_parent.yy",},
     {"name":"grc_o_async_saveload_test","order":2,"path":"objects/grc_o_async_saveload_test/grc_o_async_saveload_test.yy",},
     {"name":"grc_o_audio_functions_test","order":3,"path":"objects/grc_o_audio_functions_test/grc_o_audio_functions_test.yy",},

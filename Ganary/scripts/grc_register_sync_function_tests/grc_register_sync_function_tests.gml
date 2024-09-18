@@ -1,4 +1,31 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("static_var_increment_by_operator", function(){
+			//https://github.com/YoYoGames/GameMaker-Bugs/issues/7295
+			function Hello() constructor
+			{
+			    static variable = 0;
+    
+			    static add = function() {
+			        Hello.variable++;
+			    }
+			}
+			Hello();
+
+			Hello.variable++; //works
+			Hello.variable--; //works
+			Hello.variable = Hello.variable + 1; //works
+			Hello.variable = Hello.variable - 1; //works
+			Hello.variable = Hello.variable * 2; //works
+			Hello.variable = Hello.variable / 2; //works, even with 0
+			Hello.variable -= 1; //broken
+			Hello.variable += 1; //broken
+			Hello.variable *= 2; //broken
+			Hello.variable /= 2; //broken
+
+			show_debug_message(Hello.variable);
+	})
+	
+	
 	olympus_add_test("static_scope_test", function(){
 		new Bar();
 	})
