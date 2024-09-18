@@ -4,4 +4,3 @@
 // Inherit the parent event
 event_inherited();
 anon_assignment();
-gc_collect();

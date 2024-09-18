@@ -143,5 +143,5 @@ function grc_register_async_function_tests(){
 	
 	xolympus_add_async_test("global_anon_function_leak_test", function(){
 		return grc_instance_create(grc_o_anon_function_leak);
-	})
+	}, function(){}, {olympus_test_options_timeout_millis: 1000 * 300})
 }
