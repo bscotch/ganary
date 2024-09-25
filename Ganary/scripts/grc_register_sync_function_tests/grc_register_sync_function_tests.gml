@@ -9,7 +9,7 @@ function grc_register_sync_function_tests(){
 			        Hello.variable++;
 			    }
 			}
-			Hello();
+			new Hello();
 
 			Hello.variable++; //works
 			Hello.variable--; //works
