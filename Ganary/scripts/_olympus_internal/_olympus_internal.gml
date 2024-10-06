@@ -454,7 +454,12 @@ function _Olympus_Suite(function_to_add_tests_and_hooks, options): _Olympus_Suit
 
 	_clean_up = function() {
 		time_source_stop(_test_interval_time_source);
-		time_source_destroy(_test_interval_time_source, true);
+		if time_source_exists(_test_interval_time_source){
+			time_source_destroy(_test_interval_time_source, true);
+		}
+		else{
+			grc_console_log("No time source:", _test_interval_time_source)
+		}
 		show_debug_overlay(false);		
 	}	
 	
@@ -677,8 +682,13 @@ function _Olympus_Test(name, fn, resolution_fn = undefined, prompt = undefined, 
 	_tear_down = function() {
 		// After we are done testing 
 		if (is_undefined(_completion_time)){
-			_set_completion_time();			
-			time_source_destroy(_timeout_time_source, true);			
+			_set_completion_time();
+			if time_source_exists(_timeout_time_source){
+				time_source_destroy(_timeout_time_source, true);
+			}
+			else{
+				grc_console_log("No time source:", _timeout_time_source)
+			}			
 		}								
 		my_suite_ref._my_summary_manager_ref.update_tests(get_summary());		
 		my_suite_ref._my_summary_manager_ref.update_progress(_index, _name);
