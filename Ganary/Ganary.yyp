@@ -58,7 +58,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.1100.0.624",
+    "IDEVersion":"2024.800.0.618",
   },
   "name":"Ganary",
   "resources":[
@@ -116,6 +116,7 @@
     {"id":{"name":"grc_register_sync_function_tests","path":"scripts/grc_register_sync_function_tests/grc_register_sync_function_tests.yy",},},
     {"id":{"name":"olympus_external_api","path":"scripts/olympus_external_api/olympus_external_api.yy",},},
     {"id":{"name":"static_scope_test","path":"scripts/static_scope_test/static_scope_test.yy",},},
+    {"id":{"name":"truthiness_test","path":"scripts/truthiness_test/truthiness_test.yy",},},
     {"id":{"name":"grc_shad_flash","path":"shaders/grc_shad_flash/grc_shad_flash.yy",},},
     {"id":{"name":"grc_snd_coinpickup","path":"sounds/grc_snd_coinpickup/grc_snd_coinpickup.yy",},},
     {"id":{"name":"grc_snd_silence_for_dynamic_asset","path":"sounds/grc_snd_silence_for_dynamic_asset/grc_snd_silence_for_dynamic_asset.yy",},},

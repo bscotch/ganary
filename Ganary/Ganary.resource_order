@@ -40,6 +40,7 @@
     {"name":"grc_register_async_user_feedback_tests","order":3,"path":"scripts/grc_register_async_user_feedback_tests/grc_register_async_user_feedback_tests.yy",},
     {"name":"grc_register_compile_tests","order":4,"path":"scripts/grc_register_compile_tests/grc_register_compile_tests.yy",},
     {"name":"static_scope_test","order":3,"path":"scripts/static_scope_test/static_scope_test.yy",},
+    {"name":"truthiness_test","order":17,"path":"scripts/truthiness_test/truthiness_test.yy",},
     {"name":"grc_shad_flash","order":6,"path":"shaders/grc_shad_flash/grc_shad_flash.yy",},
     {"name":"grc_snd_coinpickup","order":7,"path":"sounds/grc_snd_coinpickup/grc_snd_coinpickup.yy",},
     {"name":"grc_snd_silence_for_dynamic_asset","order":10,"path":"sounds/grc_snd_silence_for_dynamic_asset/grc_snd_silence_for_dynamic_asset.yy",},

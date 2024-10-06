@@ -1,4 +1,25 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("truthiness_test", function(){
+		// Sample values: [undefined, pointer_null, 5, "the", "", 0, false, true, [], {}]
+	
+		//									Value			Truthy		Should Equal				Should Not Equal
+		_test_truthiness("empty_struct",	{},				true,		[],							[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("full_struct",		{ key : 5 },	true,		[],							[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("empty_array",		[],				undefined,	[],							[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("full_array",		[1, 2, 3],		undefined,	[],							[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("Empty String",	"",				undefined,	[""],						[[1, 2, 3], undefined, pointer_null, 5, 0, "the", false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("real(0)",			0,				false,		[0, false],					[[1, 2, 3], undefined, "the", "", true, [], {}, { key : 5 } ]);
+		_test_truthiness("false",			false,			false,		[0, false],					[[1, 2, 3], undefined, "the", "", true, [], {}, { key : 5 } ]);
+		_test_truthiness("Null",			pointer_null,	false,		[pointer_null],				[[1, 2, 3], undefined, 5, "the", "", true, [], {}, { key : 5 } ]);
+		_test_truthiness("Undefined",		undefined,		false,		[undefined],				[[1, 2, 3], pointer_null, 5, 0, "the", "", false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("real(5)",			5,				true,		[5],						[[1, 2, 3], undefined, pointer_null, 0, "the", "", false, true, [], {}, { key : 5 } ]);
+		_test_truthiness("true",			true,			true,		[true, 1],					[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, [], {}, { key : 5 } ]);
+		
+		grc_expect_true(global.truthiness_test_passed, "Some of the truthiness test did not pass");
+	}).only();
+
+
+
 	olympus_add_test("static_var_increment_by_operator", function(){
 			//https://github.com/YoYoGames/GameMaker-Bugs/issues/7295
 			function Hello() constructor
