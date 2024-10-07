@@ -16,7 +16,7 @@ function grc_register_sync_function_tests(){
 		_test_truthiness("true",			true,			true,		[true, 1],					[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, [], {}, { key : 5 } ]);
 		
 		grc_expect_true(global.truthiness_test_passed, "Some of the truthiness test did not pass");
-	}).only();
+	})
 
 
 
