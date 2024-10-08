@@ -15,6 +15,9 @@ on:
       runner:
         description: 'Runner'
         required: false
+      platform:
+        description: 'Platform'
+        required: false
   workflow_call:
     inputs:
       runtime:
@@ -23,6 +26,10 @@ on:
         type: string
       runner:
         description: 'Runner'
+        required: false
+        type: string
+      platform:
+        description: 'Platform'
         required: false
         type: string
 permissions:
@@ -109,6 +116,7 @@ jobs:
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
           runtime-version: ${{ inputs.runtime }}
           cache: true
+          modules: ${{inputs.platform}}
         id: igor
       - name: use Igor build
         uses: bscotch/igor-build@main
@@ -117,6 +125,7 @@ jobs:
         with:
           yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
           user-dir: ${{ steps.igor.outputs.user-dir }}
+          platform: ${{inputs.platform}}
       # region Build for iOS through Fastlane
       - if: runner.os == 'MacOS'
         name: Set up the Fastlane fast file and build the XCode project
