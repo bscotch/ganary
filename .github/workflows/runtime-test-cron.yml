@@ -15,8 +15,8 @@ on:
           - beta
           - unstable
   schedule:
-    # At minute 30 past hour 14 and 22 UTC on every day-of-week from Monday through Friday.
-    - cron: '30 14,22 * * 1-5'
+    # At minute 30 past hour 13 and 22 UTC on every day-of-week from Monday through Friday.
+    - cron: '30 13,22 * * 1-5'
 env:
   FEED: ${{ github.event.inputs.feed || 'unstable' }}
 
