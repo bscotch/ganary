@@ -47,7 +47,6 @@ jobs:
           yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
           user-dir: ${{ steps.igor.outputs.user-dir }}
           platform: linux
-          yyc: false
       # This step uploads the build to the artifacts, so you can download it from the GitHub Actions page or use it in another workflow
       - name: upload-build
         uses: actions/upload-artifact@v4
