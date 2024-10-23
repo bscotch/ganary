@@ -6,12 +6,13 @@ on:
     inputs:
       runtime:
         description: 'Target runtime'
+        default: 2024.1100.0.658
         required: false
   workflow_call: #This line allows you to run the workflow from another workflow
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
     steps:
       # Check out the repository with the GameMaker project
       - uses: actions/checkout@v4
@@ -24,6 +25,10 @@ jobs:
           $yyp = Get-ChildItem -Path ${{ github.workspace }} -Recurse -Filter *.yyp
           Write-Output "YYP file found at: $yyp"
           "yyp-path=$yyp" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        with:
+          ffmpeg-version: '6.1.0'
       # This step sets up the GameMaker build CLI tool Igor https://github.com/bscotch/igor-setup
       - name: use Igor Setup
         uses: bscotch/igor-setup@develop
@@ -33,6 +38,7 @@ jobs:
           access-key: ${{ secrets.ACCESS_KEY }} # To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
           cache: true
           runtime-version: ${{ inputs.runtime }}
+          module: linux
       # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
       - name: use Igor build
         uses: bscotch/igor-build@v1
@@ -40,6 +46,8 @@ jobs:
         with:
           yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
           user-dir: ${{ steps.igor.outputs.user-dir }}
+          platform: linux
+          yyc: false
       # This step uploads the build to the artifacts, so you can download it from the GitHub Actions page or use it in another workflow
       - name: upload-build
         uses: actions/upload-artifact@v4
