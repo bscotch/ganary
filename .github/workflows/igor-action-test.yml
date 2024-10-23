@@ -38,7 +38,7 @@ jobs:
           access-key: ${{ secrets.ACCESS_KEY }} # To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
           cache: true
           runtime-version: ${{ inputs.runtime }}
-          module: linux
+          modules: linux
       # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
       - name: use Igor build
         uses: bscotch/igor-build@v1
