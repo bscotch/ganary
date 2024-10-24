@@ -20,6 +20,7 @@
     {"name":"grc_o_garbage_collection_test","order":1,"path":"objects/grc_o_garbage_collection_test/grc_o_garbage_collection_test.yy",},
     {"name":"grc_o_global_function_definition_test","order":17,"path":"objects/grc_o_global_function_definition_test/grc_o_global_function_definition_test.yy",},
     {"name":"grc_o_helper_async","order":4,"path":"objects/grc_o_helper_async/grc_o_helper_async.yy",},
+    {"name":"grc_o_helper_blank_child","order":1,"path":"objects/grc_o_helper_blank_child/grc_o_helper_blank_child.yy",},
     {"name":"grc_o_http_buffer_delete_test","order":6,"path":"objects/grc_o_http_buffer_delete_test/grc_o_http_buffer_delete_test.yy",},
     {"name":"grc_o_http_request_buffer_body_test","order":7,"path":"objects/grc_o_http_request_buffer_body_test/grc_o_http_request_buffer_body_test.yy",},
     {"name":"grc_o_keyboard_functions_test","order":4,"path":"objects/grc_o_keyboard_functions_test/grc_o_keyboard_functions_test.yy",},

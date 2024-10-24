@@ -58,7 +58,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.800.0.618",
+    "IDEVersion":"2024.1100.0.651",
   },
   "name":"Ganary",
   "resources":[
@@ -82,6 +82,7 @@
     {"id":{"name":"grc_o_garbage_collection_test","path":"objects/grc_o_garbage_collection_test/grc_o_garbage_collection_test.yy",},},
     {"id":{"name":"grc_o_global_function_definition_test","path":"objects/grc_o_global_function_definition_test/grc_o_global_function_definition_test.yy",},},
     {"id":{"name":"grc_o_helper_async","path":"objects/grc_o_helper_async/grc_o_helper_async.yy",},},
+    {"id":{"name":"grc_o_helper_blank_child","path":"objects/grc_o_helper_blank_child/grc_o_helper_blank_child.yy",},},
     {"id":{"name":"grc_o_helper_blank","path":"objects/grc_o_helper_blank/grc_o_helper_blank.yy",},},
     {"id":{"name":"grc_o_http_buffer_delete_test","path":"objects/grc_o_http_buffer_delete_test/grc_o_http_buffer_delete_test.yy",},},
     {"id":{"name":"grc_o_http_header_test","path":"objects/grc_o_http_header_test/grc_o_http_header_test.yy",},},

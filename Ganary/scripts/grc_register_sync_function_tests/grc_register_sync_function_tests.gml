@@ -1,4 +1,9 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("object_inheritance_function_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/8129
+		grc_instance_create(grc_o_helper_blank_child);
+	})
+	
 	olympus_add_test("truthiness_test", function(){
 		// Sample values: [undefined, pointer_null, 5, "the", "", 0, false, true, [], {}]
 	

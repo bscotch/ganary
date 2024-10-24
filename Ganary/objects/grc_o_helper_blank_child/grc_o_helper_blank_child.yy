@@ -1,11 +1,11 @@
 {
   "$GMObject":"",
-  "%Name":"grc_o_helper_blank",
+  "%Name":"grc_o_helper_blank_child",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"grc_o_helper_blank",
+  "name":"grc_o_helper_blank_child",
   "overriddenProperties":[],
   "parent":{
     "name":"sync_tests",
