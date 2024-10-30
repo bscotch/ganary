@@ -15,9 +15,6 @@
     "gamepipe_test":{
       "copyToTargets":"3035461389054378222",
     },
-    "dev":{
-      "androidcodeinjection":"<YYAndroidManifestActivityInject>\\r\\n   <intent-filter>\\r\\n       <action android:name=\\\"com.google.intent.action.TEST_LOOP\\\"/>\\r\\n       <category android:name=\\\"android.intent.category.DEFAULT\\\"/>\\r\\n       <data android:mimeType=\\\"application/javascript\\\"/>\\r\\n   </intent-filter>\\r\\n</YYAndroidManifestActivityInject>\\r\\n\\r\\n<YYAndroidManifestApplicationInject>\\r\\n<meta-data\\r\\n  android:name=\\\"com.google.test.loops\\\"\\r\\n  android:value=\\\"5\\\" />\\r\\n</YYAndroidManifestApplicationInject>\\r\\n<YYAndroidManifestApplicationAttributes>\\r\\nandroid:debuggable=\\\"true\\\" \\r\\n</YYAndroidManifestApplicationAttributes>",
-    },
   },
   "copyToTargets":12,
   "description":"",
