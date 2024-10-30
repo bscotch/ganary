@@ -11,7 +11,10 @@
     "name":"sync_tests",
     "path":"folders/Ganary/Objects/sync_tests.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"grc_o_helper_blank",
+    "path":"objects/grc_o_helper_blank/grc_o_helper_blank.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
