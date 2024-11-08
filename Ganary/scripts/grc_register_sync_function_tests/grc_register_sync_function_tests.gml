@@ -4,6 +4,20 @@ function grc_register_sync_function_tests(){
 		grc_instance_create(grc_o_helper_blank_child);
 	})
 	
+	olympus_add_test("sort_by_test", function(){
+		var current_array = [{ index : 2}, { index : 0 }, { index : 1 , something: "else"}];
+		sort_by(current_array, "index");
+		for ( var i = 0; i < array_length(current_array); i++){
+			grc_expect_true(current_array[i].index == i);
+		}
+		
+		sort_by(current_array, "index", false);
+		for ( var i = 0; i < array_length(current_array); i++){
+			var expected_index = (array_length(current_array)-1)-i;
+			grc_expect_true(current_array[i].index == expected_index);
+		}
+	})
+
 	olympus_add_test("truthiness_test", function(){
 		// Sample values: [undefined, pointer_null, 5, "the", "", 0, false, true, [], {}]
 	

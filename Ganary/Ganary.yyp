@@ -116,6 +116,7 @@
     {"id":{"name":"grc_register_compile_tests","path":"scripts/grc_register_compile_tests/grc_register_compile_tests.yy",},},
     {"id":{"name":"grc_register_sync_function_tests","path":"scripts/grc_register_sync_function_tests/grc_register_sync_function_tests.yy",},},
     {"id":{"name":"olympus_external_api","path":"scripts/olympus_external_api/olympus_external_api.yy",},},
+    {"id":{"name":"sort_by_test","path":"scripts/sort_by_test/sort_by_test.yy",},},
     {"id":{"name":"static_scope_test","path":"scripts/static_scope_test/static_scope_test.yy",},},
     {"id":{"name":"truthiness_test","path":"scripts/truthiness_test/truthiness_test.yy",},},
     {"id":{"name":"grc_shad_flash","path":"shaders/grc_shad_flash/grc_shad_flash.yy",},},
