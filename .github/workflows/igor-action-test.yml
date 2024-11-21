@@ -6,7 +6,7 @@ on:
     inputs:
       runtime:
         description: 'Target runtime'
-        default: 2024.1100.0.658
+        default: 2024.1100.0.712
         required: false
   workflow_call: #This line allows you to run the workflow from another workflow
 
@@ -38,7 +38,7 @@ jobs:
           access-key: ${{ secrets.ACCESS_KEY }} # To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
           cache: true
           runtime-version: ${{ inputs.runtime }}
-          modules: linux
+          modules: ios
       # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
       - name: use Igor build
         uses: bscotch/igor-build@v1
@@ -46,7 +46,7 @@ jobs:
         with:
           yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
           user-dir: ${{ steps.igor.outputs.user-dir }}
-          platform: linux
+          platform: ios
       # This step uploads the build to the artifacts, so you can download it from the GitHub Actions page or use it in another workflow
       - name: upload-build
         uses: actions/upload-artifact@v4
