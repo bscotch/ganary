@@ -16,6 +16,7 @@
     {"name":"grc_o_controller","order":1,"path":"objects/grc_o_controller/grc_o_controller.yy",},
     {"name":"grc_o_deleting_ds_map_pre_http_async","order":14,"path":"objects/grc_o_deleting_ds_map_pre_http_async/grc_o_deleting_ds_map_pre_http_async.yy",},
     {"name":"grc_o_dynamic_asset_ogg_track_test","order":10,"path":"objects/grc_o_dynamic_asset_ogg_track_test/grc_o_dynamic_asset_ogg_track_test.yy",},
+    {"name":"grc_o_dynamic_texture_group_test","order":19,"path":"objects/grc_o_dynamic_texture_group_test/grc_o_dynamic_texture_group_test.yy",},
     {"name":"grc_o_garbage_collection_test_helper","order":9,"path":"objects/grc_o_garbage_collection_test_helper/grc_o_garbage_collection_test_helper.yy",},
     {"name":"grc_o_garbage_collection_test","order":1,"path":"objects/grc_o_garbage_collection_test/grc_o_garbage_collection_test.yy",},
     {"name":"grc_o_global_function_definition_test","order":17,"path":"objects/grc_o_global_function_definition_test/grc_o_global_function_definition_test.yy",},
@@ -53,5 +54,6 @@
     {"name":"grc_snd_wave3","order":14,"path":"sounds/grc_snd_wave3/grc_snd_wave3.yy",},
     {"name":"grc_snd_wave4","order":15,"path":"sounds/grc_snd_wave4/grc_snd_wave4.yy",},
     {"name":"grc_player_fallfromspace_spine","order":4,"path":"sprites/grc_player_fallfromspace_spine/grc_player_fallfromspace_spine.yy",},
+    {"name":"grc_sp_non_object_associated","order":19,"path":"sprites/grc_sp_non_object_associated/grc_sp_non_object_associated.yy",},
   ],
 }

@@ -5,6 +5,11 @@ function grc_register_async_function_tests(){
 		})
 	}
 
+	olympus_add_async_test("dynamic_texture_group_test", function(){
+		var ins = grc_instance_create(grc_o_dynamic_texture_group_test);
+		return ins;
+	})
+
 	olympus_add_async_test("http_header_test_short_body", function(){
 	  //https://github.com/YoYoGames/GameMaker-Bugs/issues/6919
 		var ins = grc_instance_create(grc_o_http_header_test);
