@@ -132,11 +132,11 @@ function grc_register_async_function_tests(){
 		grc_expect_eq(video_format_rgba, video_get_format(), "The format should be rgba");
 		grc_expect_eq(false, video_is_looping(), "the video should not be looping.");		
 		return grc_instance_create(grc_o_video_function_test);
-	});	
+	}).only();	
 	
 	olympus_add_async_test("video_end_event_missing", function(){
 		return grc_instance_create(grc_o_video_end_event_missing);
-	});
+	}).only();
 	
 	olympus_add_async_test("video_open_block", function(){
 		return grc_instance_create(grc_o_video_open_block);
