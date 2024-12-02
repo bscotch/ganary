@@ -4,4 +4,3 @@
 // Inherit the parent event
 event_inherited();
 video_open("Ganary/cutscenes/opening_Trim.mp4");
-video_enable_loop(true);
