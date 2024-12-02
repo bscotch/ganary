@@ -29,6 +29,7 @@
     {"name":"grc_o_self_with_scope_test","order":15,"path":"objects/grc_o_self_with_scope_test/grc_o_self_with_scope_test.yy",},
     {"name":"grc_o_shader_test","order":1,"path":"objects/grc_o_shader_test/grc_o_shader_test.yy",},
     {"name":"grc_o_video_end_event_missing","order":12,"path":"objects/grc_o_video_end_event_missing/grc_o_video_end_event_missing.yy",},
+    {"name":"grc_o_video_fps_freeze","order":20,"path":"objects/grc_o_video_fps_freeze/grc_o_video_fps_freeze.yy",},
     {"name":"grc_o_video_open_block","order":13,"path":"objects/grc_o_video_open_block/grc_o_video_open_block.yy",},
     {"name":"grc_o_video_resume_test","order":5,"path":"objects/grc_o_video_resume_test/grc_o_video_resume_test.yy",},
     {"name":"o_grc_test_starter","order":1,"path":"objects/o_grc_test_starter/o_grc_test_starter.yy",},

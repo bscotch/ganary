@@ -35,6 +35,7 @@
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"a773860.txt","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"a773860.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc.mp4","CopyToMask":-1,"filePath":"datafiles/Ganary/cutscenes","name":"grc.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"opening_Trim.mp4","CopyToMask":-1,"filePath":"datafiles/Ganary/cutscenes","name":"opening_Trim.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_buffer_encode_test_file","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_buffer_encode_test_file","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_config_specific_file.md","ConfigValues":{
         "dev":{
@@ -100,6 +101,7 @@
     {"id":{"name":"grc_o_struct_built_in_variable_test","path":"objects/grc_o_struct_built_in_variable_test/grc_o_struct_built_in_variable_test.yy",},},
     {"id":{"name":"grc_o_struct_varialbe_leak_tester","path":"objects/grc_o_struct_varialbe_leak_tester/grc_o_struct_varialbe_leak_tester.yy",},},
     {"id":{"name":"grc_o_video_end_event_missing","path":"objects/grc_o_video_end_event_missing/grc_o_video_end_event_missing.yy",},},
+    {"id":{"name":"grc_o_video_fps_freeze","path":"objects/grc_o_video_fps_freeze/grc_o_video_fps_freeze.yy",},},
     {"id":{"name":"grc_o_video_function_test","path":"objects/grc_o_video_function_test/grc_o_video_function_test.yy",},},
     {"id":{"name":"grc_o_video_open_block","path":"objects/grc_o_video_open_block/grc_o_video_open_block.yy",},},
     {"id":{"name":"grc_o_video_resume_test","path":"objects/grc_o_video_resume_test/grc_o_video_resume_test.yy",},},
