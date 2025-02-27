@@ -142,6 +142,7 @@ jobs:
             setup_ci
             matchType = "appstore"
             bundleId = "com.bscotch.ganary"
+            xcodes(version: "16.1")
             match(
               type: matchType,
               git_url:"https://github.com/bscotch/public-project-ios-match-files.git",
@@ -156,7 +157,6 @@ jobs:
               profile_name: ENV["sigh_#{bundleId}_#{matchType}_profile-name"],
               code_sign_identity: "iPhone Distribution"
             )
-            build_app
             sh("echo firebase-bin-name=#{lane_context[SharedValues::IPA_OUTPUT_PATH]} >> $GITHUB_ENV")
           end
           EOF
