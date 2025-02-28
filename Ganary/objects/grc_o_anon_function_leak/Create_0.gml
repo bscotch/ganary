@@ -10,7 +10,7 @@ function anon_const() constructor {
 anon_assignment = function(){
 	var s = {};
 	for (var i = 0; i < 1000000; i ++){
-		variable_struct_set(s, "key"+string(i), new anon_const());
+		struct_set(s, "key"+string(i), new anon_const());
 	};
 	//delete s;
 	gc_collect();

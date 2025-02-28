@@ -78,7 +78,7 @@ function Olympus_Suite_Options(options = {}) constructor{
 		for (var i = 0 ; i < options_keys_length; i++){
 			var options_key = options_keys[i];
 			var options_value = options[$options_key];
-			variable_struct_set(self, options_key, options_value);
+			struct_set(self, options_key, options_value);
 		}
 	}
 }

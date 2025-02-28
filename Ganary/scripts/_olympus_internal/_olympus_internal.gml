@@ -72,7 +72,7 @@ function _olympus_merge_context(target_function, new_context){
 
 		// Pick getter and setter based on the source_context type
 		var _variable_get_names = variable_struct_get_names;
-		var _variable_set_ = variable_struct_set;
+		var _variable_set_ = struct_set;
 		if (!is_struct(source_context) && instance_exists(source_context)){
 			_variable_get_names = variable_instance_get_names;
 			_variable_set_ = variable_instance_set;
@@ -155,11 +155,11 @@ function _Olympus_Test_Error(error_message, error_code, info = undefined, stackt
 	message = error_message;
 	code  = error_code;	
 	if (!is_undefined(info)){
-		variable_struct_set(self, "info", info);
+		struct_set(self, "info", info);
 	}
 		
 	if (!is_undefined(stacktrace)){
-		variable_struct_set(self, "stacktrace", stacktrace);
+		struct_set(self, "stacktrace", stacktrace);
 	}	
 }
 
@@ -267,7 +267,7 @@ function _Olympus_Suite(function_to_add_tests_and_hooks, options): _Olympus_Suit
 			for (var i = 0 ; i < options_keys_length; i++){
 				var options_key = options_keys[i];
 				var options_value = options[$options_key];
-				variable_struct_set(self, options_key, options_value);
+				struct_set(self, options_key, options_value);
 				self.default_options[$options_key] = options_value;
 			}
 		}
