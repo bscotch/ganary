@@ -1,6 +1,7 @@
 function grc_register_sync_function_tests(){
-	olympus_add_test("object_inheritance_function_test", function(){
+	xolympus_add_test("object_inheritance_function_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/8129
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/9591
 		grc_instance_create(grc_o_helper_blank_child);
 	})
 	
@@ -173,6 +174,7 @@ function grc_register_sync_function_tests(){
 	})	
 	
 	olympus_add_test("self_comparison_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/9592
 		var first_comp = (self == other)
 		show_debug_message(string(first_comp));
 		var _self = self
