@@ -1,5 +1,5 @@
 function grc_register_sync_function_tests(){
-	xolympus_add_test("object_inheritance_function_test", function(){
+	olympus_add_test("object_inheritance_function_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/8129
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/9591
 		grc_instance_create(grc_o_helper_blank_child);
@@ -132,10 +132,11 @@ function grc_register_sync_function_tests(){
 	})
 	
 	olympus_add_test("real_number_to_int32", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/9597
 		var t = 8080;
 		var t_type = typeof(t);
 		grc_console_log("t_type:", t_type);
-		grc_expect_eq(t_type, "number");
+		grc_expect_eq("number", t_type);
 
 		var a = {
 			// when assigning a number that will be the result of a ?? or ? operation
@@ -145,11 +146,11 @@ function grc_register_sync_function_tests(){
 		
 		var b_type = typeof(a.b);
 		grc_console_log("b_type:", b_type);
-		grc_expect_eq(b_type, "number");
+		grc_expect_eq("number", b_type);
 		
 		var c_type = typeof(a.c);
 		grc_console_log("c_type:", c_type);
-		grc_expect_eq(c_type, "number");
+		grc_expect_eq("number", c_type);
 	})
 
 	olympus_add_test("ds_map_to_with_chain_accessor_test", function(){
