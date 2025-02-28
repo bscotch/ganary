@@ -173,10 +173,12 @@ function grc_register_sync_function_tests(){
 	})	
 	
 	olympus_add_test("self_comparison_test", function(){
-		var fist_comp = (self == other)
+		var first_comp = (self == other)
+		show_debug_message(string(first_comp));
 		var _self = self
 		var second_comp = _self == other
-		grc_expect_eq(fist_comp, second_comp);	
+		show_debug_message(string(second_comp));
+		grc_expect_eq(first_comp, second_comp);	
 	})
 
 	olympus_add_test("struct_addition_assignment", function(){

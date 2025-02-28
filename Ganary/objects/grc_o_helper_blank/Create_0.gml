@@ -5,5 +5,5 @@ function setup_from_item_id(){
 }
 
 function init_instance_variables(){
-	
+	show_debug_message("This should not show as it is overriden by children objects")
 }
