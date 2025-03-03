@@ -4,7 +4,7 @@
 // Inherit the parent event
 event_inherited();
 
-function init_instance_variables(){
+init_instance_variables = function (){
 	obj_var = "hello";
 }
 
