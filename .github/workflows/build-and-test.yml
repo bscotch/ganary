@@ -15,7 +15,7 @@ on:
       runner:
         description: 'Runner'
         required: false
-        default: "macOS-latest"
+        default: "ubuntu-latest"
       platform:
         description: 'Platform'
         required: false
