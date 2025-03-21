@@ -61,7 +61,7 @@
   "MetaData":{
     "IDEVersion":"2024.1100.0.696",
   },
-  "name":"Ganary",
+  "name":"Ganary Blah",
   "resources":[
     {"id":{"name":"_olympus_extension","path":"extensions/_olympus_extension/_olympus_extension.yy",},},
     {"id":{"name":"grc_fnt_cjk","path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},},
