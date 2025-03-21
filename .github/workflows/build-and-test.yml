@@ -68,15 +68,15 @@ jobs:
       - name: Get the version from the yyp file for Linux
         if: runner.os == 'Linux'
         run: |
-          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/Ganary/Ganary.yyp)" >> $GITHUB_ENV
+          echo "YYP_VERSION=$(grep -oP '(?<=IDEVersion":")(\d+\.\d+\.\d+\.\d+)(?=")' ${{ github.workspace }}/Ganary/Ganary Blah.yyp)" >> $GITHUB_ENV
       - name: Get the version from the yyp file for MacOS
         if: runner.os == 'macOS'
         run: |
-          echo "YYP_VERSION=$(egrep -o 'IDEVersion":"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)' ${GITHUB_WORKSPACE}/Ganary/Ganary.yyp | cut -d '"' -f 3)" >> $GITHUB_ENV
+          echo "YYP_VERSION=$(egrep -o 'IDEVersion":"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)' ${GITHUB_WORKSPACE}/Ganary/Ganary Blah.yyp | cut -d '"' -f 3)" >> $GITHUB_ENV
       - name: Get the version from the yyp file for Windows
         if: runner.os == 'Windows'
         run: |
-          $yypVersion = Select-String -Path "${env:GITHUB_WORKSPACE}\Ganary\Ganary.yyp" -Pattern 'IDEVersion":"(\d+\.\d+\.\d+\.\d+)' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
+          $yypVersion = Select-String -Path "${env:GITHUB_WORKSPACE}\Ganary\Ganary Blah.yyp" -Pattern 'IDEVersion":"(\d+\.\d+\.\d+\.\d+)' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
           "YYP_VERSION=$yypVersion" | Out-File -Append -FilePath $env:GITHUB_ENV 
       #endregion
       #region Android setup
@@ -113,7 +113,7 @@ jobs:
         uses: bscotch/igor-setup@develop
         with:
           access-key: ${{ secrets.ACCESS_KEY }}
-          target-yyp: ${{ github.workspace }}/Ganary/Ganary.yyp
+          target-yyp: ${{ github.workspace }}/Ganary/Ganary Blah.yyp
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
           runtime-version: ${{ inputs.runtime }}
           cache: true
@@ -124,7 +124,7 @@ jobs:
         id: build
         timeout-minutes: 30
         with:
-          yyp-path: ${{ github.workspace }}/Ganary/Ganary.yyp
+          yyp-path: ${{ github.workspace }}/Ganary/Ganary Blah.yyp
           user-dir: ${{ steps.igor.outputs.user-dir }}
           platform: ${{inputs.platform}}
       # region Build for iOS through Fastlane
