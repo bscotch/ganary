@@ -110,7 +110,7 @@ jobs:
           "platform-tools"
       #endregion
       - name: use Igor Setup
-        uses: bscotch/igor-setup@develop
+        uses: bscotch/igor-setup@v1
         with:
           access-key: ${{ secrets.ACCESS_KEY }}
           target-yyp: ${{ github.workspace }}/Ganary/Ganary Blah.yyp
@@ -120,7 +120,7 @@ jobs:
           modules: ${{inputs.platform}}
         id: igor
       - name: use Igor build
-        uses: bscotch/igor-build@main
+        uses: bscotch/igor-build@v1.0.4
         id: build
         timeout-minutes: 30
         with:
