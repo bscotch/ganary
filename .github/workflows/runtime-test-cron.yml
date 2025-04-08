@@ -26,7 +26,7 @@ permissions:
 jobs:
   check_latest_runtime:
     name: Check latest runtime
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       runtime: ${{ steps.sync.outputs.runtime }}
     steps:
