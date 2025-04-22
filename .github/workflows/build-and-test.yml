@@ -202,7 +202,7 @@ jobs:
 
 
           $process.WaitForExit()
-
+          Write-Host "Process exited with code: $($process.ExitCode)"
           $success = $true
 
           $olympusResultDir = Join-Path $saveDataDir "Olympus_records/internal/${{ env.RAW_TEST_RESULT_FILE_NAME }}"
