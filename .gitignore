@@ -4,3 +4,4 @@ COMMIT_EDITMSG
 package-lock.json
 *.olympus.json
 Ganary/tmp
+Ganary/Build
