@@ -238,7 +238,7 @@ jobs:
           --timeout 5m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" \
-          --device ${{env.firebase-device}} \
+          --device=${{env.firebase-device}} \
           --format="text(axis_value)" 2>&1 | tee test_output.txt
       - name: Parse the output to get the GCS bucket and axis value
         if: runner.os == 'Linux'|| runner.os == 'macOS'
