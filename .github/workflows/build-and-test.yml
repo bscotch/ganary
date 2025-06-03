@@ -163,6 +163,7 @@ jobs:
           # Run fastlane beta
           fastlane beta
           echo firebase-test-type=ios >> $GITHUB_ENV
+          echo firebase-device=model=iphone13pro,version=16.6 >> $GITHUB_ENV
       - name: upload build as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -217,6 +218,7 @@ jobs:
         run: |
           echo firebase-bin-name=${{ steps.build.outputs.out-dir }}/${{ steps.build.outputs.out-name }} >> $GITHUB_ENV
           echo firebase-test-type=android >> $GITHUB_ENV
+          echo firebase-device=model=redfin >> $GITHUB_ENV
       - uses: google-github-actions/auth@v2
         if: runner.os == 'Linux'|| runner.os == 'macOS'
         with:
@@ -236,6 +238,7 @@ jobs:
           --timeout 5m \
           --scenario-numbers=1 \
           --client-details=matrixLabel="${{ runner.os }}-${{ env.YYP_VERSION }}-${{ inputs.runtime}}" \
+          --device ${{env.firebase-device}} \
           --format="text(axis_value)" 2>&1 | tee test_output.txt
       - name: Parse the output to get the GCS bucket and axis value
         if: runner.os == 'Linux'|| runner.os == 'macOS'
