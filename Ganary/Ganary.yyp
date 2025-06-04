@@ -16,6 +16,7 @@
   },
   "defaultScriptType":1,
   "Folders":[
+    {"$GMFolder":"","%Name":"Extensions","folderPath":"folders/Extensions.yy","name":"Extensions","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Ganary","folderPath":"folders/Ganary.yy","name":"Ganary","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"_Internal","folderPath":"folders/Ganary/_Internal.yy","name":"_Internal","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"_Scripts","folderPath":"folders/Ganary/_Internal/_Scripts.yy","name":"_Scripts","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -59,11 +60,12 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.1100.0.696",
+    "IDEVersion":"2024.11.0.179",
   },
   "name":"Ganary",
   "resources":[
     {"id":{"name":"_olympus_extension","path":"extensions/_olympus_extension/_olympus_extension.yy",},},
+    {"id":{"name":"TextureEncode","path":"extensions/TextureEncode/TextureEncode.yy",},},
     {"id":{"name":"grc_fnt_cjk","path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},},
     {"id":{"name":"grc_fnt_ui","path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},},
     {"id":{"name":"_olympus_async_awaiter","path":"objects/_olympus_async_awaiter/_olympus_async_awaiter.yy",},},
@@ -143,7 +145,7 @@
   ],
   "templateType":null,
   "TextureGroups":[
-    {"$GMTextureGroup":"","%Name":"Default","autocrop":true,"border":2,"compressFormat":"bz2","ConfigValues":{},"customOptions":"","directory":"","groupParent":null,"isScaled":false,"loadType":"default","mipsToGenerate":0,"name":"Default","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
-    {"$GMTextureGroup":"","%Name":"texgroup1","autocrop":true,"border":2,"compressFormat":"bz2","ConfigValues":{},"customOptions":"","directory":"","groupParent":null,"isScaled":true,"loadType":"dynamicpages","mipsToGenerate":0,"name":"texgroup1","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMTextureGroup":"","%Name":"Default","autocrop":true,"border":2,"compressFormat":"custom","ConfigValues":{},"customOptions":"ASTC 6x6 -medium","directory":"","groupParent":null,"isScaled":false,"loadType":"default","mipsToGenerate":0,"name":"Default","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMTextureGroup":"","%Name":"texgroup1","autocrop":true,"border":2,"compressFormat":"custom","ConfigValues":{},"customOptions":"ASTC 6x6 -medium","directory":"","groupParent":null,"isScaled":true,"loadType":"dynamicpages","mipsToGenerate":0,"name":"texgroup1","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
   ],
 }

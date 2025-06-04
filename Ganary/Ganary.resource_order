@@ -1,5 +1,6 @@
 {
   "FolderOrderSettings":[
+    {"name":"Extensions","order":2,"path":"folders/Extensions.yy",},
     {"name":"Sounds","order":1,"path":"folders/Sounds.yy",},
   ],
   "ResourceOrderSettings":[
