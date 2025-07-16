@@ -42,6 +42,8 @@ function grc_register_sync_function_tests(){
 
 	olympus_add_test("static_var_increment_by_operator", function(){
 			//https://github.com/YoYoGames/GameMaker-Bugs/issues/7295
+			//https://github.com/YoYoGames/GameMaker-Bugs/issues/7173
+			//https://github.com/YoYoGames/GameMaker-Bugs/issues/10291
 			function Hello() constructor
 			{
 			    static variable = 0;
