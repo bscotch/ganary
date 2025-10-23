@@ -44,14 +44,6 @@ function grc_register_sync_function_tests(){
 			//https://github.com/YoYoGames/GameMaker-Bugs/issues/7295
 			//https://github.com/YoYoGames/GameMaker-Bugs/issues/7173
 			//https://github.com/YoYoGames/GameMaker-Bugs/issues/10291
-			function Hello() constructor
-			{
-			    static variable = 0;
-    
-			    static add = function() {
-			        Hello.variable++;
-			    }
-			}
 			new Hello();
 
 			Hello.variable++; //works
@@ -64,7 +56,6 @@ function grc_register_sync_function_tests(){
 			Hello.variable += 1; //broken
 			Hello.variable *= 2; //broken
 			Hello.variable /= 2; //broken
-
 			show_debug_message(Hello.variable);
 	})
 
