@@ -163,7 +163,7 @@ jobs:
           # Run fastlane beta
           fastlane beta
           echo firebase-test-type=ios >> $GITHUB_ENV
-          echo firebase-device=model=iphone13pro,version=16.6 >> $GITHUB_ENV
+          echo firebase-device=model=iphone16pro,version=16.6 >> $GITHUB_ENV
       - name: upload build as artifact
         uses: actions/upload-artifact@v4
         with:

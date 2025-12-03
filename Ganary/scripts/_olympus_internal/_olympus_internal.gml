@@ -254,7 +254,7 @@ function _Olympus_Suite(function_to_add_tests_and_hooks, options): _Olympus_Suit
 	default_options = new _Olympus_Suite_Options_Internal();
 
 	static _android_initialized = false;
-	if (!_android_initialized){
+	if (!_android_initialized && os_type == os_android){
 		_android_initialized = true;
 		_olympus_android_init()
 	}

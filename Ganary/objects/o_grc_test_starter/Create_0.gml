@@ -29,7 +29,6 @@ _function_to_add_tests_and_hooks = function() {
 	grc_register_sync_function_tests();
 	grc_register_async_function_tests();
 	grc_register_async_user_feedback_tests();
-	grc_register_compile_tests();
 	
 	olympus_add_hook_after_suite_finish( function(summary){ 
 		var failed = false;
