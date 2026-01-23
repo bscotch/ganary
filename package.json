@@ -30,7 +30,17 @@
         "branch": "develop",
         "revision": "283e72c9e5cd843f46d4402d03293290697fe1bd"
       }
-    ]
+    ],
+      "skipTest": false,
+      "appIDs": {
+        "android": "com.bscotch.ganary"
+      },
+      "builds": [
+        {
+          "target": "operagx",
+          "build": true
+        }
+      ]
   },
   "author": "Shi Chen",
   "license": "MIT",
