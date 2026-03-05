@@ -107,6 +107,7 @@ function grc_register_async_function_tests(){
 	})
 	
 	olympus_add_async_test("room_functions_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14234
 		return grc_instance_create(grc_o_room_functions_test);
 	})
 
