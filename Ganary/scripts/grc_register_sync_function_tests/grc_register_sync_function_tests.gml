@@ -1,4 +1,11 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("template_strings_formatting_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14220
+		var c = 1;
+		show_debug_message($"a \{b\} {c}")
+	})
+
+
 	olympus_add_test("object_inheritance_function_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/8129
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/9591
