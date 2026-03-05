@@ -84,6 +84,7 @@ if (ds_map_exists(test_records, _id)){
 		array_push(errors, err);
 	}
 	
+	//https://github.com/YoYoGames/GameMaker-Bugs/issues/14224
 	buffer_delete(test_record.body_handle);
 	ds_map_destroy(test_record.header_handle);
   }
