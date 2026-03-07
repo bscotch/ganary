@@ -37,7 +37,11 @@ function grc_register_sync_function_tests(){
 		_test_truthiness("Empty String",	"",				undefined,	[""],						[[1, 2, 3], undefined, pointer_null, 5, 0, "the", false, true, [], {}, { key : 5 } ]);
 		_test_truthiness("real(0)",			0,				false,		[0, false],					[[1, 2, 3], undefined, "the", "", true, [], {}, { key : 5 } ]);
 		_test_truthiness("false",			false,			false,		[0, false],					[[1, 2, 3], undefined, "the", "", true, [], {}, { key : 5 } ]);
-		_test_truthiness("Null",			pointer_null,	false,		[pointer_null],				[[1, 2, 3], undefined, 5, "the", "", true, [], {}, { key : 5 } ]);
+		var truthiness = false;
+		if GM_runtime_type == "gmrt"{
+			truthiness = undefined;
+		}
+		_test_truthiness("Null",			pointer_null,	truthiness,		[pointer_null],				[[1, 2, 3], undefined, 5, "the", "", true, [], {}, { key : 5 } ]);
 		_test_truthiness("Undefined",		undefined,		false,		[undefined],				[[1, 2, 3], pointer_null, 5, 0, "the", "", false, true, [], {}, { key : 5 } ]);
 		_test_truthiness("real(5)",			5,				true,		[5],						[[1, 2, 3], undefined, pointer_null, 0, "the", "", false, true, [], {}, { key : 5 } ]);
 		_test_truthiness("true",			true,			true,		[true, 1],					[[1, 2, 3], undefined, pointer_null, 5, "the", "", 0, false, [], {}, { key : 5 } ]);
@@ -198,8 +202,8 @@ function grc_register_sync_function_tests(){
 	})
 
 	olympus_add_test("json_parse_nonstandard_json_value", function(){
+		grc_console_log("Parsing basic values");
 		var _some_json = {
-			"undefined": undefined,
 			"infinity": infinity,
 			"true": true,
 			"false": false,
@@ -217,16 +221,17 @@ function grc_register_sync_function_tests(){
 			grc_expect_eq(value, expected_value, "Parsed value does not match the original value for name: " + name);
 		}
 
+		grc_console_log("Parsing pointer_invalid");
 		var _some_json = {
-			"pointer_null": pointer_null,
 			"pointer_invalid": pointer_invalid,
 		};
 		var _some_json_string = json_stringify(_some_json);
 		var _some_json_string_parsed = json_parse(_some_json_string);
-
 		var expected_parsed_value = {
-			"pointer_null": undefined,
-			"pointer_invalid": os_type == os_windows ? "FFFFFFFFFFFFFFFF" : "0xffffffffffffffff",
+			"pointer_invalid": os_type == os_windows ? "FFFFFFFFFFFFFFFF" : "0xffffffffffffffff"
+		}
+		if GM_runtime_type == "gmrt" {
+			expected_parsed_value[$"pointer_invalid"] = "0000FFFFFFFFFFFF"
 		}
 		
 		var names = struct_get_names(_some_json_string_parsed);
@@ -234,9 +239,10 @@ function grc_register_sync_function_tests(){
 			var name = names[i];
 			var value = _some_json_string_parsed[$name];
 			var expected_value = expected_parsed_value[$name];
-			grc_expect_eq(value, expected_value, "Parsed value does not match the original value for name: " + name);
+			grc_expect_eq(expected_value, value, "Parsed value does not match the original value for name: " + name);
 		}
 		
+		grc_console_log("Parsing NaN");
 		var _some_json = {
 			"NaN": NaN,
 		};
@@ -246,8 +252,30 @@ function grc_register_sync_function_tests(){
 		var name = "NaN";
 		var value = _some_json_string_parsed[$name];
 		var expected_value = expected_parsed_value[$name];
-		grc_expect_neq(value, expected_value, "Parsed value does not match the original value for name: " + name);				
-	})	
+		grc_expect_neq(value, expected_value, "Parsed value does not match the original value for name: " + name);		
+
+
+		grc_console_log("Parsing undefined and pointer_null");
+		var _some_json = {
+			"undefined": undefined,
+			"pointer_null": pointer_null
+		};
+		var _some_json_string = json_stringify(_some_json);
+		var _some_json_string_parsed = json_parse(_some_json_string);
+		
+		var names = struct_get_names(_some_json_string_parsed);
+		for (var i = 0; i < array_length(names); i++){
+			var name = names[i];
+			var value = _some_json_string_parsed[$name];
+			var actual_value = value;
+			var expected_value = undefined;
+			if GM_runtime_type == "gmrt" {
+				actual_value = typeof(value);
+				expected_value = "null"
+			}
+			grc_expect_eq(expected_value, actual_value, "Parsed value does not match the original value for name: " + name);
+		}			
+	})
 
 	olympus_add_test("ds_map_accessor_error", function(){
 		function SomeStructWithMap() constructor
@@ -403,9 +431,11 @@ function grc_register_sync_function_tests(){
 		grc_expect_eq(parsed_struc.config.os.status, 1);
 	})
 	
-	olympus_add_test("alarm_set", function() {
-		alarm[0] = 1;
-	})
+	if GM_runtime_type == "gms2"{
+		olympus_add_test("alarm_set", function() {
+			alarm[0] = 1;
+		})
+	}
 	
 	olympus_add_test("viewport_set", function() {
 		var cur_port =  view_wport[0];
@@ -476,6 +506,7 @@ function grc_register_sync_function_tests(){
 	
 	olympus_test_dependency_chain_begin();
 	olympus_add_test("GM_runtime_version_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14259
 		var runtime = GM_runtime_version;
 		grc_expect_neq(runtime, "0.0.0.0");
 		var version = string_split(runtime, ".");
@@ -507,16 +538,29 @@ function grc_register_sync_function_tests(){
 		var destroyed_list = ds_list_create();
 		ds_list_destroy(destroyed_list);
 		var new_list = ds_list_create();
-		grc_expect_true(ds_exists(destroyed_list, ds_type_list), "creating a new list should revive the old list");
+		if GM_runtime_type == "gms2"{
+			grc_expect_true(ds_exists(destroyed_list, ds_type_list), "creating a new list should revive the old list");
+		}
+		else{
+			grc_expect_false(ds_exists(destroyed_list, ds_type_list), "creating a new list should not revive the old list");
+			grc_expect_true(ds_exists(new_list, ds_type_list), "creating a new list should be with a new handle");
+		}
 		var expected_element = "hello"
 		ds_list_add(new_list, expected_element);
-		var element_from_destroyed_list = destroyed_list[|0];
-		grc_expect_eq(expected_element, element_from_destroyed_list, "revived list should have the same element as the new list");
-		grc_expect_eq(ds_list_size(new_list),  ds_list_size(destroyed_list), "revived list should have the same size as the new list");	
+		if GM_runtime_type == "gms2"{		
+			var element_from_destroyed_list = destroyed_list[|0];
+			grc_expect_eq(expected_element, element_from_destroyed_list, "revived list should have the same element as the new list");
+			grc_expect_eq(ds_list_size(new_list),  ds_list_size(destroyed_list), "revived list should have the same size as the new list");	
+		}
+		else{
+			var element_from_new_list = new_list[|0];
+			grc_expect_eq(expected_element, element_from_new_list, "New list's value should what we expected");
+		}		
 		ds_list_destroy(new_list);
 	})
 	
 	olympus_add_test("cjk_text_function_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14257
 		var english_text = "the brown fox jumped over the lazy dog. the brown fox jumped over the lazy dog. the brown fox jumped over the lazy dog."
 		var chinese_text = "这些发光的巨型昆虫似乎只在夜间出没。它们的甲壳极度坚硬，而且它们非常易怒。"
 		var japanese_text = "昨夜のコンサートは最高でした昨夜のコンサートは最高でした昨夜のコンサートは最高でした";
@@ -559,6 +603,7 @@ function grc_register_sync_function_tests(){
 	})
 	
 	olympus_add_test("ds_list_function_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14258
 		var list = ds_list_create();
 
 		ds_list_mark_as_map(list,0);
@@ -790,12 +835,16 @@ function grc_register_sync_function_tests(){
 		var fh = file_text_open_write(fn);
 		file_text_write_string(fh, v6);
 		file_text_close(fh);
-		switch_save_data_commit();
+		if os_type == os_switch {
+			switch_save_data_commit();
+		}
 		//Write new data that is shorter than old data
 		var fh = file_text_open_write(fn);
 		file_text_write_string(fh, s5);
 		file_text_close(fh);
-		switch_save_data_commit();
+		if os_type == os_switch {
+			switch_save_data_commit();
+		}
 		var fh = file_text_open_read(fn);
 		var content = file_text_read_string(fh);
 		file_text_close(fh);
