@@ -1,4 +1,21 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("asset_get_type_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14277	
+		var _asset_type = asset_get_type(grc_o_helper_blank);
+		grc_expect_eq(_asset_type, asset_object);
+		_asset_type = asset_get_type(grc_fnt_cjk);
+		grc_expect_eq(_asset_type, asset_font);
+		_asset_type = asset_get_type(grc_shad_flash);
+		grc_expect_eq(_asset_type, asset_shader);
+		_asset_type = asset_get_type(grc_snd_silence);
+		grc_expect_eq(_asset_type, asset_sound);
+		_asset_type = asset_get_type(grc_sp_a_spine_sprite);
+		grc_expect_eq(_asset_type, asset_sprite);
+		_asset_type = asset_get_type("non_existent_asset");
+		grc_expect_eq(_asset_type, asset_unknown);
+	})
+
+
 	olympus_add_test("template_strings_formatting_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14220
 		var c = 1;
