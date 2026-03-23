@@ -36,10 +36,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           registry-url: 'https://registry.npmjs.org'
-      - run: echo "//registry.npmjs.org/:_authToken=${{secrets.BSCOTCH_NPM_READ_ANY}}" > .npmrc
-      - run: npm install @bscotch/runtime-test-manager
       - id: sync
-        run: npx rtm sync -f ${{ env.FEED}}
+        run: node script/runtime-sync.js sync -f ${{ env.FEED}}
 
   order_test:
     if: ${{ needs.check_latest_runtime.outputs.runtime }}
