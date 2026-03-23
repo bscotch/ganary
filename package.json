@@ -3,6 +3,7 @@
   "version": "1.0.14",
   "description": "A project to test GMS functions across runtime on all platforms",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "preversion": "git fetch --tags",
     "import": "npx stitch merge --source='E:/repos/Games/bscotch-pack/BscotchPack' --ifFolderMatches=Olympus -f",
