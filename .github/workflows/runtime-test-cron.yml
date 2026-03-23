@@ -30,12 +30,11 @@ jobs:
     outputs:
       runtime: ${{ steps.sync.outputs.runtime }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: runtime_test_cron
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
           registry-url: 'https://registry.npmjs.org'
       - run: echo "//registry.npmjs.org/:_authToken=${{secrets.BSCOTCH_NPM_READ_ANY}}" > .npmrc
       - run: npm install @bscotch/runtime-test-manager
