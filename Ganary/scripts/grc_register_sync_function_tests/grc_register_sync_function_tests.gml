@@ -1,4 +1,10 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("sprite_get_convex_hull_crash", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14611	
+		var s = sprite_get_convex_hull(grc_sprite_get_convex_hull_crash);
+		show_debug_message(s);
+	})
+	
 	olympus_add_test("asset_get_type_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14277	
 		var _asset_type = asset_get_type(grc_o_helper_blank);

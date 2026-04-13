@@ -56,5 +56,6 @@
     {"name":"grc_snd_wave4","order":15,"path":"sounds/grc_snd_wave4/grc_snd_wave4.yy",},
     {"name":"grc_player_fallfromspace_spine","order":4,"path":"sprites/grc_player_fallfromspace_spine/grc_player_fallfromspace_spine.yy",},
     {"name":"grc_sp_non_object_associated","order":19,"path":"sprites/grc_sp_non_object_associated/grc_sp_non_object_associated.yy",},
+    {"name":"grc_sprite_get_convex_hull_crash","order":20,"path":"sprites/grc_sprite_get_convex_hull_crash/grc_sprite_get_convex_hull_crash.yy",},
   ],
 }
