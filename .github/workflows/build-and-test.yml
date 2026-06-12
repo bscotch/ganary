@@ -96,11 +96,24 @@ jobs:
             \"machine.Platform Settings.Android.Keystore.alias\": \"${{ secrets.KEYSTORE_USERNAME }}\",
             \"machine.Platform Settings.Android.Paths.jdk_location\": \"$JAVA_HOME_17_X64\"
           }" > local_settings.json
-      - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
-        uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Load cached FFmpeg
+        id: cache-ffmpeg
+        if: startswith(inputs.runner, 'Ubuntu')
+        uses: actions/cache@v5
         with:
-          ffmpeg-version: '6.1.0'
-        if: runner.os == 'Linux'
+          path: |
+            /usr/local/bin/ffmpeg
+            /usr/local/bin/ffprobe
+          key: ${{ runner.os }}-ffmpeg-5.1.1
+      - name: Install FFmpeg if not cached
+        if: startswith(inputs.runner, 'Ubuntu') && steps.cache-ffmpeg.outputs.cache-hit != 'true'
+        run: |
+          VERSION=5.1.1
+          RELEASE_NAME=ffmpeg-${VERSION}-amd64-static
+          wget --timeout=8 --tries=30 https://www.johnvansickle.com/ffmpeg/old-releases/${RELEASE_NAME}.tar.xz
+          tar -xf ${RELEASE_NAME}.tar.xz
+          mv ${RELEASE_NAME}/ffmpeg ${RELEASE_NAME}/ffprobe /usr/local/bin/
+          rm -rf ${RELEASE_NAME}
       - name: Set Up Android SDK's platform-tools # The default Android SDK does not include platform-tools and its component `adb`, which is required by Igor for the Android build
         if: runner.os == 'Linux'
         run: |
