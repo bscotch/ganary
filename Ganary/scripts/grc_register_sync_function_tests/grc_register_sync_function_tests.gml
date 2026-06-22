@@ -1,4 +1,12 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("struct_get_from_hash_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/15399
+		var _the_struct = {a: 77, b: 88, c: 99};
+		var _hash = variable_get_hash("a");
+		var _value = struct_get_from_hash(_the_struct, _hash);
+		show_debug_message(string(_value));
+	})
+	
 	olympus_add_test("sprite_get_convex_hull_crash", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14611	
 		var s = sprite_get_convex_hull(grc_sprite_get_convex_hull_crash);
