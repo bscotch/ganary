@@ -830,6 +830,7 @@ function grc_register_sync_function_tests(){
 	})
 
 	olympus_add_test("fs_function_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/15395
 		//Testing pathname longer than 64 char
 		var non_ascii_top = "萨达/";
 		fn = "c/GeneralDev/gms_runtime_checker/includedFile/VeryVeryLong/5d317eafe0122500717e052c.txt"
