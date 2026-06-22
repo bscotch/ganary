@@ -527,7 +527,7 @@ function grc_register_sync_function_tests(){
 		grc_console_log("buffer_base64_decode did not crash the runner");	
 	})
 	
-	olympus_test_dependency_chain_begin();
+
 	olympus_add_test("GM_runtime_version_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14259
 		var runtime = GM_runtime_version;
@@ -553,16 +553,20 @@ function grc_register_sync_function_tests(){
 		var runtime = GM_runtime_version;
 		var version = string_split(runtime, ".");
 		var major_version = real(version[0]);
-		var expected_type;	
-		if major_version >= 2024{
-			expected_type = "undefined";
+		var expected_type;
+		if GM_runtime_type == "gms2"{
+			if major_version >= 2024{
+				expected_type = "undefined";
+			}
+			else{
+				expected_type = "ptr";
+			}
 		}
 		else{
-			expected_type = "ptr";
+			expected_type = "null";
 		}
 		grc_expect_eq(expected_type, type, "For runtime "+GM_runtime_version+", the type should be "+expected_type + " but it is " +type);
 	})
-	olympus_test_dependency_chain_end();
 	
 	olympus_add_test("destroyed_ds_list_reference", function(){
 		var destroyed_list = ds_list_create();
