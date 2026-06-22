@@ -680,8 +680,9 @@ function grc_register_sync_function_tests(){
 	
 	if (os_type != os_xboxone && os_type != os_uwp){
 		olympus_add_test("directory_function_test", function(){
+			//https://github.com/YoYoGames/GameMaker-Bugs/issues/15397
 			var dir_name = "test_dir_name_for_directory_functions";
-			directory_create(dir_name);
+				(dir_name);
 			grc_expect_eq(directory_exists(dir_name), 1);
 		});
 	}
