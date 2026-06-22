@@ -43,7 +43,7 @@ function grc_register_async_function_tests(){
 	olympus_add_async_test("deleting_ds_map_pre_http_async", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/4505
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/15398
-		grc_console_log(debug_event("ResourceCounts"), true);
+		grc_console_log(debug_event("ResourceCounts", true));
 		var map_count = debug_event("ResourceCounts", true).mapCount;
 		show_debug_message("Num ds_maps: " + string(map_count));
 		http_get("https://www.bscotch.net/api/dummy/headers");
