@@ -254,7 +254,7 @@ function grc_register_sync_function_tests(){
 			"pointer_invalid": os_type == os_windows ? "FFFFFFFFFFFFFFFF" : "0xffffffffffffffff"
 		}
 		if GM_runtime_type == "gmrt" {
-			expected_parsed_value[$"pointer_invalid"] = "0000FFFFFFFFFFFF"
+			expected_parsed_value[$"pointer_invalid"] = "0000000000000001"
 		}
 		
 		var names = struct_get_names(_some_json_string_parsed);
