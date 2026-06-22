@@ -531,10 +531,17 @@ function grc_register_sync_function_tests(){
 	olympus_add_test("GM_runtime_version_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/14259
 		var runtime = GM_runtime_version;
+		grc_console_log(runtime);
 		grc_expect_neq(runtime, "0.0.0.0");
 		var version = string_split(runtime, ".");
-		var major_version = real(version[0]);
-		grc_expect_gt(2023, major_version);
+		if GM_runtime_type == "gms2"{
+			var major_version = real(version[0]);		
+			grc_expect_gt(2023, major_version);
+		}
+		else{
+			var version_parts = array_length(version);
+			grc_expect_eq(3, version_parts);
+		}
 	})
 
 	olympus_add_test("json_parse_null_to_ptr_test", function(){
