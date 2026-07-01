@@ -98,7 +98,7 @@ jobs:
           }" > local_settings.json
       - name: Load cached FFmpeg
         id: cache-ffmpeg
-        if: startswith(inputs.runner, 'Ubuntu')
+        if: runner.os == 'Linux'
         uses: actions/cache@v5
         with:
           path: |
@@ -106,7 +106,7 @@ jobs:
             /usr/local/bin/ffprobe
           key: ${{ runner.os }}-ffmpeg-5.1.1
       - name: Install FFmpeg if not cached
-        if: startswith(inputs.runner, 'Ubuntu') && steps.cache-ffmpeg.outputs.cache-hit != 'true'
+        if: runner.os == 'Linux' && steps.cache-ffmpeg.outputs.cache-hit != 'true'
         run: |
           VERSION=5.1.1
           RELEASE_NAME=ffmpeg-${VERSION}-amd64-static
