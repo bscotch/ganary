@@ -64,6 +64,7 @@
   "name":"Ganary",
   "resources":[
     {"id":{"name":"_olympus_extension","path":"extensions/_olympus_extension/_olympus_extension.yy",},},
+    {"id":{"name":"bs_ext_android_inputs","path":"extensions/bs_ext_android_inputs/bs_ext_android_inputs.yy",},},
     {"id":{"name":"grc_fnt_cjk","path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},},
     {"id":{"name":"grc_fnt_ui","path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},},
     {"id":{"name":"_olympus_async_awaiter","path":"objects/_olympus_async_awaiter/_olympus_async_awaiter.yy",},},

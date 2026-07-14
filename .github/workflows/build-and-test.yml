@@ -12,13 +12,15 @@ on:
       runtime:
         description: 'Target runtime'
         required: false
+        default: '2024.11.0.227'
       runner:
         description: 'Runner'
         required: false
-        default: "macOS-latest"
+        default: 'ubuntu-latest'
       platform:
         description: 'Platform'
         required: false
+        default: 'android'
   workflow_call:
     inputs:
       runtime:
