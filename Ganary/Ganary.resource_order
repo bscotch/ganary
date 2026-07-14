@@ -3,6 +3,7 @@
     {"name":"Sounds","order":1,"path":"folders/Sounds.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"bs_ext_android_inputs","order":2,"path":"extensions/bs_ext_android_inputs/bs_ext_android_inputs.yy",},
     {"name":"grc_fnt_cjk","order":2,"path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},
     {"name":"grc_fnt_ui","order":9,"path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},
     {"name":"_olympus_async_test_controller","order":5,"path":"objects/_olympus_async_test_controller/_olympus_async_test_controller.yy",},
