@@ -20,7 +20,7 @@ completionHandler:^(BOOL success) {}];
 
 - (NSString*) _olympus_ios_get_intent
 {
-    NSString *value = [OlympusDelegate get_intent];
+    NSString *value = [OlympusSceneDelegate get_intent];
     return value;
 }
 
@@ -29,4 +29,5 @@ completionHandler:^(BOOL success) {}];
     size_t ram = os_proc_available_memory();
     return (double)ram;
 }
+
 @end
