@@ -1,6 +1,9 @@
 global._should_resume_record = true;
 if os_get_config() == "gamepipe_test"{
 	global.olympus_headless = true;
+	if os_type == os_macosx {
+		draw_enable_drawevent(false);	
+	}	
 }
 
 if os_type == os_android{
