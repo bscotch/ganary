@@ -12,15 +12,12 @@ on:
       runtime:
         description: 'Target runtime'
         required: false
-        default: 2026.0.0.23
       runner:
         description: 'Runner'
         required: false
-        default: macOS-latest
       platform:
         description: 'Platform'
         required: false
-        default: mac
   workflow_call:
     inputs:
       runtime:
