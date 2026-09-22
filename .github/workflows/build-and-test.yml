@@ -157,7 +157,7 @@ jobs:
           cat << EOF > fastlane/Fastfile
           lane :beta do
             setup_ci
-            matchType = "developer_id"
+            matchType = "development"
             bundleId = "com.bscotch.ganary"
             match(
               type: matchType,
