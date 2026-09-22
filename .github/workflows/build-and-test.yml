@@ -59,9 +59,9 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJSON(needs.runner.outputs.matrix) }}
-        # include:
-        #   - os: macos-26
-        #     platform: mac
+        include:
+          - os: macos-26
+            platform: mac
 
     steps:
       - if: runner.os == 'macOS'
@@ -157,7 +157,7 @@ jobs:
           cat << EOF > fastlane/Fastfile
           lane :beta do
             setup_ci
-            matchType = "development"
+            matchType = "developer_id"
             bundleId = "com.bscotch.ganary"
             match(
               type: matchType,
@@ -326,6 +326,12 @@ jobs:
         with:
           name: ${{ matrix.os }}-test-result
           path: ${{ env.TEST_RESULT_FILE_NAME }}
+      - name: Upload mac artifact to release
+        uses: softprops/action-gh-release@v3
+        if: env.buildMac == 'true'
+        with:
+          files: ${{ steps.build.outputs.out-dir }}/*
+          tag_name: ${{inputs.runtime}}
       - name: Parse the results json in powershell
         shell: pwsh
         if: env.buildMac != 'true'
