@@ -1,5 +1,5 @@
 {
-  "$GMExtension":"",
+  "$GMExtension":"v1",
   "%Name":"_olympus_extension",
   "androidactivityinject":"\r\n   <intent-filter>\r\n       <action android:name=\"com.google.intent.action.TEST_LOOP\"></action>\r\n       <category android:name=\"android.intent.category.DEFAULT\"></category>\r\n       <data android:mimeType=\"application/javascript\"></data>\r\n   </intent-filter>\r\n",
   "androidclassname":"Olympus",
@@ -50,8 +50,10 @@
   "iosSystemFrameworkEntries":[],
   "iosThirdPartyFrameworkEntries":[],
   "license":"",
+  "maccodeinjection":"",
   "maccompilerflags":"",
   "maclinkerflags":"",
+  "macProps":false,
   "macsourcedir":"",
   "name":"_olympus_extension",
   "options":[],
