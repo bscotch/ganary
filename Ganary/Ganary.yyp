@@ -1,9 +1,9 @@
 {
-  "$GMProject":"",
+  "$GMProject":"v1",
   "%Name":"Ganary",
   "AudioGroups":[
-    {"$GMAudioGroup":"","%Name":"audiogroup_default","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
-    {"$GMAudioGroup":"","%Name":"a_group_test","name":"a_group_test","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"a_group_test","exportDir":"","name":"a_group_test","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
     "children":[
@@ -32,19 +32,13 @@
     {"$GMFolder":"","%Name":"Sounds","folderPath":"folders/Sounds.yy","name":"Sounds","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"ThisProject","folderPath":"folders/ThisProject.yy","name":"ThisProject","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
+  "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"a773860.txt","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"a773860.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc.mp4","CopyToMask":-1,"filePath":"datafiles/Ganary/cutscenes","name":"grc.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"opening_Trim.mp4","CopyToMask":-1,"filePath":"datafiles/Ganary/cutscenes","name":"opening_Trim.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_buffer_encode_test_file","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_buffer_encode_test_file","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
-    {"$GMIncludedFile":"","%Name":"grc_config_specific_file.md","ConfigValues":{
-        "dev":{
-          "CopyToMask":"0",
-        },
-        "steam":{
-          "CopyToMask":"153157610357391598",
-        },
-      },"CopyToMask":0,"filePath":"datafiles/Ganary","name":"grc_config_specific_file.md","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"grc_config_specific_file.md","ConfigValues":{"dev":{"CopyToMask":"0",},"steam":{"CopyToMask":"153157610357391598",},},"CopyToMask":0,"filePath":"datafiles/Ganary","name":"grc_config_specific_file.md","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_file_hash_test_file","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_file_hash_test_file","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_lowercase.json","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_lowercase.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc_test_gif_crash.gif","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"grc_test_gif_crash.gif","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
