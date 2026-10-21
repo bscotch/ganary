@@ -1,13 +1,14 @@
 {
-  "$GMSound":"",
+  "$GMSound":"v2",
   "%Name":"grc_snd_silence_for_dynamic_asset",
   "audioGroupId":{
     "name":"audiogroup_default",
     "path":"audiogroups/audiogroup_default",
   },
   "bitDepth":1,
-  "bitRate":128,
+  "channelFormat":0,
   "compression":3,
+  "compressionQuality":4,
   "ConfigValues":{
     "dev":{
       "audioGroupId":"{ \"name\":\"audiogroup_default\", \"path\":\"audiogroups/audiogroup_default\" }",
@@ -15,6 +16,7 @@
   },
   "conversionMode":0,
   "duration":1.614125,
+  "exportDir":"",
   "name":"grc_snd_silence_for_dynamic_asset",
   "parent":{
     "name":"misc_resources",
@@ -25,6 +27,5 @@
   "resourceVersion":"2.0",
   "sampleRate":44100,
   "soundFile":"grc_snd_silence_for_dynamic_asset.mp3",
-  "type":0,
   "volume":1.0,
 }

@@ -1,8 +1,8 @@
 function grc_register_sync_function_tests(){
-	olympus_add_test("object_inheritance_function_test", function(){
+	xolympus_add_test("object_inheritance_function_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/8129
 		grc_instance_create(grc_o_helper_blank_child);
-	})
+	});
 	
 	olympus_add_test("sort_by_test", function(){
 		var current_array = [{ index : 2}, { index : 0 }, { index : 1 , something: "else"}];

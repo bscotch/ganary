@@ -21,11 +21,7 @@
   "exportToGame":true,
   "extensionVersion":"0.0.1",
   "files":[
-    {"$GMExtensionFile":"","%Name":"_olympus_extension.ext","ConfigValues":{
-        "dev":{
-          "copyToTargets":"12",
-        },
-      },"constants":[],"copyToTargets":12,"filename":"_olympus_extension.ext","final":"","functions":[
+    {"$GMExtensionFile":"v1","%Name":"_olympus_extension.ext","ConfigValues":{"dev":{"copyToTargets":"12",},},"constants":[],"copyToTargets":12,"filename":"_olympus_extension.ext","final":"","functions":[
         {"$GMExtensionFunction":"","%Name":"_olympus_android_init","argCount":0,"args":[],"documentation":"","externalName":"_olympus_android_init","help":"","hidden":false,"kind":4,"name":"_olympus_android_init","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":1,},
         {"$GMExtensionFunction":"","%Name":"_olympus_android_game_end","argCount":0,"args":[],"documentation":"","externalName":"_olympus_android_game_end","help":"","hidden":false,"kind":4,"name":"_olympus_android_game_end","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":1,},
         {"$GMExtensionFunction":"","%Name":"_olympus_ios_finish_loop","argCount":0,"args":[],"documentation":"","externalName":"_olympus_ios_finish_loop","help":"","hidden":false,"kind":4,"name":"_olympus_ios_finish_loop","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":1,},
@@ -36,10 +32,7 @@
         {"$GMExtensionFunction":"","%Name":"_olympus_android_write_custom_output","argCount":0,"args":[1,],"documentation":"","externalName":"_olympus_android_write_custom_output","help":"_olympus_android_write_custom_output(data)","hidden":false,"kind":4,"name":"_olympus_android_write_custom_output","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":1,},
         {"$GMExtensionFunction":"","%Name":"_olympus_ios_get_available_ram","argCount":0,"args":[],"documentation":"","externalName":"_olympus_ios_get_available_ram","help":"","hidden":false,"kind":4,"name":"_olympus_ios_get_available_ram","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":2,},
         {"$GMExtensionFunction":"","%Name":"_olympus_android_copy_files_to_SD_card","argCount":0,"args":[],"documentation":"","externalName":"_olympus_android_copy_files_to_SD_card","help":"","hidden":false,"kind":4,"name":"_olympus_android_copy_files_to_SD_card","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":1,},
-      ],"init":"","kind":4,"name":"_olympus_extension.ext","order":[
-        {"name":"_olympus_android_init","path":"extensions/_olympus_extension/_olympus_extension.yy",},
-        {"name":"_olympus_android_game_end","path":"extensions/_olympus_extension/_olympus_extension.yy",},
-      ],"origname":"","ProxyFiles":[],"resourceType":"GMExtensionFile","resourceVersion":"2.0","uncompress":false,"usesRunnerInterface":false,},
+      ],"init":"","kind":4,"name":"_olympus_extension.ext","origname":"","ProxyFiles":[],"resourceType":"GMExtensionFile","resourceVersion":"2.0","uncompress":false,"usesRunnerInterface":false,},
   ],
   "gradleinject":"",
   "hasConvertedCodeInjection":true,

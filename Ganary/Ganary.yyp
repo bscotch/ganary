@@ -1,9 +1,9 @@
 {
-  "$GMProject":"",
+  "$GMProject":"v1",
   "%Name":"Ganary",
   "AudioGroups":[
-    {"$GMAudioGroup":"","%Name":"audiogroup_default","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
-    {"$GMAudioGroup":"","%Name":"a_group_test","name":"a_group_test","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"a_group_test","exportDir":"","name":"a_group_test","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
     "children":[
@@ -32,6 +32,7 @@
     {"$GMFolder":"","%Name":"Sounds","folderPath":"folders/Sounds.yy","name":"Sounds","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"ThisProject","folderPath":"folders/ThisProject.yy","name":"ThisProject","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
+  "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"a773860.txt","CopyToMask":-1,"filePath":"datafiles/Ganary","name":"a773860.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"grc.mp4","CopyToMask":-1,"filePath":"datafiles/Ganary/cutscenes","name":"grc.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
@@ -59,12 +60,13 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.1100.0.703",
+    "IDEVersion":"2026.0.0.16",
   },
   "name":"Ganary",
   "resources":[
     {"id":{"name":"_olympus_extension","path":"extensions/_olympus_extension/_olympus_extension.yy",},},
     {"id":{"name":"bs_ext_android_inputs","path":"extensions/bs_ext_android_inputs/bs_ext_android_inputs.yy",},},
+    {"id":{"name":"bs_switch_echo","path":"extensions/bs_switch_echo/bs_switch_echo.yy",},},
     {"id":{"name":"grc_fnt_cjk","path":"fonts/grc_fnt_cjk/grc_fnt_cjk.yy",},},
     {"id":{"name":"grc_fnt_ui","path":"fonts/grc_fnt_ui/grc_fnt_ui.yy",},},
     {"id":{"name":"_olympus_async_awaiter","path":"objects/_olympus_async_awaiter/_olympus_async_awaiter.yy",},},

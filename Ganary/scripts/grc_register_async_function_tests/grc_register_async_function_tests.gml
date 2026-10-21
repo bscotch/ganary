@@ -127,7 +127,8 @@ function grc_register_async_function_tests(){
 		return grc_instance_create(grc_o_array_reference_test);
 	})
 	
-	olympus_add_async_test("video_function_test_headless", function(){
+	olympus_test_dependency_chain_begin();
+	xolympus_add_async_test("video_function_test_headless", function(){
 		video_open("Ganary/cutscenes/grc.mp4");
 		grc_expect_eq(video_format_rgba, video_get_format(), "The format should be rgba");
 		grc_expect_eq(false, video_is_looping(), "the video should not be looping.");		
@@ -145,6 +146,7 @@ function grc_register_async_function_tests(){
 	olympus_add_async_test("video_fps_freeze", function(){
 		return grc_instance_create(grc_o_video_fps_freeze);
 	});
+	olympus_test_dependency_chain_end();
 
 	olympus_add_async_test("global_function_definition_test", function(){
 		return grc_instance_create(grc_o_global_function_definition_test);
