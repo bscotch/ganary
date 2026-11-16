@@ -1,4 +1,18 @@
 function grc_register_sync_function_tests(){
+	olympus_add_test("buffer_copy_test", function(){
+		//https://github.com/YoYoGames/GameMaker-Bugs/issues/16308
+		var _src = buffer_create(64, buffer_fixed, 1); // all zeros, used size 0
+		var _dest = buffer_create(32, buffer_fixed, 1);
+		buffer_fill(_dest, 0, buffer_u8, 255, 32);
+		buffer_copy(_src, 0, 32, _dest, 0);
+		var _dest_pos_zero = buffer_peek(_dest, 0, buffer_u8);
+		grc_expect_eq(0, _dest_pos_zero);
+		grc_expect_neq(255, _dest_pos_zero);
+		buffer_delete(_src);
+		buffer_delete(_dest);
+	})
+
+
 	olympus_add_test("struct_get_from_hash_test", function(){
 		//https://github.com/YoYoGames/GameMaker-Bugs/issues/15399
 		var _the_struct = {a: 77, b: 88, c: 99};
